@@ -1,54 +1,55 @@
 package client;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import input.KeyboardInput;
 import input.MouseInput;
+import player.Player;
 
 public class GamePanel extends JPanel{
 	
 	private MouseInput mouse;
-	private int posX = 150, posY = 100;
-	private int xDir = 1, yDir = 1;
+	private Player player;
 	
 	public GamePanel() {
 		mouse = new MouseInput(this);
+		setPanelSize();
 		addKeyListener(new KeyboardInput(this));
 		addMouseListener(mouse);
 		addMouseMotionListener(mouse);
+		player = new Player();
 	}
 	
+	/**
+	 * Logic loop
+	 */
+	public void updateGame() {
+		player.getTank().updateTank();
+	}
+	
+	/**
+	 * Graphic loop
+	 */
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		
-		updateRectangle();
-		g.fillRect(posX, posY, 200, 50);
+		player.getTank().drawTank(g);
+
 		Toolkit.getDefaultToolkit().sync();
 	}
 	
-	public void updateRectangle() {
-		posX += xDir;
-		posY += yDir;
-		if (posX > 400 || posX < 0) {
-			xDir *= -1;
-		}
-		if (posY > 400 || posY < 0) {
-			yDir *= -1;
-		}
-	}
 	
-	public void moveX(int delta) {
-		posX += delta;
-	}
-	public void moveY(int delta) {
-		posY += delta;
-	}
 	
-	public void setRectPos(int x, int y) {
-		posX = x;
-		posY = y;
+	public Player getPlayer() { return player; }
+	
+	private void setPanelSize() {
+		setPreferredSize(new Dimension(1280, 800));
 	}
 }

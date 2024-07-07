@@ -14,33 +14,43 @@ public class KeyboardInput implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_Z:
+			panel.getPlayer().getTank().setUp(true);
+			break;
+		case KeyEvent.VK_Q:
+			panel.getPlayer().getTank().setLeft(true);
+			break;
+		case KeyEvent.VK_S:
+			panel.getPlayer().getTank().setDown(true);
+			break;
+		case KeyEvent.VK_D:
+			panel.getPlayer().getTank().setRight(true);
+			break;
+		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_Z:
-			panel.moveY(-1);
+			panel.getPlayer().getTank().setUp(false);
 			break;
 		case KeyEvent.VK_Q:
-			panel.moveX(-1);
+			panel.getPlayer().getTank().setLeft(false);
 			break;
 		case KeyEvent.VK_S:
-			panel.moveY(1);
+			panel.getPlayer().getTank().setDown(false);
 			break;
 		case KeyEvent.VK_D:
-			panel.moveX(1);
+			panel.getPlayer().getTank().setRight(false);
 			break;
 		}
-		
 	}
 
 }
