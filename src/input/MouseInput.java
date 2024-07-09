@@ -15,7 +15,8 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {
-
+		panel.getPlayer().getTank().setTargetX(e.getX());
+		panel.getPlayer().getTank().setTargetY(e.getY());
 	}
 
 	@Override
@@ -26,7 +27,7 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-
+		
 	}
 
 	@Override
@@ -36,7 +37,7 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-
+		panel.getPlayer().getTank().fire(e.getX(), e.getY());
 	}
 
 	@Override

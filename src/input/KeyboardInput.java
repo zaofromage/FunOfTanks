@@ -32,6 +32,8 @@ public class KeyboardInput implements KeyListener {
 		case KeyEvent.VK_D:
 			panel.getPlayer().getTank().setRight(true);
 			break;
+		case KeyEvent.VK_SPACE:
+			panel.getPlayer().getTank().dash();
 		}
 	}
 
