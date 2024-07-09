@@ -32,26 +32,34 @@ public class Cannon {
 	
 	public void drawCannon(Graphics g, int x, int y, double orientation) {
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.setColor(color);
 		Rectangle rect = new Rectangle(x + displayOffset, y - displayOffset, width, height);
 		
 		AffineTransform transform = new AffineTransform();
 		transform.rotate(Math.toRadians(orientation), x, y);
 		
 	    Shape rotated = transform.createTransformedShape(rect);
-		g2d.draw(rotated);
-		g2d.fill(rotated);
+		
 		for (Bullet b : bullets) {
 			b.drawBullet(g);
 		}
+		g2d.setColor(color);
+		g2d.draw(rotated);
+		g2d.fill(rotated);
 	}
 	
-	public void updateCannon(ArrayList<Obstacle> obs) {
+	public void updateCannon(ArrayList<Obstacle> obs, ArrayList<Player> players, Player player, ArrayList<Player> toRemove) {
+		Bullet haveToRemove = null;
 		for (Bullet b : bullets) {
 			b.updateBullet();
+			Player p = b.detectPlayer(players, player);
+			if (p != null) {
+				haveToRemove = b;
+				toRemove.add(p);
+			}
 		}
 		bullets.removeIf(b -> b.hasReachLimit(obs));
 		bullets.removeIf(b -> b.destroyObstacle(obs));
+		if (haveToRemove != null) bullets.remove(haveToRemove);
 	}
 	
 	public void fire(int x, int y, int targetX, int targetY, double orientation) {

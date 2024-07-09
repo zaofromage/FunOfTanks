@@ -37,7 +37,7 @@ public class Bullet {
 		double[] nvect = normalizeVector(targetX - x, targetY - y);
 		vectorX = nvect[0];
 		vectorY = nvect[1];
-		speed = 2;
+		speed = 3;
 		blowOffset = 5;
 		this.orientation = orientation;
 		color = Color.gray;
@@ -85,12 +85,23 @@ public class Bullet {
 		return null;
 	}
 	
+	public Player detectPlayer(ArrayList<Player> players, Player player) {
+		ArrayList<Player> enemies = new ArrayList<Player>(players);
+		enemies.remove(player);
+		for (Player p : enemies) {
+			if (p.getTank().getHitbox().intersects(hitbox)) return p;
+		}
+		return null;
+	}
+	
 	public boolean destroyObstacle(ArrayList<Obstacle> obs) {
 		Obstacle o = detectObstacle(obs);
 		if (o == null) return false;
 		if (!o.isDestructible()) return true;
 		return obs.remove(o);
 	}
+	
+	//getters setters
 
 	public double getX() {
 		return x;

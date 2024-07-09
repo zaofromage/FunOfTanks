@@ -4,54 +4,46 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import client.GamePanel;
+import gamestates.GameState;
 
 public class KeyboardInput implements KeyListener {
 	
 	private GamePanel panel;
+	
 	public KeyboardInput(GamePanel panel) {
 		this.panel = panel;
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		
+		switch (GameState.state) {
+		case MENU:
+			panel.getGame().getMenu().keyTyped(e);
+			break;
+		case PLAYING:
+			panel.getGame().getPlaying().keyTyped(e);
+		}
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		switch (e.getKeyCode()) {
-		case KeyEvent.VK_Z:
-			panel.getPlayer().getTank().setUp(true);
+		switch (GameState.state) {
+		case MENU:
+			panel.getGame().getMenu().keyPressed(e);
 			break;
-		case KeyEvent.VK_Q:
-			panel.getPlayer().getTank().setLeft(true);
-			break;
-		case KeyEvent.VK_S:
-			panel.getPlayer().getTank().setDown(true);
-			break;
-		case KeyEvent.VK_D:
-			panel.getPlayer().getTank().setRight(true);
-			break;
-		case KeyEvent.VK_SPACE:
-			panel.getPlayer().getTank().dash();
+		case PLAYING:
+			panel.getGame().getPlaying().keyPressed(e);
 		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		switch (e.getKeyCode()) {
-		case KeyEvent.VK_Z:
-			panel.getPlayer().getTank().setUp(false);
+		switch (GameState.state) {
+		case MENU:
+			panel.getGame().getMenu().keyReleased(e);
 			break;
-		case KeyEvent.VK_Q:
-			panel.getPlayer().getTank().setLeft(false);
-			break;
-		case KeyEvent.VK_S:
-			panel.getPlayer().getTank().setDown(false);
-			break;
-		case KeyEvent.VK_D:
-			panel.getPlayer().getTank().setRight(false);
-			break;
+		case PLAYING:
+			panel.getGame().getPlaying().keyReleased(e);
 		}
 	}
 

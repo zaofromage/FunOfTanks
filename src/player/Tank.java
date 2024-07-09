@@ -29,9 +29,9 @@ public class Tank {
 	
 	private Rectangle hitbox;
 	
-	public Tank() {
-		x = 500;
-		y = 500;
+	public Tank(int x, int y) {
+		this.x = x;
+		this.y = y;
 		cannon = new Cannon();
 		size = 50;
 		orientation = 0;
@@ -94,7 +94,7 @@ public class Tank {
 		cannon.fire(x, y, targetX, targetY, orientation);
 	}
 	
-	public void updateTank(ArrayList<Obstacle> obs) {
+	public void updateTank(ArrayList<Obstacle> obs, ArrayList<Player> players, Player player, ArrayList<Player> toRemove) {
 		if (up) {
 			move(0, -1, obs);
 		}
@@ -109,7 +109,7 @@ public class Tank {
 		}
 		findOrientation();
 		updateHitbox();
-		cannon.updateCannon(obs);
+		cannon.updateCannon(obs, players, player, toRemove);
 	}
 	
 	public void drawTank(Graphics g) {

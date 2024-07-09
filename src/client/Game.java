@@ -1,5 +1,9 @@
 package client;
 
+import gamestates.*;
+
+import java.awt.Graphics;
+
 public class Game implements Runnable {
 	
 	private GameWindow window;
@@ -8,10 +12,15 @@ public class Game implements Runnable {
 	private final int FPS = 120;
 	private final int UPS = 200;
 	
+	private Menu menu;
+	private Playing playing;
+	
 	public Game() {
-		panel = new GamePanel();
+		panel = new GamePanel(this);
 		window = new GameWindow(panel);
 		panel.requestFocus();
+		menu = new Menu();
+		playing = new Playing(panel);
 		startGameLoop();
 	}
 	
@@ -21,7 +30,25 @@ public class Game implements Runnable {
 	}
 	
 	public void update() {
-		panel.updateGame();
+		switch (GameState.state) {
+		case MENU:
+			menu.update();
+			break;
+		case PLAYING:
+			playing.update();
+			break;
+		}
+	}
+	
+	public void render(Graphics g) {
+		switch (GameState.state) {
+		case MENU:
+			menu.draw(g);
+			break;
+		case PLAYING:
+			playing.draw(g);
+			break;
+		}
 	}
 
 	@Override
@@ -65,5 +92,13 @@ public class Game implements Runnable {
 				updates = 0;
 			}
 		}
+	}
+
+	public Menu getMenu() {
+		return menu;
+	}
+
+	public Playing getPlaying() {
+		return playing;
 	}
 }
