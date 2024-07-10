@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import map.Obstacle;
 import player.Player;
 import client.GamePanel;
+import serverHost.Role;
 
 public class Playing implements Statemethods {
 
@@ -18,19 +19,12 @@ public class Playing implements Statemethods {
 	private ArrayList<Player> playersToRemove;
 	private ArrayList<Obstacle> obstacles;
 
-	public Playing(GamePanel panel) {
+	public Playing(GamePanel panel, Player player) {
 		this.panel = panel;
-
-		player = new Player(500, 500);
+		this.player = player;
 		players = new ArrayList<>();
 		playersToRemove = new ArrayList<>();
 		players.add(player);
-
-		// test
-		players.add(new Player(200, 700));
-		players.add(new Player(225, 700));
-		players.add(new Player(400, 700));
-		players.add(new Player(425, 700));
 
 		obstacles = new ArrayList<>();
 		setUpWalls();

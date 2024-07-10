@@ -1,6 +1,7 @@
 package client;
 
 import gamestates.*;
+import player.Player;
 
 import java.awt.Graphics;
 
@@ -12,15 +13,16 @@ public class Game implements Runnable {
 	private final int FPS = 120;
 	private final int UPS = 200;
 	
+	private Player player;
+	
 	private Menu menu;
 	private Playing playing;
 	
 	public Game() {
+		menu = new Menu(this);
 		panel = new GamePanel(this);
 		window = new GameWindow(panel);
 		panel.requestFocus();
-		menu = new Menu();
-		playing = new Playing(panel);
 		startGameLoop();
 	}
 	
@@ -93,6 +95,10 @@ public class Game implements Runnable {
 			}
 		}
 	}
+	
+	public GamePanel getPanel() {
+		return panel;
+	}
 
 	public Menu getMenu() {
 		return menu;
@@ -100,5 +106,17 @@ public class Game implements Runnable {
 
 	public Playing getPlaying() {
 		return playing;
+	}
+	
+	public void setPlaying(Playing p) {
+		playing = p;
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 }
