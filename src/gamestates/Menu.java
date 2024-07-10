@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import serverHost.Role;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -26,23 +27,23 @@ public class Menu implements Statemethods {
 		this.buttons = new ArrayList<>();
 		buttons.add(new Button(700, 200, 200, 50, Color.cyan, "CREATE PLAYER", () -> {
 			System.out.println(game.getPlayer());
-			
+
 			if (choosenRole == null) {
 				System.out.println("Choisis un role !");
 				return;
 			}
 			System.out.print("Nom d'utilisateur : ");
 			String name = sc.nextLine();
-			if (choosenRole == Role.HOST) {	
+			if (choosenRole == Role.HOST) {
 				if (game.getPlayer() != null) {
-					game.getPlayer().getClient().stopConnection();
-					game.getPlayer().getServer().stop();
+					// game.getPlayer().getClient().stopConnection();
+					// game.getPlayer().getServer().stop();
 				}
 				game.setPlayer(new Player(name, choosenRole));
-				
-			} else if (choosenRole == Role.GUEST){
+
+			} else if (choosenRole == Role.GUEST) {
 				if (game.getPlayer() != null) {
-					game.getPlayer().getClient().stopConnection();
+					// game.getPlayer().getClient().stopConnection();
 				}
 
 				System.out.print("Entrer l'adresse ip du host : ");
@@ -52,7 +53,7 @@ public class Menu implements Statemethods {
 				game.setPlayer(new Player(name, choosenRole, ip, Integer.parseInt(port)));
 			}
 			System.out.println("Joueur crée !");
-        }));
+		}));
 
 		buttons.add(new Button(200, 200, 200, 50, Color.red, "HOST", () -> {
 			choosenRole = Role.HOST;
@@ -70,7 +71,7 @@ public class Menu implements Statemethods {
 		}));
 		buttons.add(new Button(400, 200, 200, 50, Color.green, "PLAY", () -> {
 			if (game.getPlayer() != null) {
-				game.setPlaying(new Playing(game.getPanel(), game.getPlayer()));				
+				game.setPlaying(new Playing(game.getPanel(), game.getPlayer()));
 			}
 			GameState.state = GameState.PLAYING;
 		}));
@@ -101,7 +102,9 @@ public class Menu implements Statemethods {
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		// TODO Auto-generated method stub
-
+		if (game.getPlayer() != null) {
+			game.getPlayer().getClient().send("say x : " + e.getX() + " y : " + e.getY());
+		}
 	}
 
 	@Override

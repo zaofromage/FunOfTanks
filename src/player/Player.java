@@ -3,6 +3,7 @@ package player;
 import java.util.ArrayList;
 import serverHost.*;
 import java.awt.Graphics;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -22,12 +23,11 @@ public class Player {
 		this.name = name;
 		this.role = role;
 		if (this.role == Role.HOST) {
-			server = new Server(4550);
 			try {
-				client = new Client(InetAddress.getLocalHost().toString().split("/")[1], 4550);
-				// test
-				//System.out.println(client.sendMessage(name));
-			} catch (UnknownHostException e) {
+				server = new Server();
+				client = new Client(InetAddress.getLocalHost().toString().split("/")[1], Server.PORT);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -37,9 +37,14 @@ public class Player {
 	public Player(String name, Role role, String ip, int port) {
 		this.name = name;
 		this.role = role;
-		client = new Client(ip, 4550);
+		try {
+			client = new Client(ip, port);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// test
-		//System.out.println(client.sendMessage(name));
+		client.send(name);
 		createTank(500, 500);
 	}
 
