@@ -1,11 +1,10 @@
-package gamestates;
+package gamestate;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import serverHost.Role;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -22,9 +21,13 @@ public class Menu implements Statemethods {
 
 	private ArrayList<Button> buttons;
 
+	private String playersPresent;
+	private ArrayList<Player> players;
+
 	public Menu(Game game) {
 		this.game = game;
 		this.buttons = new ArrayList<>();
+		this.players = new ArrayList<Player>();
 		buttons.add(new Button(700, 200, 200, 50, Color.cyan, "CREATE PLAYER", () -> {
 			System.out.println(game.getPlayer());
 
@@ -39,19 +42,22 @@ public class Menu implements Statemethods {
 					// game.getPlayer().getClient().stopConnection();
 					// game.getPlayer().getServer().stop();
 				}
-				game.setPlayer(new Player(name, choosenRole));
-
+				Player p = new Player(name, choosenRole, game, true);
+				game.setPlayer(p);
+				players.add(p);
 			} else if (choosenRole == Role.GUEST) {
 				if (game.getPlayer() != null) {
 					// game.getPlayer().getClient().stopConnection();
 				}
-
 				System.out.print("Entrer l'adresse ip du host : ");
 				String ip = sc.nextLine();
 				System.out.print("Entrer le port : ");
 				String port = sc.nextLine();
-				game.setPlayer(new Player(name, choosenRole, ip, Integer.parseInt(port)));
+				Player p = new Player(name, choosenRole, ip, Integer.parseInt(port), game, true);
+				game.setPlayer(p);
+				players.add(p);
 			}
+			game.getPlayer().getClient().send("newplayer;" + game.getPlayer().getName());
 			System.out.println("Joueur crée !");
 		}));
 
@@ -71,7 +77,9 @@ public class Menu implements Statemethods {
 		}));
 		buttons.add(new Button(400, 200, 200, 50, Color.green, "PLAY", () -> {
 			if (game.getPlayer() != null) {
-				game.setPlaying(new Playing(game.getPanel(), game.getPlayer()));
+				game.setPlaying(new Playing(game.getPanel(), game.getPlayer(), players));
+			} else {
+				System.out.println("crée un joueur stp soit pas con");
 			}
 			GameState.state = GameState.PLAYING;
 		}));
@@ -87,6 +95,9 @@ public class Menu implements Statemethods {
 	@Override
 	public void draw(Graphics g) {
 		g.drawString("MENU", 500, 500);
+		if (playersPresent != null) {
+			g.drawString(playersPresent, 100, 100);
+		}
 		for (Button b : buttons) {
 			b.draw(g);
 		}
@@ -101,10 +112,7 @@ public class Menu implements Statemethods {
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-		if (game.getPlayer() != null) {
-			game.getPlayer().getClient().send("say x : " + e.getX() + " y : " + e.getY());
-		}
+
 	}
 
 	@Override
@@ -154,6 +162,22 @@ public class Menu implements Statemethods {
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public Game getGame() {
+		return game;
+	}
+
+	public String getPlayersPresent() {
+		return playersPresent;
+	}
+
+	public ArrayList<Player> getPlayers() {
+		return players;
+	}
+
+	public void setPlayersPresent(String playersPresent) {
+		this.playersPresent = playersPresent;
 	}
 
 }

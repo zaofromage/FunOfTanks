@@ -15,6 +15,9 @@ public class Server implements Runnable {
 	private Thread th;
 
 	private ExecutorService pool;
+	
+	//Game
+	private ServerPlaying playing;
 
 	public Server() throws IOException {
 		clients = new ArrayList<>();
@@ -22,6 +25,8 @@ public class Server implements Runnable {
 		pool = Executors.newFixedThreadPool(4);
 		th = new Thread(this);
 		th.start();
+		
+		playing = new ServerPlaying();
 	}
 
 	@Override
@@ -29,12 +34,16 @@ public class Server implements Runnable {
 		while (true) {
 			try {
 				Socket client = server.accept();
-				ClientHandler ch = new ClientHandler(client, clients);
+				ClientHandler ch = new ClientHandler(client, clients, this);
 				clients.add(ch);
 				pool.execute(ch);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public ServerPlaying getPlaying() {
+		return playing;
 	}
 }

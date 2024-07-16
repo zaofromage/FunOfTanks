@@ -1,4 +1,4 @@
-package gamestates;
+package gamestate;
 
 public enum GameState {
 	PLAYING, MENU;

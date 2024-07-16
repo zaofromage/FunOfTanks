@@ -21,13 +21,16 @@ public class Cannon {
 	private boolean canFire = true;
 	private long cooldown;
 	
-	public Cannon() {
+	private Tank owner;
+	
+	public Cannon(Tank owner) {
 		color = Color.black;
 		width = 50;
 		height = 20;
 		cooldown = 1500;
 		displayOffset = height/2;
 		bullets = new ArrayList<>();
+		this.owner = owner;
 	}
 	
 	public void drawCannon(Graphics g, int x, int y, double orientation) {
@@ -47,14 +50,22 @@ public class Cannon {
 		g2d.fill(rotated);
 	}
 	
-	public void updateCannon(ArrayList<Obstacle> obs, ArrayList<Player> players, Player player, ArrayList<Player> toRemove) {
+	public void updateCannon(ArrayList<Obstacle> obs, ArrayList<Player> players, Player player) {
 		Bullet haveToRemove = null;
 		for (Bullet b : bullets) {
 			b.updateBullet();
 			Player p = b.detectPlayer(players, player);
 			if (p != null) {
 				haveToRemove = b;
-				toRemove.add(p);
+				p.deleteTank();
+				owner.getOwner().getClient().send("deletetank;" + p.getName());
+				owner.getOwner().getClient().send("deletebullet;" + owner.getOwner().getName() + ";" + b.getId());
+			}
+			if (b.hasReachLimit(obs)) {
+				owner.getOwner().getClient().send("deletebullet;" + owner.getOwner().getName() + ";" + b.getId());
+			}
+			if (b.destroyObstacle(obs)) {
+				owner.getOwner().getClient().send("deletebullet;" + owner.getOwner().getName() + ";" + b.getId());
 			}
 		}
 		bullets.removeIf(b -> b.hasReachLimit(obs));
@@ -64,10 +75,16 @@ public class Cannon {
 	
 	public void fire(int x, int y, int targetX, int targetY, double orientation) {
 		if (canFire) {
-			bullets.add(new Bullet(x, y, targetX, targetY, orientation));
+			Bullet b = new Bullet(x, y, targetX, targetY, orientation, this);
+			bullets.add(b);
 			canFire = false;
+			owner.getOwner().getClient().send("newbullet;" + x + ";" + y + ";" + orientation + ";" + owner.getOwner().getName() + ";" + b.getId());
 			new Delay(cooldown, () -> canFire = true);
 		}
+	}
+	
+	public Tank getOwner() {
+		return owner;
 	}
 	
 	public ArrayList<Bullet> getBullets() {

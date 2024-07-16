@@ -7,48 +7,57 @@ import java.util.ArrayList;
 
 import utils.Delay;
 import map.Obstacle;
+import utils.Calcul;
 
 public class Tank {
 	private int x, y;
 	private int size;
 	private double orientation;
-	
+
 	private int speed;
 	private int dashSpeed;
 	private boolean canDash = true;
 	private long cooldownDash;
-	
+
 	private int displayOffset;
-	
+
 	private Color color;
-	
+
 	private boolean up, down, left, right;
-	
+
 	private int targetX, targetY;
 	private Cannon cannon;
-	
+
 	private Rectangle hitbox;
+
+	private PlayerMode mode;
+
+	private Player owner;
 	
-	public Tank(int x, int y) {
+	private Obstacle possibleObstacle;
+
+	public Tank(int x, int y, Player owner) {
 		this.x = x;
 		this.y = y;
-		cannon = new Cannon();
+		this.owner = owner;
+		cannon = new Cannon(this);
 		size = 50;
 		orientation = 0;
 		speed = 1;
 		dashSpeed = 20;
 		cooldownDash = 1000;
 		color = Color.red;
-		up = false; 
+		up = false;
 		down = false;
 		left = false;
 		right = false;
 		targetX = 0;
 		targetY = 0;
 		displayOffset = size / 2;
+		mode = PlayerMode.FIRE;
 		hitbox = new Rectangle(x - displayOffset, y - displayOffset, size, size);
 	}
-	
+
 	public void move(int deltaX, int deltaY, ArrayList<Obstacle> obs) {
 		for (Obstacle o : obs) {
 			if (detectObstacle(o, x + deltaX * speed, y + deltaY * speed)) {
@@ -58,17 +67,17 @@ public class Tank {
 		x += deltaX * speed;
 		y += deltaY * speed;
 	}
-	
+
 	public void dash() {
 		if (canDash) {
 			speed *= dashSpeed;
 			canDash = false;
-		    new Delay(50, () -> speed /= dashSpeed);
-		    new Delay(cooldownDash, () -> canDash = true);
+			new Delay(50, () -> speed /= dashSpeed);
+			new Delay(cooldownDash, () -> canDash = true);
 		}
-		
+
 	}
-	
+
 	private void findOrientation() {
 		double vectorX = (targetX - x), vectorY = (targetY - y) * -1;
 		if (vectorX != 0) {
@@ -78,23 +87,44 @@ public class Tank {
 			} else if (vectorX < 0) {
 				delta = 180.;
 			}
-			orientation = (Math.atan(vectorY / vectorX) * (180/Math.PI) + delta) * -1;
+			orientation = (Math.atan(vectorY / vectorX) * (180 / Math.PI) + delta) * -1;
 		}
 	}
-	
+
 	public void updateHitbox() {
 		hitbox.setBounds(x - displayOffset, y - displayOffset, size, size);
 	}
-	
+
 	private boolean detectObstacle(Obstacle obstacle, int x, int y) {
 		return obstacle.getHitbox().intersects(new Rectangle(x - displayOffset, y - displayOffset, size, size));
 	}
-	
+
 	public void fire(int targetX, int targetY) {
 		cannon.fire(x, y, targetX, targetY, orientation);
 	}
-	
-	public void updateTank(ArrayList<Obstacle> obs, ArrayList<Player> players, Player player, ArrayList<Player> toRemove) {
+
+	public void dropObstacle(int x, int y, boolean destructible, ArrayList<Player> players, ArrayList<Obstacle> obstacles) {
+		if (mode == PlayerMode.BLOC) {
+			Obstacle o = new Obstacle(x, y, destructible);
+			for (Player p : players) {
+				if (o.getHitbox().intersects(p.getTank().getHitbox())) {
+					return;
+				}
+			}
+			for (Obstacle obs : obstacles) {
+				if (o.getHitbox().intersects(obs.getHitbox())) {
+					return;
+				}
+			}
+			obstacles.add(o);
+			if (owner.getClient() != null) {
+				owner.getClient().send("newobstacle;" + x + ";" + y + ";" + destructible);
+			}
+			switchMode(PlayerMode.FIRE);
+		}
+	}
+
+	public void updateTank(ArrayList<Obstacle> obs, ArrayList<Player> players, Player player) {
 		if (up) {
 			move(0, -1, obs);
 		}
@@ -107,24 +137,47 @@ public class Tank {
 		if (right) {
 			move(1, 0, obs);
 		}
-		findOrientation();
+		if (owner.isMain()) {
+			findOrientation();
+		}
 		updateHitbox();
-		cannon.updateCannon(obs, players, player, toRemove);
+		cannon.updateCannon(obs, players, player);
+		if (possibleObstacle != null) {
+			possibleObstacle.updateObstacle(targetX, targetY);
+			if (possibleObstacle.getHitbox().intersects(hitbox)) {
+				possibleObstacle.setColor(Obstacle.possibleWrong);
+			} else {
+				possibleObstacle.setColor(Obstacle.possible);
+			}
+		}
+		if (owner.getClient() != null)
+			owner.getClient().send("updatetank;" + owner.getName() + ";" + x + ";" + y + ";" + orientation);
 	}
-	
+
 	public void drawTank(Graphics g) {
 		g.setColor(color);
 		g.fillRect(x - displayOffset, y - displayOffset, size, size);
+		g.setColor(Color.black);
+		g.drawString(owner.getName(), x - displayOffset, y - displayOffset - 10);
 		cannon.drawCannon(g, x, y, orientation);
+		if (possibleObstacle != null) {
+			possibleObstacle.drawObstacle(g);
+		}
 	}
-	
-	
-	
-	//getters setters
+
+	// getters setters
 	public double getOrientation() {
 		return orientation;
 	}
-	
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
 	public Rectangle getHitbox() {
 		return hitbox;
 	}
@@ -133,7 +186,27 @@ public class Tank {
 		return cannon;
 	}
 
-	public void setOrientation(int orientation) {
+	public Player getOwner() {
+		return owner;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public PlayerMode getMode() {
+		return mode;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	public void setOrientation(double orientation) {
 		this.orientation = orientation;
 	}
 
@@ -156,7 +229,7 @@ public class Tank {
 	public void setRight(boolean right) {
 		this.right = right;
 	}
-	
+
 	public void setTargetX(int targetX) {
 		this.targetX = targetX;
 	}
@@ -164,4 +237,25 @@ public class Tank {
 	public void setTargetY(int targetY) {
 		this.targetY = targetY;
 	}
+
+	public void switchMode(PlayerMode mode) {
+		this.mode = mode;
+		if (mode == PlayerMode.BLOC) {
+			possibleObstacle = new Obstacle(targetX, targetY, false);
+		} else if (mode == PlayerMode.FIRE) {
+			possibleObstacle = null;
+		}
+	}
+	
+	//fait que quand je suis en mode constru les blocs ne peuvent etre posé que devant le joueur
+
+	public Obstacle getPossibleObstacle() {
+		return possibleObstacle;
+	}
+
+	public void setPossibleObstacle(Obstacle possibleObstacle) {
+		this.possibleObstacle = possibleObstacle;
+	}
+	
+	
 }

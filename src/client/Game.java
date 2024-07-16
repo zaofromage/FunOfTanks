@@ -1,9 +1,10 @@
 package client;
 
-import gamestates.*;
 import player.Player;
 
 import java.awt.Graphics;
+
+import gamestate.*;
 
 public class Game implements Runnable {
 	

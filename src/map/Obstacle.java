@@ -5,7 +5,13 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import utils.Calcul;
+
 public class Obstacle {
+	
+	public static Color normal = new Color(204, 102, 0);
+	public static Color possible = new Color(204, 102, 0, 100);
+	public static Color possibleWrong = new Color(255, 0, 0, 100);
 	
 	private Rectangle hitbox;
 	private int size;
@@ -15,14 +21,18 @@ public class Obstacle {
 	
 	public Obstacle(int x, int y, boolean destructible) {
 		size = 50;
-		color = new Color(204, 102, 0);
+		color = normal;
 		border = Color.black;
-		hitbox = new Rectangle(x, y, size, size);
+		hitbox = new Rectangle(Calcul.roundToTile(x), Calcul.roundToTile(y), size, size);
 		this.destructible = destructible;
 	}
 	
 	public boolean isDestructible() {
 		return destructible;
+	}
+	
+	public void updateObstacle(int x, int y) {
+		hitbox.setBounds(Calcul.roundToTile(x), Calcul.roundToTile(y), size, size);
 	}
 
 	public void drawObstacle(Graphics g) {
@@ -37,5 +47,13 @@ public class Obstacle {
 	//getters setters
 	public Rectangle getHitbox() {
 		return hitbox;
+	}
+	
+	public Color getColor() {
+		return color;
+	}
+	
+	public void setColor(Color c) {
+		this.color = c;
 	}
 }
