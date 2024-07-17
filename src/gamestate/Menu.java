@@ -1,87 +1,54 @@
 package gamestate;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
-import serverHost.Role;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import UI.Button;
+import UI.HostMenu;
+import UI.JoinMenu;
 import client.Game;
 import player.Player;
 
 public class Menu implements Statemethods {
 
-	private Scanner sc = new Scanner(System.in);
-
-	private Role choosenRole;
 	private Game game;
 
 	private ArrayList<Button> buttons;
 
 	private String playersPresent;
 	private ArrayList<Player> players;
+	
+	private Button cancelButton;
+	private boolean activeCancelButton;
+	
+	private HostMenu hostMenu;
+	private JoinMenu joinMenu;
 
 	public Menu(Game game) {
 		this.game = game;
 		this.buttons = new ArrayList<>();
 		this.players = new ArrayList<Player>();
-		buttons.add(new Button(700, 200, 200, 50, Color.cyan, "CREATE PLAYER", () -> {
-			System.out.println(game.getPlayer());
-
-			if (choosenRole == null) {
-				System.out.println("Choisis un role !");
-				return;
-			}
-			System.out.print("Nom d'utilisateur : ");
-			String name = sc.nextLine();
-			if (choosenRole == Role.HOST) {
-				if (game.getPlayer() != null) {
-					// game.getPlayer().getClient().stopConnection();
-					// game.getPlayer().getServer().stop();
-				}
-				Player p = new Player(name, choosenRole, game, true);
-				game.setPlayer(p);
-				players.add(p);
-			} else if (choosenRole == Role.GUEST) {
-				if (game.getPlayer() != null) {
-					// game.getPlayer().getClient().stopConnection();
-				}
-				System.out.print("Entrer l'adresse ip du host : ");
-				String ip = sc.nextLine();
-				System.out.print("Entrer le port : ");
-				String port = sc.nextLine();
-				Player p = new Player(name, choosenRole, ip, Integer.parseInt(port), game, true);
-				game.setPlayer(p);
-				players.add(p);
-			}
-			game.getPlayer().getClient().send("newplayer;" + game.getPlayer().getName());
-			System.out.println("Joueur crée !");
-		}));
-
-		buttons.add(new Button(200, 200, 200, 50, Color.red, "HOST", () -> {
-			choosenRole = Role.HOST;
+		cancelButton = new Button(50, 50, 50, 50, Color.red, "X", () -> {
+			hostMenu = null;
+			joinMenu = null;
+			activeCancelButton = false;
 			if (game.getPlayer() != null) {
-				game.getPlayer().setRole(choosenRole);
+				game.getPlayer().close();
+				game.setPlayer(null);
 			}
-			System.out.println("Tu deviens le host de la game");
+		});
+		activeCancelButton = false;
+		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 200, 300, 75, Color.red, "HOST A GAME", () -> {
+			activeCancelButton = true;
+			hostMenu = new HostMenu(game.getPanel().getDimension().width / 2 - 500/2, 50, game);
 		}));
-		buttons.add(new Button(200, 400, 200, 50, Color.blue, "JOIN", () -> {
-			choosenRole = Role.GUEST;
-			if (game.getPlayer() != null) {
-				game.getPlayer().setRole(choosenRole);
-			}
-			System.out.println("Tu rejoins une game");
-		}));
-		buttons.add(new Button(400, 200, 200, 50, Color.green, "PLAY", () -> {
-			if (game.getPlayer() != null) {
-				game.setPlaying(new Playing(game.getPanel(), game.getPlayer(), players));
-			} else {
-				System.out.println("crée un joueur stp soit pas con");
-			}
-			GameState.state = GameState.PLAYING;
+		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 400, 300, 75, Color.blue, "JOIN A GAME", () -> {
+			activeCancelButton = true;
+			joinMenu = new JoinMenu(game.getPanel().getDimension().width / 2 - 500/2, 50, game);
 		}));
 	}
 
@@ -90,17 +57,35 @@ public class Menu implements Statemethods {
 		for (Button b : buttons) {
 			b.update();
 		}
+		if (hostMenu != null) {
+			hostMenu.update();
+		}
+		if (joinMenu != null) {
+			joinMenu.update();
+		}
+		if (activeCancelButton) cancelButton.update();
 	}
 
 	@Override
 	public void draw(Graphics g) {
-		g.drawString("MENU", 500, 500);
+		g.setColor(Color.lightGray);
+		g.fillRect(game.getPanel().getDimension().width / 2 - 500/2, 50, 500, 700);
+		g.setColor(Color.black);
+		g.setFont(new Font("SansSerif", Font.BOLD, 40));
+		g.drawString("MENU", game.getPanel().getDimension().width / 2 - g.getFontMetrics().stringWidth("MENU")/2, 100);
 		if (playersPresent != null) {
 			g.drawString(playersPresent, 100, 100);
 		}
 		for (Button b : buttons) {
 			b.draw(g);
 		}
+		if (hostMenu != null) {
+			hostMenu.draw(g);
+		}
+		if (joinMenu != null) {
+			joinMenu.draw(g);
+		}
+		if (activeCancelButton) cancelButton.draw(g);
 	}
 
 	// inputs
@@ -117,9 +102,23 @@ public class Menu implements Statemethods {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		for (Button b : buttons) {
-			b.onClick(e);
+		if (hostMenu != null) {
+			for (Button b : hostMenu.getButtons()) {
+				b.onClick(e);
+			}
+			hostMenu.mouseClicked(e);
+		} else if (joinMenu != null) {
+			for (Button b : joinMenu.getButtons()) {
+				b.onClick(e);
+			}
+			joinMenu.mouseClicked(e);
 		}
+		else {
+			for (Button b : buttons) {
+				b.onClick(e);
+			}
+		}
+		if (activeCancelButton) cancelButton.onClick(e);
 	}
 
 	@Override
@@ -148,14 +147,16 @@ public class Menu implements Statemethods {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-
+		if (hostMenu != null) {
+			hostMenu.keyPressed(e);
+		} else if (joinMenu != null) {
+			joinMenu.keyPressed(e);
+		}
 	}
 
 	@Override

@@ -23,4 +23,15 @@ public class Client {
 	public void send(String msg) {
 		out.println(msg);
 	}
+	
+	public void close() {
+		try {
+			socket.shutdownOutput();
+			out.close();
+			serverConn.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
 }

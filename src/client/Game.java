@@ -1,7 +1,10 @@
 package client;
 
 import player.Player;
+import utils.Delay;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 
 import gamestate.*;
@@ -19,10 +22,15 @@ public class Game implements Runnable {
 	private Menu menu;
 	private Playing playing;
 	
+	private static String errorMessage;
+	private Font errorMessageFont;
+	
 	public Game() {
-		menu = new Menu(this);
+		
 		panel = new GamePanel(this);
+		menu = new Menu(this);
 		window = new GameWindow(panel);
+		errorMessageFont = new Font("SansSerif", Font.PLAIN, 30);
 		panel.requestFocus();
 		startGameLoop();
 	}
@@ -51,6 +59,11 @@ public class Game implements Runnable {
 		case PLAYING:
 			playing.draw(g);
 			break;
+		}
+		if (errorMessage != null) {
+			g.setColor(Color.red);
+			g.setFont(errorMessageFont);
+			g.drawString(errorMessage, panel.getDimension().width/2 - g.getFontMetrics().stringWidth(errorMessage)/2, panel.getDimension().height/4 * 3);
 		}
 	}
 
@@ -95,6 +108,11 @@ public class Game implements Runnable {
 				updates = 0;
 			}
 		}
+	}
+	
+	public static void printErrorMessage(String msg) {
+		errorMessage = msg;
+		new Delay(3000, () -> errorMessage = null);
 	}
 	
 	public GamePanel getPanel() {

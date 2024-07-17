@@ -4,11 +4,9 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 
-import javax.xml.crypto.Data;
 
 import map.Obstacle;
 import serverClass.*;
-import utils.DataManager;
 import utils.Finder;
 
 public class ClientHandler implements Runnable {
@@ -37,8 +35,8 @@ public class ClientHandler implements Runnable {
 				String header = getHeader(request);
 				String[] body = getBody(request);
 				if (header.equals("newplayer")) {
-					server.getPlaying().getPlayers().add(getBody(request)[0]);
-					sendToAll(DataManager.stringifyServerPlayers(server.getPlaying().getPlayers()));
+					server.getPlaying().getPlayers().add(body[0]);
+					sendToAll(stringifyServerPlayers(server.getPlaying().getPlayers()));
 				} else if (header.equals("newtank")) {
 					server.getPlaying().getTanks().add(new ServerTank(Integer.parseInt(body[0]), Integer.parseInt(body[1]), Double.parseDouble(body[2]), body[3], body[4]));
 				    sendToAllOthers("newtank;" + body[4] + ";" + body[0] + ";" + body[1]);
@@ -99,6 +97,23 @@ public class ClientHandler implements Runnable {
 		}
 	}
 	
+	public void close() {
+		try {
+			in.close();
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private String stringifyServerPlayers(ArrayList<String> players) {
+		String res = "players";
+		for (String name : players) {
+			res += ";" + name;
+		}
+		return res;
+	}
+
 	private void sendToAll(String msg) {
 		for (ClientHandler c : clients) {
 			c.out.println(msg);

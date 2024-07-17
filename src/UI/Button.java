@@ -1,22 +1,23 @@
 package UI;
 
-import java.awt.Rectangle;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.Color;
+import java.awt.Font;
 
 public class Button {
 	
 	private String text;
-	private Rectangle hitbox;
+	private RoundRectangle2D hitbox;
 	private Color color;
 	
 	private Runnable action;
 	
 	public Button(int x, int y, int width, int height, Color color, String text, Runnable action) {
 		this.text = text;
-		this.hitbox = new Rectangle(x, y, width, height);
+		this.hitbox = new RoundRectangle2D.Double(x, y, width, height, 10, 10);
 		this.action = action;
 		this.color = color;
 	}
@@ -30,7 +31,9 @@ public class Button {
 		g2.setColor(color);
 		g2.draw(hitbox);
 		g2.fill(hitbox);
-		g2.drawString(text, (int) hitbox.getX(), (int) hitbox.getY());
+		g2.setColor(Color.black);
+		g2.setFont(new Font("SansSerif", Font.PLAIN, 35));
+		g2.drawString(text, (int) (hitbox.getX() + hitbox.getWidth()/2 - g2.getFontMetrics().stringWidth(text)/2), (int) (hitbox.getY() + (int) hitbox.getHeight()/2 + g2.getFontMetrics().getAscent()/2));
 	}
 	
 	public void onClick(MouseEvent e) {

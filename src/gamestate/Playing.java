@@ -68,7 +68,7 @@ public class Playing implements Statemethods {
 	private void setUpWalls() {
 		for (int i = 0; i < panel.getDimension().getWidth(); i += panel.getTileSize()) {
 			getObstacles().add(new Obstacle(i, 0, true));
-			getObstacles().add(new Obstacle(i, (int) panel.getDimension().getHeight() - panel.getTileSize(), true));
+			getObstacles().add(new Obstacle(i, (int) panel.getDimension().getHeight() - panel.getTileSize(), false));
 		}
 		for (int i = panel.getTileSize(); i < panel.getDimension().getHeight() - panel.getTileSize(); i += panel
 				.getTileSize()) {

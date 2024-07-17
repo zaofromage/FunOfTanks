@@ -16,6 +16,7 @@ public class Server implements Runnable {
 
 	private ExecutorService pool;
 	
+	
 	//Game
 	private ServerPlaying playing;
 
@@ -39,7 +40,19 @@ public class Server implements Runnable {
 				pool.execute(ch);
 			} catch (IOException e) {
 				e.printStackTrace();
+				th.interrupt();
 			}
+		}
+	}
+	
+	public void close() {
+		try {
+			server.close();
+			for (ClientHandler ch : clients) {
+				ch.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import utils.Delay;
 import map.Obstacle;
-import utils.Calcul;
 
 public class Tank {
 	private int x, y;
@@ -107,8 +106,10 @@ public class Tank {
 		if (mode == PlayerMode.BLOC) {
 			Obstacle o = new Obstacle(x, y, destructible);
 			for (Player p : players) {
-				if (o.getHitbox().intersects(p.getTank().getHitbox())) {
-					return;
+				if (p.getTank() != null) {
+					if (o.getHitbox().intersects(p.getTank().getHitbox())) {
+						return;
+					}					
 				}
 			}
 			for (Obstacle obs : obstacles) {

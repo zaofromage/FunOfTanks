@@ -61,15 +61,11 @@ public class Cannon {
 				owner.getOwner().getClient().send("deletetank;" + p.getName());
 				owner.getOwner().getClient().send("deletebullet;" + owner.getOwner().getName() + ";" + b.getId());
 			}
-			if (b.hasReachLimit(obs)) {
-				owner.getOwner().getClient().send("deletebullet;" + owner.getOwner().getName() + ";" + b.getId());
-			}
-			if (b.destroyObstacle(obs)) {
+			if (b.hasReachLimit(obs) || b.destroyObstacle(obs)) {
+				haveToRemove = b;
 				owner.getOwner().getClient().send("deletebullet;" + owner.getOwner().getName() + ";" + b.getId());
 			}
 		}
-		bullets.removeIf(b -> b.hasReachLimit(obs));
-		bullets.removeIf(b -> b.destroyObstacle(obs));
 		if (haveToRemove != null) bullets.remove(haveToRemove);
 	}
 	

@@ -23,6 +23,8 @@ public class Player {
 	private String name;
 
 	private Tank tank;
+	
+	private boolean ready;
 
 	public Player(String name, Role role, Game game, boolean isMain) {
 		this.name = name;
@@ -33,10 +35,10 @@ public class Player {
 				server = new Server();
 				client = new Client(InetAddress.getLocalHost().toString().split("/")[1], Server.PORT, game);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		setReady(false);
 		createTank(500, 500);
 	}
 
@@ -47,11 +49,8 @@ public class Player {
 		try {
 			client = new Client(ip, port, game);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// test
-		client.send(name);
 		createTank(500, 500);
 	}
 
@@ -65,6 +64,17 @@ public class Player {
 	public void deleteTank() {
 		tank = null;
 		new Delay(5000, () -> createTank(200, 200));
+	}
+	
+	public void close() {
+		if (server != null) {
+			server.close();
+			server = null;
+		}
+		if (client != null) {
+			client.close();
+			client = null;
+		}
 	}
 
 	public void drawPlayer(Graphics g) {
@@ -139,6 +149,14 @@ public class Player {
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	public boolean isReady() {
+		return ready;
+	}
+
+	public void setReady(boolean ready) {
+		this.ready = ready;
 	}
 
 }
