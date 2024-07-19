@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import UI.Button;
 import UI.HostMenu;
@@ -73,9 +74,6 @@ public class Menu implements Statemethods {
 		g.setColor(Color.black);
 		g.setFont(new Font("SansSerif", Font.BOLD, 40));
 		g.drawString("MENU", game.getPanel().getDimension().width / 2 - g.getFontMetrics().stringWidth("MENU")/2, 100);
-		if (playersPresent != null) {
-			g.drawString(playersPresent, 100, 100);
-		}
 		for (Button b : buttons) {
 			b.draw(g);
 		}

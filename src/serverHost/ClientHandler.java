@@ -36,6 +36,7 @@ public class ClientHandler implements Runnable {
 				String[] body = getBody(request);
 				if (header.equals("newplayer")) {
 					server.getPlaying().getPlayers().add(body[0]);
+					server.getPlaying().getPlayersReady().add(false);
 					sendToAll(stringifyServerPlayers(server.getPlaying().getPlayers()));
 				} else if (header.equals("newtank")) {
 					server.getPlaying().getTanks().add(new ServerTank(Integer.parseInt(body[0]), Integer.parseInt(body[1]), Double.parseDouble(body[2]), body[3], body[4]));
@@ -79,6 +80,11 @@ public class ClientHandler implements Runnable {
 						server.getPlaying().getObstacles().remove(o);
 						sendToAllOthers(request);
 					}
+				} else if (header.equals("ready")) {
+					server.getPlaying().getPlayersReady().set(Finder.findIndexPlayer(body[0], server.getPlaying().getPlayers()), Boolean.parseBoolean(body[1]));
+					sendToAll(request);
+				} else if (header.equals("play")) {
+					sendToAllOthers(request);
 				}
 				else {
 					out.println("wrong request");

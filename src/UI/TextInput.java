@@ -118,4 +118,8 @@ public class TextInput {
 			selected = false;
 		}
 	}
+	
+	public void setText(StringBuilder t) {
+		text = t;
+	}
 }

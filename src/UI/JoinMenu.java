@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import client.Game;
 import gamestate.GameState;
@@ -14,34 +15,40 @@ import player.Player;
 import serverHost.Role;
 
 public class JoinMenu extends PopUpMenu {
-	
+
 	private TextInput name;
 	private TextInput ip;
 	private TextInput port;
 	private ArrayList<Button> buttons;
-
-	private Game game;
 	
 	public JoinMenu(int x, int y, Game game) {
 		super(x, y, 500, 700, Color.yellow);
 		buttons = new ArrayList<Button>();
-		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 350, 300, 75, Color.cyan,
+		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 250, 300, 75, Color.cyan,
 				"CREATE PLAYER", () -> {
 					Player p = new Player(name.getText(), Role.GUEST, ip.getIP(), port.getPort(), game, true);
 					game.setPlayer(p);
 					game.getMenu().getPlayers().add(p);
 					game.getPlayer().getClient().send("newplayer;" + game.getPlayer().getName());
+					buttons.get(1).setEnabled(true);
 				}));
 		buttons.add(
-				new Button(game.getPanel().getDimension().width / 2 - 150, 450, 300, 75, Color.green, "PLAY", () -> {
-					game.getPlayer().setReady(true);
+				new Button(game.getPanel().getDimension().width / 2 - 150, 350, 300, 75, Color.red, "READY", () -> {
+					game.getPlayer().setReady(!game.getPlayer().isReady());
+					game.getPlayer().getClient().send("ready;" + game.getPlayer().getName() + ";" + game.getPlayer().isReady());
+					buttons.get(1).setColor(game.getPlayer().isReady() ? Color.green : Color.red);
 				}));
+		buttons.get(1).setEnabled(false);
 		name = new TextInput(x + 50, y + 50, 180, 30, "name ", new Font("SansSerif", Font.PLAIN, 20), 15);
 		ip = new TextInput(x + 50, y + 100, 200, 30, "ip ", new Font("SansSerif", Font.PLAIN, 20), 16);
 		port = new TextInput(x + 50, y + 150, 180, 30, "port ", new Font("SansSerif", Font.PLAIN, 20), 4);
+		//placeholder
+		name.setText(new StringBuilder("line"));
+		ip.setText(new StringBuilder("192.168.248.154"));
+		port.setText(new StringBuilder("4550"));
 		this.game = game;
 	}
-	
+
 	@Override
 	public void update() {
 		name.update();
@@ -55,18 +62,9 @@ public class JoinMenu extends PopUpMenu {
 		for (Button b : buttons) {
 			b.draw(g);
 		}
-		if (game.getMenu().getPlayers().stream().filter(p -> p.isReady()).count() == game.getMenu().getPlayers()
-				.size()) {
-			buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 600, 300, 75, Color.green, "PLAY",
-					() -> {
-						if (game.getPlayer() != null) {
-							game.setPlaying(
-									new Playing(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));
-							GameState.state = GameState.PLAYING;
-						} else {
-							Game.printErrorMessage("crée un joueur stp soit pas con");
-						}
-					}));
+		if (game.getMenu().getPlayersPresent() != null) {
+			g.setFont(HostMenu.playerFont);
+			formatPlayers(game.getMenu().getPlayersPresent(), g);
 		}
 		name.draw(g);
 		ip.draw(g);
@@ -84,7 +82,7 @@ public class JoinMenu extends PopUpMenu {
 		ip.keyPressed(e);
 		port.keyPressed(e);
 	}
-	
+
 	public ArrayList<Button> getButtons() {
 		return buttons;
 	}

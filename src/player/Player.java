@@ -51,6 +51,7 @@ public class Player {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		setReady(false);
 		createTank(500, 500);
 	}
 

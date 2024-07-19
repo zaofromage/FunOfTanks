@@ -42,7 +42,7 @@ public class ServerConnection implements Runnable {
 					case MENU:
 						Menu menu = game.getMenu();
 						if (header.equals("players")) {
-							menu.setPlayersPresent(stringArray(body));
+							menu.setPlayersPresent(serverResponse);
 							ArrayList<Player> toAdd = new ArrayList<>();
 							for (String name : body) {
 								Player p = Finder.findPlayer(name, menu.getPlayers());
@@ -51,6 +51,15 @@ public class ServerConnection implements Runnable {
 								}
 							}
 							menu.getPlayers().addAll(toAdd);
+						} else if (header.equals("ready")) {
+							System.out.println(serverResponse);
+							Player p = Finder.findPlayer(body[0], menu.getPlayers()); 
+							if (p != null) {
+								p.setReady(Boolean.parseBoolean(body[1]));
+							}
+						} else if (header.equals("play")) {
+							game.setPlaying(new Playing(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));
+							GameState.state = GameState.PLAYING;
 						}
 						break;
 					case PLAYING:
@@ -95,6 +104,7 @@ public class ServerConnection implements Runnable {
 								play.getObstacles().remove(o);
 							}
 						}
+						break;
 					}
 				}
 			}
@@ -115,13 +125,5 @@ public class ServerConnection implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public static String stringArray(String[] array) {
-		String res = "";
-		for (String str : array) {
-			res += " | " + str;
-		}
-		return res;
 	}
 }
