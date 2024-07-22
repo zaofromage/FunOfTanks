@@ -1,5 +1,5 @@
 package player;
 
 public enum PlayerMode {
-	FIRE, BLOC;
+	BASE, AIM, BLOC;
 }

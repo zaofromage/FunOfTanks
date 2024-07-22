@@ -4,6 +4,8 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import map.Obstacle;
+import utils.Calcul;
+import utils.Delay;
 
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
@@ -26,6 +28,8 @@ public class Bullet {
 	private int blowOffset;
 
 	private double speed;
+	
+	private boolean friendlyFire;
 
 	private Color color;
 
@@ -41,7 +45,7 @@ public class Bullet {
 		width = 20;
 		height = 10;
 		hitbox = new Rectangle(x, y, width, height);
-		double[] nvect = normalizeVector(targetX - x, targetY - y);
+		double[] nvect = Calcul.normalizeVector(targetX - x, targetY - y);
 		vectorX = nvect[0];
 		vectorY = nvect[1];
 		speed = 3;
@@ -49,6 +53,8 @@ public class Bullet {
 		this.orientation = orientation;
 		color = Color.gray;
 		this.owner = owner;
+		this.friendlyFire = false;
+		new Delay(1000, () -> friendlyFire = true);
 	}
 
 	public void drawBullet(Graphics g) {
@@ -78,20 +84,14 @@ public class Bullet {
 		}
 	}
 
-	private double[] normalizeVector(int x, int y) {
-		double norme = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-		double[] res = new double[2];
-		res[0] = ((double) x / norme);
-		res[1] = ((double) y / norme);
-		return res;
-	}
+	
 
 	public boolean hasReachLimit(ArrayList<Obstacle> obs) {
 		return (targetX - blowOffset < (int) x && (int) x < targetX + blowOffset && targetY - blowOffset < (int) y
 				&& (int) y < targetY + blowOffset);
 	}
 
-	private Obstacle detectObstacle(ArrayList<Obstacle> obs) {
+	public Obstacle detectObstacle(ArrayList<Obstacle> obs) {
 		for (Obstacle o : obs) {
 			if (o.getHitbox().intersects(hitbox))
 				return o;
@@ -101,7 +101,9 @@ public class Bullet {
 
 	public Player detectPlayer(ArrayList<Player> players, Player player) {
 		ArrayList<Player> enemies = new ArrayList<Player>(players);
-		enemies.remove(player);
+		if (!friendlyFire) {
+			enemies.remove(player);			
+		}
 		for (Player p : enemies) {
 			if (p.getTank() != null) {
 				if (p.getTank().getHitbox().intersects(hitbox))
@@ -121,6 +123,14 @@ public class Bullet {
 			owner.getOwner().getOwner().getClient().send("deleteobstacle;" + (int) o.getHitbox().getX() + ";" + (int) o.getHitbox().getY());
 		}
 		return obs.remove(o);
+	}
+	
+	public void bounceX() {
+		vectorX *= -1;
+	}
+	
+	public void bounceY() {
+		vectorY *= -1;
 	}
 
 	// getters setters

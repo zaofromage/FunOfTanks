@@ -83,6 +83,10 @@ public class Cannon {
 		return owner;
 	}
 	
+	public boolean canFire() {
+		return canFire;
+	}
+	
 	public ArrayList<Bullet> getBullets() {
 		return bullets;
 	}

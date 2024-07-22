@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import map.Obstacle;
 import serverClass.ServerBullet;
+import utils.Calcul;
 import player.Player;
 import player.PlayerMode;
 import client.GamePanel;
@@ -51,6 +52,8 @@ public class Playing implements Statemethods {
 		for (ServerBullet b : enemiesBullets) {
 			b.drawBullet(g);
 		}
+		
+		player.drawSkills(g);
 	}
 
 	public Player getPlayer() {
@@ -67,7 +70,7 @@ public class Playing implements Statemethods {
 
 	private void setUpWalls() {
 		for (int i = 0; i < panel.getDimension().getWidth(); i += panel.getTileSize()) {
-			getObstacles().add(new Obstacle(i, 0, true));
+			getObstacles().add(new Obstacle(i, 0, false));
 			getObstacles().add(new Obstacle(i, (int) panel.getDimension().getHeight() - panel.getTileSize(), false));
 		}
 		for (int i = panel.getTileSize(); i < panel.getDimension().getHeight() - panel.getTileSize(); i += panel
@@ -102,9 +105,13 @@ public class Playing implements Statemethods {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
 		if (player.getTank() != null) {
-			if (e.getButton() == MouseEvent.BUTTON3) {
+			if (e.getButton() == MouseEvent.BUTTON1) {
+				if (player.getTank().getMode() == PlayerMode.BASE && player.getTank().getCannon().canFire()) {
+					player.getTank().switchMode(PlayerMode.AIM);
+				}
+			}
+		    else if (e.getButton() == MouseEvent.BUTTON3) {
 				player.getTank().switchMode(PlayerMode.BLOC);
 			}
 		}
@@ -114,19 +121,20 @@ public class Playing implements Statemethods {
 	public void mouseReleased(MouseEvent e) {
 		if (player.getTank() != null) {
 			switch (player.getTank().getMode()) {
-			case FIRE:
+			case AIM:
 				if (e.getButton() == MouseEvent.BUTTON1) {
-					player.getTank().fire(e.getX(), e.getY());
-				} else if (e.getButton() == MouseEvent.BUTTON2) {
-
+					player.getTank().fire();
+					player.getTank().switchMode(PlayerMode.BASE);
 				}
 				break;
 			case BLOC:
 				if (e.getButton() == MouseEvent.BUTTON1) {
-					player.getTank().dropObstacle(e.getX(), e.getY(), true, players, getObstacles());
+					player.getTank().dropObstacle(Calcul.limitRange(e.getX(), player.getTank().getX()), Calcul.limitRange(e.getY(), player.getTank().getY()), true, players, getObstacles());
 				} else if (e.getButton() == MouseEvent.BUTTON3) {
-					player.getTank().switchMode(PlayerMode.FIRE);
+					player.getTank().switchMode(PlayerMode.BASE);
 				}
+				break;
+			default:
 				break;
 			}
 		}
@@ -170,7 +178,11 @@ public class Playing implements Statemethods {
 				player.getTank().setRight(true);
 			}
 		} else if (keyCode == PlayerInputs.dash) {
-			player.getTank().dash();
+			player.getTank().dash(obstacles);
+		} else if (keyCode == PlayerInputs.skill1) {
+			player.getSkill1().launch();
+		} else if (keyCode == PlayerInputs.skill2) {
+			player.getSkill2().launch();
 		}
 	}
 

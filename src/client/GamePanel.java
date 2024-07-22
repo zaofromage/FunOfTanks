@@ -11,15 +11,14 @@ import input.MouseInput;
 
 public class GamePanel extends JPanel{
 	
-	private final Dimension dimension;
+	public static final Dimension dimension = new Dimension(1250, 800);
 	private Game game;
 	
-	private final int tileSize = 50;
+	public static final int tileSize = 50;
 	
 	public GamePanel(Game game) {
 		this.game = game;
 		MouseInput mouse = new MouseInput(this);
-		dimension = new Dimension(1250, 800);
 		setPanelSize();
 		addKeyListener(new KeyboardInput(this));
 		addMouseListener(mouse);

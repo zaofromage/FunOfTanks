@@ -3,18 +3,29 @@ package player;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
+
+import client.GamePanel;
+import utils.Calcul;
 import utils.Delay;
 import map.Obstacle;
 
 public class Tank {
+
+	public final int BASE_SPEED = 1;
+
 	private int x, y;
 	private int size;
 	private double orientation;
 
 	private int speed;
 	private int dashSpeed;
+	private boolean inDash;
 	private boolean canDash = true;
 	private long cooldownDash;
 
@@ -25,6 +36,8 @@ public class Tank {
 	private boolean up, down, left, right;
 
 	private int targetX, targetY;
+	private double aimX, aimY;
+	private int aimSpeed;
 	private Cannon cannon;
 
 	private Rectangle hitbox;
@@ -32,8 +45,13 @@ public class Tank {
 	private PlayerMode mode;
 
 	private Player owner;
-	
+
 	private Obstacle possibleObstacle;
+
+	private BufferedImage crosshair;
+
+	// skills
+	private boolean canDashThrough = false;
 
 	public Tank(int x, int y, Player owner) {
 		this.x = x;
@@ -42,9 +60,12 @@ public class Tank {
 		cannon = new Cannon(this);
 		size = 50;
 		orientation = 0;
-		speed = 1;
+		speed = BASE_SPEED;
 		dashSpeed = 20;
 		cooldownDash = 1000;
+		aimX = x;
+		aimY = y;
+		aimSpeed = 1;
 		color = Color.red;
 		up = false;
 		down = false;
@@ -52,26 +73,52 @@ public class Tank {
 		right = false;
 		targetX = 0;
 		targetY = 0;
+		try {
+			crosshair = ImageIO.read(new File("res/images/crosshair.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		displayOffset = size / 2;
-		mode = PlayerMode.FIRE;
+		mode = PlayerMode.BASE;
 		hitbox = new Rectangle(x - displayOffset, y - displayOffset, size, size);
 	}
 
 	public void move(int deltaX, int deltaY, ArrayList<Obstacle> obs) {
-		for (Obstacle o : obs) {
-			if (detectObstacle(o, x + deltaX * speed, y + deltaY * speed)) {
-				return;
+		if (inDash) {
+			if (!canDashThrough) {
+				for (Obstacle o : obs) {
+					if (detectObstacle(o, x + deltaX * dashSpeed, y + deltaY * dashSpeed)) {
+						return;
+					}
+				}
+			} else {
+				for (Obstacle o : obs) {
+					if (detectObstacle(o, x + deltaX * dashSpeed, y + deltaY * dashSpeed) && !o.isDestructible()) {
+						return;
+					}
+				}
 			}
+			x += deltaX * dashSpeed;
+			y += deltaY * dashSpeed;
+		} else {
+			for (Obstacle o : obs) {
+				if (detectObstacle(o, x + deltaX * speed, y + deltaY * speed)) {
+					return;
+				}
+			}
+			x += deltaX * speed;
+			y += deltaY * speed;
 		}
-		x += deltaX * speed;
-		y += deltaY * speed;
 	}
 
-	public void dash() {
+	public void dash(ArrayList<Obstacle> obs) {
 		if (canDash) {
-			speed *= dashSpeed;
+			inDash = true;
 			canDash = false;
-			new Delay(50, () -> speed /= dashSpeed);
+			new Delay(50, () -> {
+				inDash = false;
+				canDashThrough = false;
+			});
 			new Delay(cooldownDash, () -> canDash = true);
 		}
 
@@ -98,18 +145,19 @@ public class Tank {
 		return obstacle.getHitbox().intersects(new Rectangle(x - displayOffset, y - displayOffset, size, size));
 	}
 
-	public void fire(int targetX, int targetY) {
-		cannon.fire(x, y, targetX, targetY, orientation);
+	public void fire() {
+		cannon.fire(x, y, (int) aimX, (int) aimY, orientation);
 	}
 
-	public void dropObstacle(int x, int y, boolean destructible, ArrayList<Player> players, ArrayList<Obstacle> obstacles) {
+	public void dropObstacle(int x, int y, boolean destructible, ArrayList<Player> players,
+			ArrayList<Obstacle> obstacles) {
 		if (mode == PlayerMode.BLOC) {
 			Obstacle o = new Obstacle(x, y, destructible);
 			for (Player p : players) {
 				if (p.getTank() != null) {
 					if (o.getHitbox().intersects(p.getTank().getHitbox())) {
 						return;
-					}					
+					}
 				}
 			}
 			for (Obstacle obs : obstacles) {
@@ -117,11 +165,17 @@ public class Tank {
 					return;
 				}
 			}
+			if (possibleObstacle.getHitbox().getX() >= GamePanel.dimension.width - GamePanel.tileSize * 2
+					|| possibleObstacle.getHitbox().getX() <= GamePanel.tileSize * 2
+					|| possibleObstacle.getHitbox().getY() >= GamePanel.dimension.height - GamePanel.tileSize * 2
+					|| possibleObstacle.getHitbox().getY() <= GamePanel.tileSize * 2) {
+				return;
+			}
 			obstacles.add(o);
 			if (owner.getClient() != null) {
 				owner.getClient().send("newobstacle;" + x + ";" + y + ";" + destructible);
 			}
-			switchMode(PlayerMode.FIRE);
+			switchMode(PlayerMode.BASE);
 		}
 	}
 
@@ -144,12 +198,41 @@ public class Tank {
 		updateHitbox();
 		cannon.updateCannon(obs, players, player);
 		if (possibleObstacle != null) {
-			possibleObstacle.updateObstacle(targetX, targetY);
-			if (possibleObstacle.getHitbox().intersects(hitbox)) {
+			possibleObstacle.updateObstacle(Calcul.limitRange(targetX, x), Calcul.limitRange(targetY, y));
+			if (possibleObstacle.getHitbox().intersects(hitbox)
+					|| possibleObstacle.getHitbox().getX() >= GamePanel.dimension.width - GamePanel.tileSize * 2
+					|| possibleObstacle.getHitbox().getX() <= GamePanel.tileSize * 2
+					|| possibleObstacle.getHitbox().getY() >= GamePanel.dimension.height - GamePanel.tileSize * 2
+					|| possibleObstacle.getHitbox().getY() <= GamePanel.tileSize * 2) {
 				possibleObstacle.setColor(Obstacle.possibleWrong);
 			} else {
 				possibleObstacle.setColor(Obstacle.possible);
 			}
+		}
+		// si t'es bloqué dans un obstacle quand tu dash through
+		for (Obstacle o : obs) {
+			while (detectObstacle(o, x, y)) {
+				if (up)
+					y -= 1;
+				else if (left)
+					x -= 1;
+				else if (right)
+					x += 1;
+				else if (down)
+					y += 1;
+				else
+					y += 1;
+			}
+		}
+		if (mode == PlayerMode.AIM) {
+			double[] vect = Calcul.normalizeVector(targetX - x, targetY - y);
+			System.out.println((targetX - x) + "|" + (targetY - y));
+			System.out.println(vect[0] + "|" + vect[1]);
+			aimX += vect[0] * aimSpeed;
+			aimY += vect[1] * aimSpeed;
+		} else {
+			aimX = hitbox.getX();
+			aimY = hitbox.getY();
 		}
 		if (owner.getClient() != null)
 			owner.getClient().send("updatetank;" + owner.getName() + ";" + x + ";" + y + ";" + orientation);
@@ -163,6 +246,9 @@ public class Tank {
 		cannon.drawCannon(g, x, y, orientation);
 		if (possibleObstacle != null) {
 			possibleObstacle.drawObstacle(g);
+		}
+		if (mode == PlayerMode.AIM) {
+			g.drawImage(crosshair, (int) aimX, (int) aimY, null);
 		}
 	}
 
@@ -211,6 +297,10 @@ public class Tank {
 		this.orientation = orientation;
 	}
 
+	public int getSpeed() {
+		return speed;
+	}
+
 	public void setSpeed(int speed) {
 		this.speed = speed;
 	}
@@ -243,12 +333,10 @@ public class Tank {
 		this.mode = mode;
 		if (mode == PlayerMode.BLOC) {
 			possibleObstacle = new Obstacle(targetX, targetY, false);
-		} else if (mode == PlayerMode.FIRE) {
+		} else if (mode != PlayerMode.BLOC) {
 			possibleObstacle = null;
 		}
 	}
-	
-	//fait que quand je suis en mode constru les blocs ne peuvent etre posé que devant le joueur
 
 	public Obstacle getPossibleObstacle() {
 		return possibleObstacle;
@@ -257,6 +345,8 @@ public class Tank {
 	public void setPossibleObstacle(Obstacle possibleObstacle) {
 		this.possibleObstacle = possibleObstacle;
 	}
-	
-	
+
+	public void setCanDashThrough(boolean canDashThrough) {
+		this.canDashThrough = canDashThrough;
+	}
 }

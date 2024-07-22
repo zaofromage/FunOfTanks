@@ -2,7 +2,6 @@ package UI;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.ArrayList;
 
 import client.Game;
 import player.Player;

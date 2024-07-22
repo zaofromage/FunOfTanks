@@ -8,7 +8,6 @@ import java.awt.event.MouseEvent;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 import client.Game;
 import gamestate.GameState;
@@ -16,7 +15,6 @@ import gamestate.Playing;
 import player.Player;
 import serverHost.Role;
 import serverHost.Server;
-import utils.Finder;
 
 public class HostMenu extends PopUpMenu {
 
