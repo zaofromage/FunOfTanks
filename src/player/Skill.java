@@ -71,7 +71,7 @@ public class Skill {
 	
 	public static Skill speedUp(Player player) {
 		try {
-			return new Skill("Speed up", 10000, ImageIO.read(new File("res/images/speedup.png")), () -> {
+			return new Skill("Speed up", 10000, ImageIO.read(Skill.class.getResource("/images/speedup.png")), () -> {
 				if (player.getTank() != null) {
 					player.getTank().setSpeed(player.getTank().BASE_SPEED * 3);
 					new Delay(3000, () -> player.getTank().setSpeed(player.getTank().BASE_SPEED));
@@ -85,7 +85,7 @@ public class Skill {
 	
 	public static Skill dashThrough(Player player) {
 		try {
-			return new Skill("Dash through walls", 5000, ImageIO.read(new File("res/images/dashthrough.png")), () -> {
+			return new Skill("Dash through walls", 5000, ImageIO.read(Skill.class.getResource("/images/dashthrough.png")), () -> {
 				if (player.getTank() != null) {
 					player.getTank().setCanDashThrough(true);
 				}
