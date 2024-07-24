@@ -76,6 +76,9 @@ public class Player {
 		this.name = name;
 		this.role = role;
 		this.main = isMain;
+		this.lives = 3;
+		this.skill1 = Skill.speedUp(this);
+		this.skill2 = Skill.dashThrough(this);
 		try {
 			client = new Client(ip, port, game);
 		} catch (IOException e) {
@@ -116,8 +119,10 @@ public class Player {
 	}
 	
 	public void drawSkills(Graphics g) {
-		skill1.draw(g, 25, 725);
-		skill2.draw(g, 100, 725);
+		if (main) {
+			skill1.draw(g, 25, 725);
+			skill2.draw(g, 100, 725);			
+		}
 	}
 
 	public void updatePlayer(ArrayList<Obstacle> obs, ArrayList<Player> players) {
@@ -125,8 +130,10 @@ public class Player {
 			tank.updateTank(obs, players, this);
 		}
 		//ui
-		skill1.update();
-		skill2.update();
+		if (main) {
+			skill1.update();
+			skill2.update();			
+		}
 	}
 
 	public Tank getTank() {
