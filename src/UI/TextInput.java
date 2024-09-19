@@ -98,7 +98,8 @@ public class TextInput {
 	}
 
 	public String getIP() {
-		return StringFormat.isIP(text.toString()) ? text.toString() : null;
+		return text.toString();
+		//return StringFormat.isIP(text.toString()) ? text.toString() : null;
 	}
 
 	public int getPort() {
