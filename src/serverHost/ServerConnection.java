@@ -32,9 +32,13 @@ public class ServerConnection implements Runnable {
 	public void run() {
 		String serverResponse;
 		try {
+			serverResponse = in.readLine();
+			if (!"Connected to server".equals(serverResponse)) {
+				throw new IOException("Fail");
+			}
 			while (true) {
 				serverResponse = in.readLine();
-				//System.out.println("Server says : " + serverResponse);
+				System.out.println("Server says : " + serverResponse);
 				if (serverResponse != null) {
 					String header = ClientHandler.getHeader(serverResponse);
 					String[] body = ClientHandler.getBody(serverResponse);

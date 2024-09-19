@@ -12,8 +12,6 @@ public class Server implements Runnable {
 	private ArrayList<ClientHandler> clients;
 	private ServerSocket server;
 
-	private Thread th;
-
 	private ExecutorService pool;
 	
 	
@@ -22,12 +20,12 @@ public class Server implements Runnable {
 
 	public Server() throws IOException {
 		clients = new ArrayList<>();
-		server = new ServerSocket(PORT);
+		server = new ServerSocket(PORT, 0, InetAddress.getByName("0.0.0.0"));
+		server.setSoTimeout(100000);
 		pool = Executors.newFixedThreadPool(4);
-		th = new Thread(this);
-		th.start();
-		
 		playing = new ServerPlaying();
+		
+		pool.execute(this);
 	}
 
 	@Override
@@ -40,7 +38,6 @@ public class Server implements Runnable {
 				pool.execute(ch);
 			} catch (IOException e) {
 				e.printStackTrace();
-				th.interrupt();
 			}
 		}
 	}
