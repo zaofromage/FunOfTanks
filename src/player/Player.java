@@ -19,9 +19,8 @@ public class Player {
 	/*
 	 * ui pour les capacités et les cooldown de dash etc...
 	 * ecran de fin de partie
-	 * cooldown pour poser des murs
 	 * ajouter un systeme de capacité
-	 *    - dash a travers les murs
+	 *  X - dash a travers les murs
 	 *    - rendre les balles rebondissantes
 	 *    - quand on drag la souris ça fait une sorte de mur temporaire qui renvoit les tires
 	 *    - reduire le cooldown de tir et dash

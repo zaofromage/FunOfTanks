@@ -2,4 +2,4 @@ javac -d bin src/client/*.java src/gamestate/*.java src/input/*.java src/map/*.j
 
 jar cfm FunOfTanks.jar manifest.txt -C bin . -C res/images .
 
-sudo java -jar FunOfTanks.jar
+java -jar FunOfTanks.jar

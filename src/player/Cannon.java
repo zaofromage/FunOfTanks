@@ -27,7 +27,7 @@ public class Cannon {
 		color = Color.black;
 		width = 50;
 		height = 20;
-		cooldown = 1500;
+		cooldown = 750;
 		displayOffset = height/2;
 		bullets = new ArrayList<>();
 		this.owner = owner;

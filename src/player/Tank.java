@@ -37,7 +37,8 @@ public class Tank {
 
 	private int targetX, targetY;
 	private double aimX, aimY;
-	private int aimSpeed;
+	private double aimDistance;
+	private double aimSpeed;
 	private Cannon cannon;
 
 	private Rectangle hitbox;
@@ -65,7 +66,8 @@ public class Tank {
 		cooldownDash = 1000;
 		aimX = x;
 		aimY = y;
-		aimSpeed = 1;
+		aimDistance = 0.;
+		aimSpeed = 3;
 		color = Color.red;
 		up = false;
 		down = false;
@@ -224,13 +226,14 @@ public class Tank {
 					y += 1;
 			}
 		}
+		//aim calculation
 		if (mode == PlayerMode.AIM) {
-			double[] vect = Calcul.normalizeVector(targetX - x, targetY - y);
-			System.out.println((targetX - x) + "|" + (targetY - y));
-			System.out.println(vect[0] + "|" + vect[1]);
-			aimX += vect[0] * aimSpeed;
-			aimY += vect[1] * aimSpeed;
+			System.out.println(orientation);
+			aimDistance += aimSpeed;
+			aimX = hitbox.getX() + Math.cos(orientation*(Math.PI/180.0)) * aimDistance;
+			aimY = hitbox.getY() + Math.sin(orientation*(Math.PI/180.0)) * aimDistance;
 		} else {
+			aimDistance = 0.;
 			aimX = hitbox.getX();
 			aimY = hitbox.getY();
 		}
