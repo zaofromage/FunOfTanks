@@ -17,11 +17,6 @@ public class Client {
 
 	public Client(String ip, int port, Game game) throws IOException {
 		socket = new Socket(ip, port);
-		/*try {
-			socket.connect(new InetSocketAddress(ip, port), 5000);
-		} catch (SocketTimeoutException e) {
-			throw new IOException("Connexion au serveur impossible après 5 secondes", e);
-		}*/
 		serverConn = new ServerConnection(socket, game);
 		out = new PrintWriter(socket.getOutputStream(), true);
 		new Thread(serverConn).start();

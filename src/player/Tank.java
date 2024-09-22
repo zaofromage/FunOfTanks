@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import utils.Vector;
 
 import javax.imageio.ImageIO;
 
@@ -20,30 +21,31 @@ public class Tank {
 	public final int BASE_SPEED = 1;
 
 	private int x, y;
-	private int size;
-	private double orientation;
+	private int size = 50;
+	private double orientation = 0;
 
-	private int speed;
-	private int dashSpeed;
+	private int speed = BASE_SPEED;
+	private int dashSpeed = 20;
 	private boolean inDash;
 	private boolean canDash = true;
-	private long cooldownDash;
+	private long cooldownDash = 1000;
 
-	private int displayOffset;
+	private int displayOffset = size / 2;
 
-	private Color color;
+	private Color color = Color.RED;
 
-	private boolean up, down, left, right;
+	private boolean up, down, left, right = false;
 
-	private int targetX, targetY;
-	private double aimX, aimY;
-	private double aimDistance;
-	private double aimSpeed;
+	private Vector target = new Vector();
+	private Vector aim;
+	private double aimDistance = 0.;
+	private double maxRange = 600.;
+	private double aimSpeed = 3;
 	private Cannon cannon;
 
-	private Rectangle hitbox;
+	private Rectangle hitbox = new Rectangle(x - displayOffset, y - displayOffset, size, size);
 
-	private PlayerMode mode;
+	private PlayerMode mode = PlayerMode.BASE;
 
 	private Player owner;
 
@@ -59,30 +61,12 @@ public class Tank {
 		this.y = y;
 		this.owner = owner;
 		cannon = new Cannon(this);
-		size = 50;
-		orientation = 0;
-		speed = BASE_SPEED;
-		dashSpeed = 20;
-		cooldownDash = 1000;
-		aimX = x;
-		aimY = y;
-		aimDistance = 0.;
-		aimSpeed = 3;
-		color = Color.red;
-		up = false;
-		down = false;
-		left = false;
-		right = false;
-		targetX = 0;
-		targetY = 0;
+		aim = new Vector(x, y);
 		try {
 			crosshair = ImageIO.read(new File("res/images/crosshair.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		displayOffset = size / 2;
-		mode = PlayerMode.BASE;
-		hitbox = new Rectangle(x - displayOffset, y - displayOffset, size, size);
 	}
 
 	public void move(int deltaX, int deltaY, ArrayList<Obstacle> obs) {
@@ -127,15 +111,15 @@ public class Tank {
 	}
 
 	private void findOrientation() {
-		double vectorX = (targetX - x), vectorY = (targetY - y) * -1;
-		if (vectorX != 0) {
+		Vector vector = new Vector((target.x - x), (target.y - y) * -1);
+		if (vector.x != 0) {
 			double delta = 0.;
-			if (vectorX > 0 && vectorY < 0) {
+			if (vector.x > 0 && vector.y < 0) {
 				delta = 360.;
-			} else if (vectorX < 0) {
+			} else if (vector.x < 0) {
 				delta = 180.;
 			}
-			orientation = (Math.atan(vectorY / vectorX) * (180 / Math.PI) + delta) * -1;
+			orientation = (Math.atan(vector.y / vector.x) * (180 / Math.PI) + delta) * -1;
 		}
 	}
 
@@ -148,7 +132,7 @@ public class Tank {
 	}
 
 	public void fire() {
-		cannon.fire(x, y, (int) aimX, (int) aimY, orientation);
+		cannon.fire(x, y, (int) aim.x, (int) aim.y, orientation);
 	}
 
 	public void dropObstacle(int x, int y, boolean destructible, ArrayList<Player> players,
@@ -200,7 +184,7 @@ public class Tank {
 		updateHitbox();
 		cannon.updateCannon(obs, players, player);
 		if (possibleObstacle != null) {
-			possibleObstacle.updateObstacle(Calcul.limitRange(targetX, x), Calcul.limitRange(targetY, y));
+			possibleObstacle.updateObstacle(Calcul.limitRange((int)target.x, x), Calcul.limitRange((int)target.y, y));
 			if (possibleObstacle.getHitbox().intersects(hitbox)
 					|| possibleObstacle.getHitbox().getX() >= GamePanel.dimension.width - GamePanel.tileSize * 2
 					|| possibleObstacle.getHitbox().getX() <= GamePanel.tileSize * 2
@@ -228,14 +212,15 @@ public class Tank {
 		}
 		//aim calculation
 		if (mode == PlayerMode.AIM) {
-			System.out.println(orientation);
-			aimDistance += aimSpeed;
-			aimX = hitbox.getX() + Math.cos(orientation*(Math.PI/180.0)) * aimDistance;
-			aimY = hitbox.getY() + Math.sin(orientation*(Math.PI/180.0)) * aimDistance;
+			if (aimDistance < maxRange) {
+				aimDistance += aimSpeed;				
+			}
+			aim.x = hitbox.getX() + Math.cos(orientation*(Math.PI/180.0)) * aimDistance;
+			aim.y = hitbox.getY() + Math.sin(orientation*(Math.PI/180.0)) * aimDistance;
 		} else {
 			aimDistance = 0.;
-			aimX = hitbox.getX();
-			aimY = hitbox.getY();
+			aim.x = hitbox.getX();
+			aim.y = hitbox.getY();
 		}
 		if (owner.getClient() != null)
 			owner.getClient().send("updatetank;" + owner.getName() + ";" + x + ";" + y + ";" + orientation);
@@ -251,7 +236,7 @@ public class Tank {
 			possibleObstacle.drawObstacle(g);
 		}
 		if (mode == PlayerMode.AIM) {
-			g.drawImage(crosshair, (int) aimX, (int) aimY, null);
+			g.drawImage(crosshair, (int) aim.x, (int) aim.y, null);
 		}
 	}
 
@@ -325,17 +310,17 @@ public class Tank {
 	}
 
 	public void setTargetX(int targetX) {
-		this.targetX = targetX;
+		this.target.x = targetX;
 	}
 
 	public void setTargetY(int targetY) {
-		this.targetY = targetY;
+		this.target.y = targetY;
 	}
 
 	public void switchMode(PlayerMode mode) {
 		this.mode = mode;
 		if (mode == PlayerMode.BLOC) {
-			possibleObstacle = new Obstacle(targetX, targetY, false);
+			possibleObstacle = new Obstacle((int)target.x, (int)target.y, false);
 		} else if (mode != PlayerMode.BLOC) {
 			possibleObstacle = null;
 		}
