@@ -29,8 +29,6 @@ public class Playing implements Statemethods {
 
 	private ArrayList<ServerBullet> enemiesBullets;
 	
-	private Particle p = new Particle(20, Shape.RECTANGLE, 0.5, new Vector(), Color.RED);
-	private ParticleSystem ps = new ParticleSystem(p, 20);
 
 	public Playing(GamePanel panel, Player player, ArrayList<Player> players) {
 		this.panel = panel;
@@ -53,15 +51,12 @@ public class Playing implements Statemethods {
 		for (Obstacle o : getObstacles()) {
 			o.drawObstacle(g);
 		}
-
-		for (Player p : players) {
-			p.drawPlayer(g);
-		}
-
 		for (ServerBullet b : enemiesBullets) {
 			b.drawBullet(g);
 		}
-		
+		for (Player p : players) {
+			p.drawPlayer(g);
+		}
 		player.drawSkills(g);
 	}
 
@@ -109,7 +104,6 @@ public class Playing implements Statemethods {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override

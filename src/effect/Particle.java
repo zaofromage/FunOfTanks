@@ -17,7 +17,7 @@ public class Particle {
 	public double x, y;
 	private Color color;
 
-	public Particle(int size, Shape shape, double lifetime, Vector dir, Color c) {
+	public Particle(double size, Shape shape, double lifetime, Vector dir, Color c) {
 		this.size = size;
 		this.decrement = size/(Game.FPS * lifetime);
 		this.shape = shape;
@@ -27,6 +27,18 @@ public class Particle {
 		this.color = c;
 	}
 	
+	public Particle(Particle other) {
+		this.size = other.size;
+		this.decrement = other.decrement;
+		this.shape = other.shape;
+		this.dir = new Vector(other.getDir().x, other.getDir().y);
+		this.x = other.x;
+		this.y = other.y;
+		this.color = other.color;
+	}
+
+
+
 	private void disapear() {
 		size -= decrement;
         if (size <= 0.1f) {
@@ -69,5 +81,10 @@ public class Particle {
 	
 	public Vector getDir() {
 		return dir;
+	}
+
+	@Override
+	public String toString() {
+		return "Particle [size=" + size + ", dir=" + dir + ", x=" + x + ", y=" + y + "]";
 	}
 }

@@ -12,6 +12,9 @@ import utils.Vector;
 import javax.imageio.ImageIO;
 
 import client.GamePanel;
+import effect.Particle;
+import effect.ParticleSystem;
+import effect.Shape;
 import utils.Calcul;
 import utils.Delay;
 import map.Obstacle;
@@ -52,6 +55,7 @@ public class Tank {
 	private Obstacle possibleObstacle;
 
 	private BufferedImage crosshair;
+	
 
 	// skills
 	private boolean canDashThrough = false;
@@ -222,6 +226,7 @@ public class Tank {
 			aim.x = hitbox.getX();
 			aim.y = hitbox.getY();
 		}
+		owner.getPs().update();
 		if (owner.getClient() != null)
 			owner.getClient().send("updatetank;" + owner.getName() + ";" + x + ";" + y + ";" + orientation);
 	}
@@ -238,6 +243,7 @@ public class Tank {
 		if (mode == PlayerMode.AIM) {
 			g.drawImage(crosshair, (int) aim.x, (int) aim.y, null);
 		}
+		owner.getPs().draw(g);
 	}
 
 	// getters setters

@@ -66,7 +66,10 @@ public class Cannon {
 				owner.getOwner().getClient().send("deletebullet;" + owner.getOwner().getName() + ";" + b.getId());
 			}
 		}
-		if (haveToRemove != null) bullets.remove(haveToRemove);
+		if (haveToRemove != null)  {
+			bullets.remove(haveToRemove);
+			owner.getOwner().getPs().explosion((int) haveToRemove.getX(), (int) haveToRemove.getY());
+		}
 	}
 	
 	public void fire(int x, int y, int targetX, int targetY, double orientation) {

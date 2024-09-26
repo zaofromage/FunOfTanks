@@ -94,6 +94,7 @@ public class ServerConnection implements Runnable {
 						} else if (header.equals("deletebullet")) {
 							ServerBullet bullet = Finder.findServerBullet(body[0],Integer.parseInt(body[1]), play.getEnemiesBullets());
 							if (bullet != null) {
+								play.getPlayer().getPs().explosion(bullet.x, bullet.y);
 								play.getEnemiesBullets().remove(bullet);
 							}
 						} else if (header.equals("newobstacle")) {

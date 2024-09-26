@@ -114,6 +114,7 @@ public class TextInput {
 
 	public void onClick(MouseEvent e) {
 		if (new Rectangle(x, y, width + offset, height).contains(e.getX(), e.getY())) {
+			cursor = text.length();
 			selected = true;
 		} else {
 			selected = false;

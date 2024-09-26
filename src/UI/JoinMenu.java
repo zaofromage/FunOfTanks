@@ -40,10 +40,10 @@ public class JoinMenu extends PopUpMenu {
 		name = new TextInput(x + 50, y + 50, 180, 30, "name ", new Font("SansSerif", Font.PLAIN, 20), 15);
 		ip = new TextInput(x + 50, y + 100, 200, 30, "ip ", new Font("SansSerif", Font.PLAIN, 20), 16);
 		port = new TextInput(x + 50, y + 150, 180, 30, "port ", new Font("SansSerif", Font.PLAIN, 20), 4);
+		ip.setText(new StringBuilder("192.168."));
 		//placeholder
-		name.setText(new StringBuilder("line"));
-		ip.setText(new StringBuilder("192.168.248.154"));
-		port.setText(new StringBuilder("4550"));
+		//name.setText(new StringBuilder("line"));
+		//port.setText(new StringBuilder("4550"));
 		this.game = game;
 	}
 

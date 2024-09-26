@@ -13,30 +13,39 @@ public class ParticleSystem {
 	protected ArrayList<Particle> particles;
 	private double spawnSize;
 	private Random r = new Random();
-	public int x, y;
 	
-	public ParticleSystem(Particle p, int nb) {
-		x = 0;
-		y = 0;
-		particles = new ArrayList<>(Collections.nCopies(nb, p));
-	}
-	
-	public void emit(int min, int max) {
-		for (Particle p : particles) {
-			double norm = r.nextDouble();
-			int angle = r.nextInt(min, max);
-			Vector v = new Vector(norm*Math.cos(angle*Math.PI/180), norm*Math.cos(angle*Math.PI/180));
-			p.reset(x, y, v, spawnSize);
+	public ParticleSystem(Particle particle, int nb) {
+		spawnSize = particle.getSize();
+		particles = new ArrayList<>(nb);
+		for (int i = 0; i < nb; i++) {
+			particles.add(new Particle(particle));
 		}
 	}
 	
-	public void update() {
+	public void emit(int x, int y, int min, int max) {
+		double alpha = Math.toRadians(min);
+		double beta  = Math.toRadians(max);
 		for (Particle p : particles) {
-			p.update();
+			double angle = alpha + r.nextDouble() * (beta - alpha);
+			p.reset(x, y, new Vector(Math.cos(angle), Math.sin(angle)), spawnSize);
+		}
+	}
+	
+	public void explosion(int x, int y) {
+		emit(x, y, -180, 180);
+	}
+	
+	public void update() {
+		if (particles.stream().filter(p -> !p.isDead()).count() > 0) {
+			for (Particle p : particles) {
+				p.update();
+			}			
 		}
 	}
 	
 	public void draw(Graphics g) {
-		
+		for (Particle p : particles) {
+			p.draw(g);
+		}
 	}
 }

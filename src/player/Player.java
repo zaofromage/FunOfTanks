@@ -4,9 +4,14 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import client.Game;
+import effect.ParticleSystem;
+import effect.Shape;
+import effect.Particle;
 import serverHost.*;
 import utils.Delay;
+import utils.Vector;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -47,6 +52,8 @@ public class Player {
 	private Tank tank;
 	
 	private boolean ready;
+	
+	private ParticleSystem ps = new ParticleSystem(new Particle(50, Shape.RECTANGLE, 1, new Vector(), Color.RED), 20);
 
 	private Skill skill1;
 	private Skill skill2;
@@ -149,6 +156,10 @@ public class Player {
 	
 	public int getLives() {
 		return lives;
+	}
+	
+	public ParticleSystem getPs() {
+		return ps;
 	}
 
 	public void setName(String n) {

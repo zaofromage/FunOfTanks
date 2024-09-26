@@ -32,7 +32,7 @@ public class ClientHandler implements Runnable {
 		try {
 			while (true) {
 				String request = in.readLine();
-				//System.out.println("Client says : " + request);
+				System.out.println("Client says : " + request);
 				String header = getHeader(request);
 				String[] body = getBody(request);
 				if (header.equals("newplayer")) {
