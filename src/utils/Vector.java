@@ -25,5 +25,10 @@ public class Vector {
 	       y /= n;
 	    }
 	}
+
+	@Override
+	public String toString() {
+		return "Vector [x=" + x + ", y=" + y + "]";
+	}
 	
 }

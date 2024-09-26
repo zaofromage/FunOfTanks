@@ -1,5 +1,6 @@
 package gamestate;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -8,10 +9,15 @@ import java.util.ArrayList;
 import map.Obstacle;
 import serverClass.ServerBullet;
 import utils.Calcul;
+import utils.Delay;
 import player.Player;
 import player.PlayerMode;
 import client.GamePanel;
+import effect.Particle;
+import effect.ParticleSystem;
+import effect.Shape;
 import input.PlayerInputs;
+import utils.Vector;
 
 public class Playing implements Statemethods {
 
@@ -22,6 +28,9 @@ public class Playing implements Statemethods {
 	private ArrayList<Obstacle> obstacles;
 
 	private ArrayList<ServerBullet> enemiesBullets;
+	
+	private Particle p = new Particle(20, Shape.RECTANGLE, 0.5, new Vector(), Color.RED);
+	private ParticleSystem ps = new ParticleSystem(p, 20);
 
 	public Playing(GamePanel panel, Player player, ArrayList<Player> players) {
 		this.panel = panel;

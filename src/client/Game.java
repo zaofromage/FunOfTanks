@@ -14,8 +14,8 @@ public class Game implements Runnable {
 	private GameWindow window;
 	private GamePanel panel;
 	private Thread gameLoop;
-	private final int FPS = 120;
-	private final int UPS = 200;
+	public static final int FPS = 120;
+	public static final int UPS = 200;
 	
 	private Player player;
 	

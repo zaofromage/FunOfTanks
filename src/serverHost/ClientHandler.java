@@ -51,7 +51,6 @@ public class ClientHandler implements Runnable {
 						sendToAllOthers(request);						
 					}
 				} else if (header.equals("deletetank")) {
-					System.out.println(request);
 					ServerTank tank = Finder.findServerTank(body[0], server.getPlaying().getTanks());
 					if (tank != null) {
 						server.getPlaying().getTanks().remove(tank);

@@ -20,7 +20,6 @@ public class Server implements Runnable {
 
 	public Server() throws IOException {
 		clients = new ArrayList<>();
-		System.out.println("IP address : " + InetAddress.getLocalHost().getHostAddress());
 		String localIP = InetAddress.getLocalHost().getHostAddress();
 		server = new ServerSocket(PORT, 0, InetAddress.getByName(localIP));
 		server.setSoTimeout(100000);
@@ -32,13 +31,9 @@ public class Server implements Runnable {
 
 	@Override
 	public void run() {
-		System.out.println("Méthode run() du serveur démarrée");
-	    System.out.println("Adresse du serveur : " + server.getInetAddress() + ", Port : " + server.getLocalPort());
 		while (true) {
 			try {
-				System.out.println("En attente de connexions...");
 				Socket client = server.accept();
-				System.out.println("apres d'accepter");
 				ClientHandler ch = new ClientHandler(client, clients, this);
 				clients.add(ch);
 				pool.execute(ch);
