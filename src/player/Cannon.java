@@ -60,15 +60,19 @@ public class Cannon {
 				p.deleteTank();
 				owner.getOwner().getClient().send("deletetank;" + p.getName());
 				owner.getOwner().getClient().send("deletebullet;" + owner.getOwner().getName() + ";" + b.getId());
-			}
-			if (b.hasReachLimit(obs) || b.destroyObstacle(obs)) {
+				owner.getOwner().debris(haveToRemove.getX(), haveToRemove.getY(), haveToRemove.getOrientation() - 30, haveToRemove.getOrientation() + 30);
+			} else if (b.hasReachLimit(obs)) {
 				haveToRemove = b;
 				owner.getOwner().getClient().send("deletebullet;" + owner.getOwner().getName() + ";" + b.getId());
+				owner.getOwner().blowup((int) haveToRemove.getX(), (int) haveToRemove.getY());
+			} else if (b.destroyObstacle(obs)) {
+				haveToRemove = b;
+				owner.getOwner().getClient().send("deletebullet;" + owner.getOwner().getName() + ";" + b.getId());
+				owner.getOwner().debris(haveToRemove.getX(), haveToRemove.getY(), haveToRemove.getOrientation() - 30, haveToRemove.getOrientation() + 30);
 			}
 		}
 		if (haveToRemove != null)  {
 			bullets.remove(haveToRemove);
-			owner.getOwner().getPs().explosion((int) haveToRemove.getX(), (int) haveToRemove.getY());
 		}
 	}
 	

@@ -31,10 +31,6 @@ public class ParticleSystem {
 		}
 	}
 	
-	public void explosion(int x, int y) {
-		emit(x, y, -180, 180);
-	}
-	
 	public void update() {
 		if (particles.stream().filter(p -> !p.isDead()).count() > 0) {
 			for (Particle p : particles) {
@@ -46,6 +42,14 @@ public class ParticleSystem {
 	public void draw(Graphics g) {
 		for (Particle p : particles) {
 			p.draw(g);
+		}
+	}
+	
+	public void setTemplate(Particle p) {
+		int nb = particles.size();
+		particles.clear();
+		for (int i = 0; i < nb; i++) {
+			particles.add(new Particle(p));
 		}
 	}
 }

@@ -53,7 +53,10 @@ public class Player {
 	
 	private boolean ready;
 	
-	private ParticleSystem ps = new ParticleSystem(new Particle(50, Shape.RECTANGLE, 1, new Vector(), Color.RED), 20);
+	
+	private Particle blowup = new Particle(50, Shape.RECTANGLE, 0.75, new Vector(), Color.RED);
+	private Particle debris = new Particle(50, Shape.RECTANGLE, 1, new Vector(), Color.RED);
+	private ParticleSystem ps = new ParticleSystem(blowup, 100);
 
 	private Skill skill1;
 	private Skill skill2;
@@ -105,6 +108,16 @@ public class Player {
 		tank = null;
 		lives--;
 		new Delay(5000, () -> createTank(200, 200));
+	}
+	
+	public void blowup(int x, int y) {
+		ps.setTemplate(blowup);
+		ps.emit(x, y, -180, 180);
+	}
+	
+	public void debris(double x, double y, double min, double max) {
+		ps.setTemplate(debris);
+		ps.emit((int) x, (int) y, (int) min, (int) max);
 	}
 	
 	public void close() {
