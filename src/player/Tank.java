@@ -43,7 +43,7 @@ public class Tank {
 	private Vector aim;
 	private double aimDistance = 0.;
 	private double maxRange = 600.;
-	private double aimSpeed = 3;
+	private double aimSpeed = 5;
 	private Cannon cannon;
 
 	private Rectangle hitbox = new Rectangle(x - displayOffset, y - displayOffset, size, size);

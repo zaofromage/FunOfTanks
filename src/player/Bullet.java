@@ -48,7 +48,7 @@ public class Bullet {
 		double[] nvect = Calcul.normalizeVector(targetX - x, targetY - y);
 		vectorX = nvect[0];
 		vectorY = nvect[1];
-		speed = 3;
+		speed = 5;
 		blowOffset = 5;
 		this.orientation = orientation;
 		color = Color.gray;
