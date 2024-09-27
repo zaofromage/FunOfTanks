@@ -56,7 +56,6 @@ public class Tank {
 
 	private BufferedImage crosshair;
 	
-
 	// skills
 	private boolean canDashThrough = false;
 
@@ -165,7 +164,6 @@ public class Tank {
 			if (owner.getClient() != null) {
 				owner.getClient().send("newobstacle;" + x + ";" + y + ";" + destructible);
 			}
-			switchMode(PlayerMode.BASE);
 		}
 	}
 
