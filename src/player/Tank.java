@@ -320,6 +320,10 @@ public class Tank {
 	public void setTargetY(int targetY) {
 		this.target.y = targetY;
 	}
+	
+	public void setCanDash(boolean dash) {
+		canDash = dash;
+	}
 
 	public void switchMode(PlayerMode mode) {
 		this.mode = mode;

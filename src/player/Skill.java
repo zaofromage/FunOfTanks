@@ -88,6 +88,7 @@ public class Skill {
 			return new Skill("Dash through walls", 10000, ImageIO.read(Skill.class.getResource("/images/dashthrough.png")), () -> {
 				if (player.getTank() != null) {
 					player.getTank().setCanDashThrough(true);
+					player.getTank().setCanDash(true);
 				}
 			});
 		} catch (IOException e) {
