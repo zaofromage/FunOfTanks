@@ -32,10 +32,12 @@ public class Bullet {
 	private boolean friendlyFire;
 
 	private Color color;
+	
+	private boolean isBertha;
 
 	private Cannon owner;
 
-	public Bullet(int x, int y, int targetX, int targetY, double orientation, Cannon owner) {
+	public Bullet(int x, int y, int targetX, int targetY, double orientation, Cannon owner, boolean bertha) {
 		this.x = x;
 		this.y = y;
 		this.id = counter;
@@ -54,12 +56,17 @@ public class Bullet {
 		color = Color.gray;
 		this.owner = owner;
 		this.friendlyFire = false;
+		this.isBertha = bertha;
 		new Delay(1000, () -> friendlyFire = true);
 	}
 
 	public void drawBullet(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
-		g2.setColor(color);
+		if (isBertha) {
+			g2.setColor(Color.BLUE);
+		} else {
+			g2.setColor(color);			
+		}
 
 		AffineTransform transform = new AffineTransform();
 		transform.rotate(Math.toRadians(orientation), x, y);
@@ -149,6 +156,10 @@ public class Bullet {
 
 	public Rectangle getHitbox() {
 		return hitbox;
+	}
+	
+	public boolean isBertha() {
+		return isBertha;
 	}
 
 	public double getOrientation() {

@@ -34,7 +34,7 @@ public class Player {
 	 *    - augmenter le nombre de mur posés par pose de mur
 	 *    - faire descendre un soldat qui tire des petites balles tout seul
 	 *    - tirer trois balles en un coup
-	 *    - 
+	 *    - portail qui tp le tank et les balles
 	 * ajouter une mitrailleuse
 	 * ajouter une grenade
 	 * son du jeu
@@ -54,10 +54,9 @@ public class Player {
 	private boolean ready;
 	
 	
-	private Particle blowup = new Particle(50, Shape.RECTANGLE, 0.75, new Vector(), Color.RED);
-	private Particle debris = new Particle(50, Shape.RECTANGLE, 1, new Vector(), Color.RED);
-	private ParticleSystem ps = new ParticleSystem(blowup, 100);
-
+	private ParticleSystem blowup = new ParticleSystem(new Particle(50, Shape.RECTANGLE, 0.75, new Vector(), Color.RED), 20);
+    private ParticleSystem debris = new ParticleSystem(new Particle(50, Shape.RECTANGLE, 0.75, new Vector(), Color.ORANGE), 15);
+	
 	private Skill skill1;
 	private Skill skill2;
 	private Skill skill3;
@@ -69,6 +68,7 @@ public class Player {
 		this.lives = 3;
 		this.skill1 = Skill.speedUp(this);
 		this.skill2 = Skill.dashThrough(this);
+		this.skill3 = Skill.grosseBertha(this);
 		if (this.role == Role.HOST) {
 			try {
 				server = new Server();
@@ -88,6 +88,7 @@ public class Player {
 		this.lives = 3;
 		this.skill1 = Skill.speedUp(this);
 		this.skill2 = Skill.dashThrough(this);
+		this.skill3 = Skill.grosseBertha(this);
 		try {
 			client = new Client(ip, port, game);
 		} catch (IOException e) {
@@ -110,14 +111,13 @@ public class Player {
 		new Delay(5000, () -> createTank(200, 200));
 	}
 	
-	public void blowup(int x, int y) {
-		ps.setTemplate(blowup);
-		ps.emit(x, y, -180, 180);
+	public void blowup(int x, int y, double lifetime) {
+		blowup.setLifetime(lifetime);
+		blowup.emit(x, y, -180, 180);
 	}
 	
 	public void debris(double x, double y, double min, double max) {
-		ps.setTemplate(debris);
-		ps.emit((int) x, (int) y, (int) min, (int) max);
+		debris.emit((int) x, (int) y, (int) min, (int) max);
 	}
 	
 	public void close() {
@@ -131,19 +131,6 @@ public class Player {
 		}
 	}
 
-	public void drawPlayer(Graphics g) {
-		if (tank != null) {
-			tank.drawTank(g);
-		}
-	}
-	
-	public void drawSkills(Graphics g) {
-		if (main) {
-			skill1.draw(g, 25, 725);
-			skill2.draw(g, 100, 725);			
-		}
-	}
-
 	public void updatePlayer(ArrayList<Obstacle> obs, ArrayList<Player> players) {
 		if (tank != null) {
 			tank.updateTank(obs, players, this);
@@ -151,9 +138,29 @@ public class Player {
 		//ui
 		if (main) {
 			skill1.update();
-			skill2.update();			
+			skill2.update();
+			skill3.update();
+		}
+		blowup.update();
+		debris.update();
+	}
+	
+	public void drawPlayer(Graphics g) {
+		if (tank != null) {
+			tank.drawTank(g);
+		}
+		blowup.draw(g);
+		debris.draw(g);
+	}
+	
+	public void drawSkills(Graphics g) {
+		if (main) {
+			skill1.draw(g, 25, 725);
+			skill2.draw(g, 100, 725);
+			skill3.draw(g, 175, 725);
 		}
 	}
+
 
 	public Tank getTank() {
 		return this.tank;
@@ -169,10 +176,6 @@ public class Player {
 	
 	public int getLives() {
 		return lives;
-	}
-	
-	public ParticleSystem getPs() {
-		return ps;
 	}
 
 	public void setName(String n) {
@@ -239,6 +242,10 @@ public class Player {
 	
 	public Skill getSkill2() {
 		return skill2;
+	}
+	
+	public Skill getSkill3() {
+		return skill3;
 	}
 
 }

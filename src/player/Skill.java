@@ -96,4 +96,18 @@ public class Skill {
 			return null;
 		}
 	}
+	
+	public static Skill grosseBertha(Player player) {
+		try {
+			return new Skill("Next shot goes hard", 1000, ImageIO.read(Skill.class.getResource("/images/dashthrough.png")), () -> {
+				if (player.getTank() != null) {
+					player.getTank().getCannon().setCanBertha(true);
+					player.getTank().getCannon().setFire(true);
+				}
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

@@ -45,11 +45,16 @@ public class ParticleSystem {
 		}
 	}
 	
-	public void setTemplate(Particle p) {
-		int nb = particles.size();
+	public void setTemplate(Particle p, int nb) {
 		particles.clear();
 		for (int i = 0; i < nb; i++) {
 			particles.add(new Particle(p));
+		}
+	}
+	
+	public void setLifetime(double lifetime) {
+		for (Particle p : particles)  {
+			p.setLifetime(spawnSize, lifetime);
 		}
 	}
 }

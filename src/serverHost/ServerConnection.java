@@ -34,7 +34,7 @@ public class ServerConnection implements Runnable {
 		try {
 			while (true) {
 				serverResponse = in.readLine();
-				//System.out.println("Server says : " + serverResponse);
+				// System.out.println("Server says : " + serverResponse);
 				if (serverResponse != null) {
 					String header = ClientHandler.getHeader(serverResponse);
 					String[] body = ClientHandler.getBody(serverResponse);
@@ -53,12 +53,13 @@ public class ServerConnection implements Runnable {
 							menu.getPlayers().addAll(toAdd);
 						} else if (header.equals("ready")) {
 							System.out.println(serverResponse);
-							Player p = Finder.findPlayer(body[0], menu.getPlayers()); 
+							Player p = Finder.findPlayer(body[0], menu.getPlayers());
 							if (p != null) {
 								p.setReady(Boolean.parseBoolean(body[1]));
 							}
 						} else if (header.equals("play")) {
-							game.setPlaying(new Playing(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));
+							game.setPlaying(
+									new Playing(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));
 							GameState.state = GameState.PLAYING;
 						}
 						break;
@@ -75,32 +76,38 @@ public class ServerConnection implements Runnable {
 								if (p.getTank() != null) {
 									p.getTank().setX(Integer.parseInt(body[1]));
 									p.getTank().setY(Integer.parseInt(body[2]));
-									p.getTank().setOrientation(Double.parseDouble(body[3]));									
+									p.getTank().setOrientation(Double.parseDouble(body[3]));
 								}
 							}
 						} else if (header.equals("deletetank")) {
 							System.out.println(serverResponse);
 							Player p = Finder.findPlayer(body[0], play.getPlayers());
 							if (p != null) {
-								p.deleteTank();								
+								p.deleteTank();
 							}
 						} else if (header.equals("newbullet")) {
-							play.getEnemiesBullets().add(new ServerBullet(Integer.parseInt(body[0]), Integer.parseInt(body[1]), Double.parseDouble(body[2]), body[3], Integer.parseInt(body[4])));
+							play.getEnemiesBullets()
+									.add(new ServerBullet(Integer.parseInt(body[0]), Integer.parseInt(body[1]),
+											Double.parseDouble(body[2]), body[3], Integer.parseInt(body[4])));
 						} else if (header.equals("updatebullet")) {
-							ServerBullet b = Finder.findServerBullet(body[3], Integer.parseInt(body[0]), play.getEnemiesBullets());
+							ServerBullet b = Finder.findServerBullet(body[3], Integer.parseInt(body[0]),
+									play.getEnemiesBullets());
 							if (b != null) {
 								b.update(Integer.parseInt(body[1]), Integer.parseInt(body[2]));
 							}
 						} else if (header.equals("deletebullet")) {
-							ServerBullet bullet = Finder.findServerBullet(body[0],Integer.parseInt(body[1]), play.getEnemiesBullets());
+							ServerBullet bullet = Finder.findServerBullet(body[0], Integer.parseInt(body[1]),
+									play.getEnemiesBullets());
 							if (bullet != null) {
-								play.getPlayer().blowup(bullet.x, bullet.y);
+								play.getPlayer().blowup(bullet.x, bullet.y, 0.75);
 								play.getEnemiesBullets().remove(bullet);
 							}
 						} else if (header.equals("newobstacle")) {
-							play.getObstacles().add(new Obstacle(Integer.parseInt(body[0]), Integer.parseInt(body[1]), Boolean.parseBoolean(body[2])));
+							play.getObstacles().add(new Obstacle(Integer.parseInt(body[0]), Integer.parseInt(body[1]),
+									Boolean.parseBoolean(body[2])));
 						} else if (header.equals("deleteobstacle")) {
-							Obstacle o = Finder.findObstacle(Integer.parseInt(body[0]), Integer.parseInt(body[1]), play.getObstacles());
+							Obstacle o = Finder.findObstacle(Integer.parseInt(body[0]), Integer.parseInt(body[1]),
+									play.getObstacles());
 							if (o != null) {
 								play.getObstacles().remove(o);
 							}
@@ -119,7 +126,7 @@ public class ServerConnection implements Runnable {
 			}
 		}
 	}
-	
+
 	public void close() {
 		try {
 			in.close();

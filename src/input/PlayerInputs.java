@@ -10,6 +10,7 @@ public class PlayerInputs {
 	
 	public static int skill1 = KeyEvent.VK_E;
 	public static int skill2 = KeyEvent.VK_R;
+	public static int skill3 = KeyEvent.VK_A;
 	
 	public static int dash = KeyEvent.VK_SPACE;
 	

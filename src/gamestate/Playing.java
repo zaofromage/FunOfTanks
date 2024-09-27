@@ -186,6 +186,8 @@ public class Playing implements Statemethods {
 			player.getSkill1().launch();
 		} else if (keyCode == PlayerInputs.skill2) {
 			player.getSkill2().launch();
+		} else if (keyCode == PlayerInputs.skill3) {
+			player.getSkill3().launch();
 		}
 	}
 

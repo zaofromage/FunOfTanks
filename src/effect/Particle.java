@@ -83,6 +83,10 @@ public class Particle {
 		return dir;
 	}
 
+	public void setLifetime(double spawnSize, double lifetime) {
+		this.decrement = spawnSize/(Game.FPS * lifetime);
+	}
+	
 	@Override
 	public String toString() {
 		return "Particle [size=" + size + ", dir=" + dir + ", x=" + x + ", y=" + y + "]";
