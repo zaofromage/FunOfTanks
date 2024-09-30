@@ -86,7 +86,7 @@ public class Cannon {
 				bertha.setFrame((int) (haveToRemove.getX()-bertha.getWidth()/2), (int) (haveToRemove.getY()-bertha.getHeight()/2), (int)bertha.getWidth(), (int)bertha.getHeight());
 				activeBertha = true;
 				owner.getOwner().blowup((int) haveToRemove.getX(), (int) haveToRemove.getY(), 1);
-				new Delay(500, () -> activeBertha = false);
+				new Delay(200, () -> activeBertha = false);
 			}
 			bullets.remove(haveToRemove);
 		}
