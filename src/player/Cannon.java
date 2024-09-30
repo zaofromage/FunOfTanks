@@ -93,6 +93,7 @@ public class Cannon {
 		if (activeBertha) {
 			for (Player p : players) {
 				if (bertha.intersects(p.getTank().getHitbox())) {
+					p.deleteTank();
 					owner.getOwner().getClient().send("deletetank;" + p.getName());
 				}
 			}

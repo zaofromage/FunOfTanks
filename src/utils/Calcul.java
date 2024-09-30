@@ -1,6 +1,10 @@
 package utils;
 
+import java.util.Random;
+
 public class Calcul {
+	
+	public final static Random r = new Random();
 	
 	public final static int MAX_RANGE = 200;
 	

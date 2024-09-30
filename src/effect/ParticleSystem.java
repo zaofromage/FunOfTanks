@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+import utils.Calcul;
 import utils.Vector;
 
 public class ParticleSystem {
 
 	protected ArrayList<Particle> particles;
 	private double spawnSize;
-	private Random r = new Random();
 	
 	public ParticleSystem(Particle particle, int nb) {
 		spawnSize = particle.getSize();
@@ -26,7 +26,7 @@ public class ParticleSystem {
 		double alpha = Math.toRadians(min);
 		double beta  = Math.toRadians(max);
 		for (Particle p : particles) {   
-			double angle = alpha + r.nextDouble() * (beta - alpha);
+			double angle = alpha + Calcul.r.nextDouble() * (beta - alpha);
 			p.reset(x, y, new Vector(Math.cos(angle), Math.sin(angle)), spawnSize);
 		}
 	}

@@ -8,6 +8,7 @@ import effect.ParticleSystem;
 import effect.Shape;
 import effect.Particle;
 import serverHost.*;
+import utils.Calcul;
 import utils.Delay;
 import utils.Vector;
 
@@ -78,7 +79,7 @@ public class Player {
 			}
 		}
 		setReady(false);
-		createTank(500, 500);
+		createTank(Calcul.r.nextInt(50, 1100), Calcul.r.nextInt(50, 670));
 	}
 
 	public Player(String name, Role role, String ip, int port, Game game, boolean isMain) {

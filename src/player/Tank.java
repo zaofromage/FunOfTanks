@@ -63,7 +63,7 @@ public class Tank {
 		this.owner = owner;
 		cannon = new Cannon(this);
 		aim = new Vector(x, y);
-		if (owner.getRole() == Role.HOST) color = Color.blue;
+		if (owner.isMain()) color = Color.blue;
 		try {
 			crosshair = ImageIO.read(new File("res/images/crosshair.png"));
 		} catch (IOException e) {
