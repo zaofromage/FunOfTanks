@@ -99,7 +99,7 @@ public class Skill {
 	
 	public static Skill grosseBertha(Player player) {
 		try {
-			return new Skill("Next shot goes hard", 1000, ImageIO.read(Skill.class.getResource("/images/dashthrough.png")), () -> {
+			return new Skill("Next shot goes hard", 10000, ImageIO.read(Skill.class.getResource("/images/dashthrough.png")), () -> {
 				if (player.getTank() != null) {
 					player.getTank().getCannon().setCanBertha(true);
 					player.getTank().getCannon().setFire(true);

@@ -21,7 +21,7 @@ public class Server implements Runnable {
 	public Server() throws IOException {
 		clients = new ArrayList<>();
 		String localIP = InetAddress.getLocalHost().getHostAddress();
-		server = new ServerSocket(PORT, 0, InetAddress.getByName(localIP));
+		server = new ServerSocket(PORT, 0, InetAddress.getByName("0.0.0.0"));
 		server.setSoTimeout(100000);
 		pool = Executors.newFixedThreadPool(4);
 		playing = new ServerPlaying();
