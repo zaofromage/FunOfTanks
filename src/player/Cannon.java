@@ -104,12 +104,12 @@ public class Cannon {
 	public void fire(int x, int y, int targetX, int targetY, double orientation) {
 		if (canFire) {
 			Bullet b = new Bullet(x, y, targetX, targetY, orientation, this, canBertha);
+			canFire = false;
 			if (canBertha) {
 				canBertha = false;
 				canFire = true;
 			}
 			bullets.add(b);
-			canFire = false;
 			owner.getOwner().getClient().send("newbullet;" + x + ";" + y + ";" + orientation + ";" + owner.getOwner().getName() + ";" + b.getId() + ";" + b.isBertha());
 			new Delay(cooldown, () -> canFire = true);
 		}
