@@ -25,7 +25,7 @@ public class ParticleSystem {
 	public void emit(int x, int y, int min, int max) {
 		double alpha = Math.toRadians(min);
 		double beta  = Math.toRadians(max);
-		for (Particle p : particles) {
+		for (Particle p : particles) {   
 			double angle = alpha + r.nextDouble() * (beta - alpha);
 			p.reset(x, y, new Vector(Math.cos(angle), Math.sin(angle)), spawnSize);
 		}
