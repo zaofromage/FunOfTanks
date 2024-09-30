@@ -57,7 +57,7 @@ public class ClientHandler implements Runnable {
 						sendToAllOthers(request);						
 					}
 				} else if (header.equals("newbullet")) {
-					server.getPlaying().getBullets().add(new ServerBullet(Integer.parseInt(body[0]), Integer.parseInt(body[1]), Double.parseDouble(body[2]), body[3], Integer.parseInt(body[4])));
+					server.getPlaying().getBullets().add(new ServerBullet(Integer.parseInt(body[0]), Integer.parseInt(body[1]), Double.parseDouble(body[2]), body[3], Integer.parseInt(body[4]), Boolean.parseBoolean(body[5])));
 					sendToAllOthers("newbullet;" + body[0] + ";" + body[1] + ";" + body[2] + ";" + body[3] + ";" + body[4]);
 				} else if (header.equals("updatebullet")) {
 					ServerBullet bullet = Finder.findServerBullet(body[3],Integer.parseInt(body[0]), server.getPlaying().getBullets());

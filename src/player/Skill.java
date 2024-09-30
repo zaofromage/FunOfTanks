@@ -102,7 +102,6 @@ public class Skill {
 			return new Skill("Next shot goes hard", 10000, ImageIO.read(Skill.class.getResource("/images/dashthrough.png")), () -> {
 				if (player.getTank() != null) {
 					player.getTank().getCannon().setCanBertha(true);
-					player.getTank().getCannon().setFire(true);
 				}
 			});
 		} catch (IOException e) {

@@ -17,18 +17,22 @@ public class ServerBullet {
 	
 	public String owner;
 	
-	public ServerBullet(int x, int y, double o, String owner, int id) {
+	public boolean bertha;
+	
+	public ServerBullet(int x, int y, double o, String owner, int id, boolean bertha) {
 		this.x = x;
 		this.y = y;
 		this.id = id;
 		this.orientation = o;
 		this.owner = owner;
 		hitbox = new Rectangle(x, y, 20, 10);
+		this.bertha = bertha;
 	}
 	
 	public void drawBullet(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setColor(Color.gray);
+		if (bertha) g2.setColor(Color.BLUE);
 		
 		AffineTransform transform = new AffineTransform();
 		transform.rotate(Math.toRadians(orientation), x, y);

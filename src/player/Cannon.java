@@ -92,7 +92,7 @@ public class Cannon {
 		}
 		if (activeBertha) {
 			for (Player p : players) {
-				if (bertha.intersects(p.getTank().getHitbox())) {
+				if (p.getTank() != null && bertha.intersects(p.getTank().getHitbox())) {
 					p.deleteTank();
 					owner.getOwner().getClient().send("deletetank;" + p.getName());
 				}
@@ -104,10 +104,13 @@ public class Cannon {
 	public void fire(int x, int y, int targetX, int targetY, double orientation) {
 		if (canFire) {
 			Bullet b = new Bullet(x, y, targetX, targetY, orientation, this, canBertha);
-			if (canBertha) canBertha = false;
+			if (canBertha) {
+				canBertha = false;
+				canFire = true;
+			}
 			bullets.add(b);
 			canFire = false;
-			owner.getOwner().getClient().send("newbullet;" + x + ";" + y + ";" + orientation + ";" + owner.getOwner().getName() + ";" + b.getId());
+			owner.getOwner().getClient().send("newbullet;" + x + ";" + y + ";" + orientation + ";" + owner.getOwner().getName() + ";" + b.getId() + ";" + b.isBertha());
 			new Delay(cooldown, () -> canFire = true);
 		}
 	}

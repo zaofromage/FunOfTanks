@@ -88,7 +88,7 @@ public class ServerConnection implements Runnable {
 						} else if (header.equals("newbullet")) {
 							play.getEnemiesBullets()
 									.add(new ServerBullet(Integer.parseInt(body[0]), Integer.parseInt(body[1]),
-											Double.parseDouble(body[2]), body[3], Integer.parseInt(body[4])));
+											Double.parseDouble(body[2]), body[3], Integer.parseInt(body[4]), Boolean.parseBoolean(body[5])));
 						} else if (header.equals("updatebullet")) {
 							ServerBullet b = Finder.findServerBullet(body[3], Integer.parseInt(body[0]),
 									play.getEnemiesBullets());
