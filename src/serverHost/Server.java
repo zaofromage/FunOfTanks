@@ -22,7 +22,7 @@ public class Server implements Runnable {
 		clients = new ArrayList<>();
 		String localIP = InetAddress.getLocalHost().getHostAddress();
 		server = new ServerSocket(PORT, 0, InetAddress.getByName("0.0.0.0"));
-		pool = Executors.newFixedThreadPool(5);
+		pool = Executors.newFixedThreadPool(8);
 		playing = new ServerPlaying();
 		
 		pool.execute(this);
