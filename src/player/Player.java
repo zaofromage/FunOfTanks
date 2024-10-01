@@ -36,6 +36,7 @@ public class Player {
 	 *    - faire descendre un soldat qui tire des petites balles tout seul
 	 *    - tirer trois balles en un coup
 	 *    - portail qui tp le tank et les balles
+	 *    - forreuse (genkidama)
 	 * ajouter une mitrailleuse
 	 * ajouter une grenade
 	 * son du jeu

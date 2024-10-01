@@ -99,17 +99,17 @@ public class ServerConnection implements Runnable {
 							ServerBullet bullet = Finder.findServerBullet(body[0], Integer.parseInt(body[1]),
 									play.getEnemiesBullets());
 							if (bullet != null) {
-								play.getPlayer().blowup(bullet.x, bullet.y, 0.75);
+								play.getPlayer().blowup(bullet.x, bullet.y, 0.2);
 								play.getEnemiesBullets().remove(bullet);
 							}
 						} else if (header.equals("newobstacle")) {
-							play.getObstacles().add(new Obstacle(Integer.parseInt(body[0]), Integer.parseInt(body[1]),
+							play.getObsToAdd().add(new Obstacle(Integer.parseInt(body[0]), Integer.parseInt(body[1]),
 									Boolean.parseBoolean(body[2])));
 						} else if (header.equals("deleteobstacle")) {
 							Obstacle o = Finder.findObstacle(Integer.parseInt(body[0]), Integer.parseInt(body[1]),
 									play.getObstacles());
 							if (o != null) {
-								play.getObstacles().remove(o);
+								play.getObsToRemove().add(o);
 							}
 						}
 						break;

@@ -74,7 +74,7 @@ public class Cannon {
 			} else if (b.hasReachLimit(obs)) {
 				haveToRemove = b;
 				owner.getOwner().getClient().send("deletebullet;" + owner.getOwner().getName() + ";" + b.getId());
-				owner.getOwner().blowup((int) haveToRemove.getX(), (int) haveToRemove.getY(), 0.5);
+				owner.getOwner().blowup((int) haveToRemove.getX(), (int) haveToRemove.getY(), 0.20);
 			} else if (b.destroyObstacle(obs)) {
 				haveToRemove = b;
 				owner.getOwner().getClient().send("deletebullet;" + owner.getOwner().getName() + ";" + b.getId());

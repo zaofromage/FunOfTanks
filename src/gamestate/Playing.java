@@ -26,6 +26,8 @@ public class Playing implements Statemethods {
 	private Player player;
 	private ArrayList<Player> players;
 	private ArrayList<Obstacle> obstacles;
+	private ArrayList<Obstacle> obsToAdd = new ArrayList<Obstacle>();
+	private ArrayList<Obstacle> obsToRemove = new ArrayList<Obstacle>();
 
 	private ArrayList<ServerBullet> enemiesBullets;
 	
@@ -43,6 +45,14 @@ public class Playing implements Statemethods {
 	public void update() {
 		for (Player p : players) {
 			p.updatePlayer(getObstacles(), players);
+		}
+		if (!obsToAdd.isEmpty()) {
+			obstacles.addAll(obsToAdd);
+			obsToAdd.clear();
+		}
+		if (!obsToRemove.isEmpty()) {
+			obstacles.removeAll(obsToRemove);
+			obsToRemove.clear();
 		}
 	}
 
@@ -217,6 +227,14 @@ public class Playing implements Statemethods {
 
 	public ArrayList<Obstacle> getObstacles() {
 		return obstacles;
+	}
+	
+	public ArrayList<Obstacle> getObsToRemove() {
+		return obsToRemove;
+	}
+	
+	public ArrayList<Obstacle> getObsToAdd() {
+		return obsToAdd;
 	}
 
 }
