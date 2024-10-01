@@ -70,7 +70,7 @@ public class Cannon {
 				p.deleteTank();
 				owner.getOwner().getClient().send("deletebullet;" + owner.getOwner().getName() + ";" + b.getId());
 				owner.getOwner().getClient().send("deletetank;" + p.getName());
-				owner.getOwner().debris(haveToRemove.getX(), haveToRemove.getY(), haveToRemove.getOrientation() - 30, haveToRemove.getOrientation() + 30);
+				owner.getOwner().debris(haveToRemove.getX(), haveToRemove.getY(), haveToRemove.getOrientation() - 50, haveToRemove.getOrientation() + 50);
 			} else if (b.hasReachLimit(obs)) {
 				haveToRemove = b;
 				owner.getOwner().getClient().send("deletebullet;" + owner.getOwner().getName() + ";" + b.getId());
@@ -78,7 +78,7 @@ public class Cannon {
 			} else if (b.destroyObstacle(obs)) {
 				haveToRemove = b;
 				owner.getOwner().getClient().send("deletebullet;" + owner.getOwner().getName() + ";" + b.getId());
-				owner.getOwner().debris(haveToRemove.getX(), haveToRemove.getY(), haveToRemove.getOrientation() - 30, haveToRemove.getOrientation() + 30);
+				owner.getOwner().debris(haveToRemove.getX(), haveToRemove.getY(), haveToRemove.getOrientation() - 50, haveToRemove.getOrientation() + 50);
 			}
 		}
 		if (haveToRemove != null)  {

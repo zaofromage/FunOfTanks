@@ -57,7 +57,7 @@ public class Player {
 	
 	
 	private ParticleSystem blowup = new ParticleSystem(new Particle(50, Shape.RECTANGLE, 0.75, new Vector(), Color.RED), 20);
-    private ParticleSystem debris = new ParticleSystem(new Particle(50, Shape.RECTANGLE, 0.75, new Vector(), Color.ORANGE), 15);
+    private ParticleSystem debris = new ParticleSystem(new Particle(50, Shape.RECTANGLE, 0.75, new Vector(), Color.ORANGE), 10);
 	
 	private Skill skill1;
 	private Skill skill2;
@@ -97,7 +97,7 @@ public class Player {
 			e.printStackTrace();
 		}
 		setReady(false);
-		createTank(500, 500);
+		createTank(Calcul.r.nextInt(50, 1100), Calcul.r.nextInt(50, 670));
 	}
 
 	public void createTank(int x, int y) {

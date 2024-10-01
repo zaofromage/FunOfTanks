@@ -33,7 +33,7 @@ public class Tank {
 
 	private int displayOffset = size / 2;
 
-	private Color color = Color.RED;
+	private Color color;
 
 	private boolean up, down, left, right = false;
 
@@ -54,6 +54,8 @@ public class Tank {
 
 	private BufferedImage crosshair;
 	
+	private boolean invinsible;
+	
 	// skills
 	private boolean canDashThrough = false;
 
@@ -61,9 +63,15 @@ public class Tank {
 		this.x = x;
 		this.y = y;
 		this.owner = owner;
+		invinsible = true;
+		color = Color.green;
+		new Delay(10000, () -> {
+			invinsible = false;
+			if (owner.isMain()) color = Color.blue;
+			else color = Color.red;
+		});
 		cannon = new Cannon(this);
 		aim = new Vector(x, y);
-		if (owner.isMain()) color = Color.blue;
 		try {
 			crosshair = ImageIO.read(new File("res/images/crosshair.png"));
 		} catch (IOException e) {
@@ -134,7 +142,9 @@ public class Tank {
 	}
 
 	public void fire() {
-		cannon.fire(x, y, (int) aim.x, (int) aim.y, orientation);
+		if (!invinsible) {
+			cannon.fire(x, y, (int) aim.x, (int) aim.y, orientation);			
+		}
 	}
 
 	public void dropObstacle(int x, int y, boolean destructible, ArrayList<Player> players,
@@ -153,10 +163,10 @@ public class Tank {
 					return;
 				}
 			}
-			if (possibleObstacle.getHitbox().getX() >= GamePanel.dimension.width - GamePanel.tileSize * 2
-					|| possibleObstacle.getHitbox().getX() <= GamePanel.tileSize * 2
-					|| possibleObstacle.getHitbox().getY() >= GamePanel.dimension.height - GamePanel.tileSize * 2
-					|| possibleObstacle.getHitbox().getY() <= GamePanel.tileSize * 2) {
+			if (possibleObstacle.getHitbox().getX() >= GamePanel.dimension.width - GamePanel.tileSize
+					|| possibleObstacle.getHitbox().getX() <= GamePanel.tileSize
+					|| possibleObstacle.getHitbox().getY() >= GamePanel.dimension.height - GamePanel.tileSize
+					|| possibleObstacle.getHitbox().getY() <= GamePanel.tileSize) {
 				return;
 			}
 			obstacles.add(o);
@@ -167,6 +177,7 @@ public class Tank {
 	}
 
 	public void updateTank(ArrayList<Obstacle> obs, ArrayList<Player> players, Player player) {
+		System.out.println();
 		if (up) {
 			move(0, -1, obs);
 		}
@@ -188,9 +199,9 @@ public class Tank {
 			possibleObstacle.updateObstacle(Calcul.limitRange((int)target.x, x), Calcul.limitRange((int)target.y, y));
 			if (possibleObstacle.getHitbox().intersects(hitbox)
 					|| possibleObstacle.getHitbox().getX() >= GamePanel.dimension.width - GamePanel.tileSize * 2
-					|| possibleObstacle.getHitbox().getX() <= GamePanel.tileSize * 2
+					|| possibleObstacle.getHitbox().getX() <= GamePanel.tileSize
 					|| possibleObstacle.getHitbox().getY() >= GamePanel.dimension.height - GamePanel.tileSize * 2
-					|| possibleObstacle.getHitbox().getY() <= GamePanel.tileSize * 2) {
+					|| possibleObstacle.getHitbox().getY() <= GamePanel.tileSize) {
 				possibleObstacle.setColor(Obstacle.possibleWrong);
 			} else {
 				possibleObstacle.setColor(Obstacle.possible);
@@ -329,6 +340,10 @@ public class Tank {
 		} else if (mode != PlayerMode.BLOC) {
 			possibleObstacle = null;
 		}
+	}
+	
+	public boolean getInvinsible() {
+		return invinsible;
 	}
 
 	public Obstacle getPossibleObstacle() {
