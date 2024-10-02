@@ -15,7 +15,6 @@ import client.GamePanel;
 import utils.Calcul;
 import utils.Delay;
 import map.Obstacle;
-import serverHost.Role;
 
 public class Tank {
 
@@ -65,6 +64,7 @@ public class Tank {
 		this.owner = owner;
 		invinsible = true;
 		color = Color.green;
+		//se lance a la creation du joueur et pas du jeu
 		new Delay(10000, () -> {
 			invinsible = false;
 			if (owner.isMain()) color = Color.blue;
@@ -163,9 +163,9 @@ public class Tank {
 					return;
 				}
 			}
-			if (possibleObstacle.getHitbox().getX() >= GamePanel.dimension.width - GamePanel.tileSize
+			if (possibleObstacle.getHitbox().getX() >= GamePanel.dimension.width - GamePanel.tileSize * 2
 					|| possibleObstacle.getHitbox().getX() <= GamePanel.tileSize
-					|| possibleObstacle.getHitbox().getY() >= GamePanel.dimension.height - GamePanel.tileSize
+					|| possibleObstacle.getHitbox().getY() >= GamePanel.dimension.height - GamePanel.tileSize * 2
 					|| possibleObstacle.getHitbox().getY() <= GamePanel.tileSize) {
 				return;
 			}
@@ -177,7 +177,7 @@ public class Tank {
 	}
 
 	public void updateTank(ArrayList<Obstacle> obs, ArrayList<Player> players, Player player) {
-		System.out.println();
+		//System.out.println(invinsible);
 		if (up) {
 			move(0, -1, obs);
 		}
@@ -239,6 +239,7 @@ public class Tank {
 	}
 
 	public void drawTank(Graphics g) {
+		System.out.println(color);
 		g.setColor(color);
 		g.fillRect(x - displayOffset, y - displayOffset, size, size);
 		g.setColor(Color.black);
