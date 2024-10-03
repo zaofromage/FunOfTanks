@@ -80,7 +80,6 @@ public class Player {
 			}
 		}
 		setReady(false);
-		createTank(Calcul.r.nextInt(50, 1100), Calcul.r.nextInt(50, 670));
 	}
 
 	public Player(String name, Role role, String ip, int port, Game game, boolean isMain) {
@@ -97,7 +96,6 @@ public class Player {
 			e.printStackTrace();
 		}
 		setReady(false);
-		createTank(Calcul.r.nextInt(50, 1100), Calcul.r.nextInt(50, 670));
 	}
 
 	public void createTank(int x, int y) {

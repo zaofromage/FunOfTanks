@@ -65,7 +65,7 @@ public class Tank {
 		invinsible = true;
 		color = Color.green;
 		//se lance a la creation du joueur et pas du jeu
-		new Delay(10000, () -> {
+		new Delay(2000, () -> {
 			invinsible = false;
 			if (owner.isMain()) color = Color.blue;
 			else color = Color.red;
@@ -239,7 +239,6 @@ public class Tank {
 	}
 
 	public void drawTank(Graphics g) {
-		System.out.println(color);
 		g.setColor(color);
 		g.fillRect(x - displayOffset, y - displayOffset, size, size);
 		g.setColor(Color.black);

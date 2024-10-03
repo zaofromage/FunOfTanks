@@ -15,6 +15,7 @@ import gamestate.Playing;
 import player.Player;
 import serverHost.Role;
 import serverHost.Server;
+import utils.Calcul;
 
 public class HostMenu extends PopUpMenu {
 
@@ -62,6 +63,9 @@ public class HostMenu extends PopUpMenu {
 						game.setPlaying(
 								new Playing(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));
 						GameState.state = GameState.PLAYING;
+						for (Player p : game.getPlaying().getPlayers()) {
+							p.createTank(Calcul.r.nextInt(50, 1100), Calcul.r.nextInt(50, 670));
+						}
 					} else {
 						Game.printErrorMessage("crée un joueur stp soit pas con");
 					}
