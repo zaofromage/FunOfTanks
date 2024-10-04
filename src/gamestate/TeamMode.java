@@ -14,7 +14,6 @@ public class TeamMode extends Playing {
 	@Override
 	public void update() {
 		super.update();
-		System.out.println("prout");
 	}
 
 }

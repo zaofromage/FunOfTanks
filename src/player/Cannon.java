@@ -65,7 +65,7 @@ public class Cannon {
 		for (Bullet b : bullets) {
 			b.updateBullet();
 			Player p = b.detectPlayer(players, player);
-			if (p != null) {
+			if (p != null && !p.getTank().isInvinsible()) {
 				haveToRemove = b;
 				p.deleteTank();
 				owner.getOwner().getClient().send("deletebullet;" + owner.getOwner().getName() + ";" + b.getId());
@@ -92,7 +92,7 @@ public class Cannon {
 		}
 		if (activeBertha) {
 			for (Player p : players) {
-				if (p.getTank() != null && bertha.intersects(p.getTank().getHitbox())) {
+				if (p.getTank() != null && bertha.intersects(p.getTank().getHitbox()) && !p.getTank().isInvinsible()) {
 					p.deleteTank();
 					owner.getOwner().getClient().send("deletetank;" + p.getName());
 				}

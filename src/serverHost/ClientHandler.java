@@ -83,7 +83,11 @@ public class ClientHandler implements Runnable {
 				} else if (header.equals("ready")) {
 					server.getPlaying().getPlayersReady().set(Finder.findIndexPlayer(body[0], server.getPlaying().getPlayers()), Boolean.parseBoolean(body[1]));
 					sendToAll(request);
-				} else if (header.equals("play")) {
+				} else if (header.equals("team")) {
+					sendToAll(request);
+				} else if (header.equals("mode")) {
+					sendToAll(request);
+			    } else if (header.equals("play")) {
 					sendToAllOthers(request);
 				}
 				else {

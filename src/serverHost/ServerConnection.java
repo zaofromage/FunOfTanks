@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import client.Game;
+import gamestate.GameMode;
 import gamestate.GameState;
 import gamestate.Menu;
 import gamestate.Playing;
@@ -61,6 +62,16 @@ public class ServerConnection implements Runnable {
 							game.setPlaying(
 									new Playing(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));
 							GameState.state = GameState.PLAYING;
+						} else if (header.equals("team")) {
+							Player p = Finder.findPlayer(body[0], menu.getPlayers());
+							p.setTeam(Integer.parseInt(body[1]));
+						} else if (header.equals("mode")) {
+							GameMode.gameMode = GameMode.toMode(body[0]);
+							if (body[0].equals("ffa")) {
+								for (Player p : game.getMenu().getPlayers()) {
+									p.setTeam(1);
+								}
+							}
 						}
 						break;
 					case PLAYING:

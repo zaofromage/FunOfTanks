@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import client.Game;
+import gamestate.GameMode;
 import player.Player;
 import utils.Finder;
 
@@ -21,13 +22,11 @@ public abstract class PopUpMenu {
 		this.backgroundColor = bcolor;
 	}
 	
-	public void update() {}
-	
-	public void draw(Graphics g) {
-		superDraw(g);
+	public void update() {
+
 	}
 	
-	protected void superDraw(Graphics g) {
+	public void draw(Graphics g) {
 		g.setColor(backgroundColor);
 		g.fillRect(x, y, width, height);
 	}
@@ -38,7 +37,7 @@ public abstract class PopUpMenu {
 			Player pl = Finder.findPlayer(p[i], game.getMenu().getPlayers());
 			if (pl != null) {
 				String ready = pl.isReady()?"V":"X";
-				g.drawString(p[i] + "  " + ready, 950, 100 + 50 * i);
+				g.drawString(p[i] + "  " + ready, pl.getTeam() == 1 ? 100:950, 100 + 50 * i);
 			}
 		}
 	}

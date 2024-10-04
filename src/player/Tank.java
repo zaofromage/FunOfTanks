@@ -342,7 +342,7 @@ public class Tank {
 		}
 	}
 	
-	public boolean getInvinsible() {
+	public boolean isInvinsible() {
 		return invinsible;
 	}
 

@@ -47,18 +47,19 @@ public class HostMenu extends PopUpMenu {
 						}
 						game.getPlayer().getClient().send("newplayer;" + game.getPlayer().getName());
 						buttons.get(1).setEnabled(true);
+						buttons.get(3).setEnabled(true);
 					} else {
 						Game.printErrorMessage("Please enter a name !");
 					}
 				}));
 		buttons.add(
-				new Button(game.getPanel().getDimension().width / 2 - 150, 350, 300, 75, Color.red, "READY", () -> {
+				new Button(game.getPanel().getDimension().width / 2 - 150, 300, 300, 75, Color.red, "READY", () -> {
 					game.getPlayer().setReady(!game.getPlayer().isReady());
 					game.getPlayer().getClient().send("ready;" + game.getPlayer().getName() + ";" + game.getPlayer().isReady());
 					buttons.get(1).setColor(game.getPlayer().isReady() ? Color.green : Color.red);
 				}));
 		buttons.get(1).setEnabled(false);
-		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 500, 300, 75, Color.green, "PLAY",
+		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 400, 300, 75, Color.green, "PLAY",
 				() -> {
 					if (game.getPlayer() != null) {
 						game.getPlayer().getClient().send("play;");
@@ -77,6 +78,15 @@ public class HostMenu extends PopUpMenu {
 						Game.printErrorMessage("crée un joueur stp soit pas con");
 					}
 				}));
+		buttons.add(new Button(game.getPanel().getDimension().width/2-150, 500, 300, 75, Color.blue, "SWITCH TEAM", () -> {
+			game.getPlayer().setTeam(game.getPlayer().getTeam() == 1 ? 2:1);
+			game.getPlayer().getClient().send("team;"+game.getPlayer().getName()+";"+game.getPlayer().getTeam());
+		}));
+		buttons.get(3).setEnabled(false);
+		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 600, 300, 75, Color.white, "SWITCH MODE", () -> {
+			GameMode.gameMode = GameMode.gameMode == GameMode.FFA ? GameMode.TEAM:GameMode.FFA;
+			game.getPlayer().getClient().send("mode;"+GameMode.gameMode.toString());
+		}));
 		name = new TextInput(x + 50, y + 50, 180, 30, "name ", new Font("SansSerif", Font.PLAIN, 20), 15);
 		this.game = game;
 	}
@@ -84,17 +94,14 @@ public class HostMenu extends PopUpMenu {
 	@Override
 	public void update() {
 		name.update();
-		if (game.getMenu().getPlayers().size() > 0 && game.getMenu().getPlayers().stream().filter(p -> p.isReady()).count() == game.getMenu().getPlayers()
-				.size()) {
-			buttons.get(2).setEnabled(true);
-		} else {
-			buttons.get(2).setEnabled(false);
-		}
+		buttons.get(2).setEnabled(game.getMenu().getPlayers().size() > 0 && game.getMenu().getPlayers().stream().filter(p -> p.isReady()).count() == game.getMenu().getPlayers().size());
+		buttons.get(3).setEnabled(GameMode.gameMode == GameMode.TEAM);
+		buttons.get(4).setEnabled(game.getPlayer() != null);
 	}
 
 	@Override
 	public void draw(Graphics g) {
-		superDraw(g);
+		super.draw(g);
 		for (Button b : buttons) {
 			b.draw(g);
 		}
@@ -105,7 +112,7 @@ public class HostMenu extends PopUpMenu {
 		}
 		if (ip != null) {
 			g.setFont(ipFont);
-			g.drawString(ip, game.getPanel().getDimension().width / 2 - g.getFontMetrics().stringWidth(ip) / 2, 700);
+			g.drawString(ip, game.getPanel().getDimension().width / 2 - g.getFontMetrics().stringWidth(ip) / 2, 720);
 		}
 	}
 	

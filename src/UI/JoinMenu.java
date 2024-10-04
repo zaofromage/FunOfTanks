@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import client.Game;
+import gamestate.GameMode;
 import player.Player;
 import serverHost.Role;
 
@@ -37,13 +38,14 @@ public class JoinMenu extends PopUpMenu {
 					buttons.get(1).setColor(game.getPlayer().isReady() ? Color.green : Color.red);
 				}));
 		buttons.get(1).setEnabled(false);
+		buttons.add(new Button(game.getPanel().getDimension().width/2-150, 500, 300, 75, Color.blue, "SWITCH TEAM", () -> {
+			game.getPlayer().setTeam(game.getPlayer().getTeam() == 1 ? 2:1);
+			game.getPlayer().getClient().send("team;"+game.getPlayer().getName()+";"+game.getPlayer().getTeam());
+		}));
 		name = new TextInput(x + 50, y + 50, 180, 30, "name ", new Font("SansSerif", Font.PLAIN, 20), 15);
 		ip = new TextInput(x + 50, y + 100, 200, 30, "ip ", new Font("SansSerif", Font.PLAIN, 20), 16);
 		port = new TextInput(x + 50, y + 150, 180, 30, "port ", new Font("SansSerif", Font.PLAIN, 20), 4);
 		ip.setText(new StringBuilder("192.168."));
-		//placeholder
-		//name.setText(new StringBuilder("line"));
-		//port.setText(new StringBuilder("4550"));
 		this.game = game;
 	}
 
@@ -52,11 +54,12 @@ public class JoinMenu extends PopUpMenu {
 		name.update();
 		ip.update();
 		port.update();
+		buttons.get(2).setEnabled(GameMode.gameMode == GameMode.TEAM);
 	}
 
 	@Override
 	public void draw(Graphics g) {
-		superDraw(g);
+		super.draw(g);
 		for (Button b : buttons) {
 			b.draw(g);
 		}
