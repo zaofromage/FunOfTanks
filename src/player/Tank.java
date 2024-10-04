@@ -369,4 +369,9 @@ public class Tank {
 	public void setCanDashThrough(boolean canDashThrough) {
 		this.canDashThrough = canDashThrough;
 	}
+	
+	@Override
+	public String toString() {
+		return owner.getName();
+	}
 }

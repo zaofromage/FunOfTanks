@@ -99,7 +99,7 @@ public class HostMenu extends PopUpMenu {
 	public void update() {
 		name.update();
 		buttons.get(2).setEnabled(game.getMenu().getPlayers().size() > 0 && game.getMenu().getPlayers().stream().filter(p -> p.isReady()).count() == game.getMenu().getPlayers().size());
-		buttons.get(3).setEnabled(GameMode.gameMode == GameMode.TEAM);
+		buttons.get(3).setEnabled(GameMode.gameMode != GameMode.FFA);
 		buttons.get(4).setEnabled(game.getPlayer() != null);
 	}
 

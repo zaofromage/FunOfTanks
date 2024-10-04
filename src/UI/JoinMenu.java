@@ -54,7 +54,7 @@ public class JoinMenu extends PopUpMenu {
 		name.update();
 		ip.update();
 		port.update();
-		buttons.get(2).setEnabled(GameMode.gameMode == GameMode.TEAM);
+		buttons.get(2).setEnabled(GameMode.gameMode != GameMode.FFA);
 	}
 
 	@Override

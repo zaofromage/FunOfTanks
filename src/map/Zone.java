@@ -15,7 +15,7 @@ public class Zone {
 	
 	private Color color;
 	
-	private HashSet<Tank> present = new HashSet<>();
+	private HashSet<Player> present = new HashSet<>();
 	
 	private Playing playing;
 	
@@ -26,13 +26,14 @@ public class Zone {
 	
 	public void update() {
 		for (Player p : playing.getPlayers()) {
-			if (hitbox.contains(p.getTank().getHitbox())) {
-				present.add(p.getTank());
+			if (p.getTank() != null && hitbox.contains(p.getTank().getHitbox())) {
+				present.add(p);
 			} else {
-				present.remove(p.getTank());
+				present.remove(p);
 			}
+			color = mixColor();
 		}
-		color = mixColor();
+		
 	}
 	
 	public void draw(Graphics g) {
@@ -44,10 +45,13 @@ public class Zone {
 		int r = 0;
 		int g = 0;
 		int b = 0;
-		for (Tank t : present) {
-			r += t.getColor().getRed();
-			g += t.getColor().getGreen();
-			b += t.getColor().getBlue();
+		System.out.println(present);
+		for (Player t : present) {
+			if (t.getTank() != null) {
+				r += t.getTank().getColor().getRed();
+				g += t.getTank().getColor().getGreen();
+				b += t.getTank().getColor().getBlue();				
+			}
 		}
 		if (present.size() == 0) {
 			return Color.gray;
@@ -56,5 +60,9 @@ public class Zone {
 		g /= present.size();
 		b /= present.size();
 		return new Color(r, g, b);
+	}
+	
+	public HashSet<Player> getPresent() {
+		return present;
 	}
 }

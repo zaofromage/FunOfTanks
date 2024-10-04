@@ -40,7 +40,7 @@ public class Playing implements Statemethods {
 		enemiesBullets = new ArrayList<ServerBullet>();
 		setUpWalls();
 		for (Player p : players) {
-			p.createTank(Calcul.r.nextInt(50, 1100), Calcul.r.nextInt(50, 670));
+			p.createTank(Calcul.r.nextInt(50, (int)panel.getDimension().getWidth()-100), Calcul.r.nextInt(50, (int)panel.getDimension().getHeight()-100));
 		}
 	}
 
