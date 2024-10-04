@@ -10,8 +10,10 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import client.Game;
+import gamestate.GameMode;
 import gamestate.GameState;
 import gamestate.Playing;
+import gamestate.TeamMode;
 import player.Player;
 import serverHost.Role;
 import serverHost.Server;
@@ -60,12 +62,17 @@ public class HostMenu extends PopUpMenu {
 				() -> {
 					if (game.getPlayer() != null) {
 						game.getPlayer().getClient().send("play;");
-						game.setPlaying(
-								new Playing(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));
-						GameState.state = GameState.PLAYING;
-						for (Player p : game.getPlaying().getPlayers()) {
-							p.createTank(Calcul.r.nextInt(50, 1100), Calcul.r.nextInt(50, 670));
+						switch (GameMode.gameMode) {
+						case FFA:
+							game.setPlaying(
+									new Playing(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));							
+							break;
+						case TEAM:
+							game.setPlaying(
+									new TeamMode(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));							
+							break;
 						}
+						GameState.state = GameState.PLAYING;
 					} else {
 						Game.printErrorMessage("crée un joueur stp soit pas con");
 					}

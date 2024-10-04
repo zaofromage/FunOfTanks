@@ -39,6 +39,9 @@ public class Playing implements Statemethods {
 		obstacles = new ArrayList<>();
 		enemiesBullets = new ArrayList<ServerBullet>();
 		setUpWalls();
+		for (Player p : players) {
+			p.createTank(Calcul.r.nextInt(50, 1100), Calcul.r.nextInt(50, 670));
+		}
 	}
 
 	@Override

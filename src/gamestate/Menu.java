@@ -50,6 +50,9 @@ public class Menu implements Statemethods {
 			activeCancelButton = true;
 			joinMenu = new JoinMenu(game.getPanel().getDimension().width / 2 - 500/2, 50, game);
 		}));
+		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 600, 300, 75, Color.yellow, "SWITCH MODE", () -> {
+			GameMode.gameMode = GameMode.TEAM;
+		}));
 	}
 
 	@Override

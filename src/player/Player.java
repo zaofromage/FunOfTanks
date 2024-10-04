@@ -63,11 +63,14 @@ public class Player {
 	private Skill skill2;
 	private Skill skill3;
 	
+	private int team;
+	
 	public Player(String name, Role role, Game game, boolean isMain) {
 		this.name = name;
 		this.role = role;
 		this.main = isMain;
 		this.lives = 3;
+		this.team = 1;
 		this.skill1 = Skill.speedUp(this);
 		this.skill2 = Skill.dashThrough(this);
 		this.skill3 = Skill.grosseBertha(this);
@@ -87,6 +90,7 @@ public class Player {
 		this.role = role;
 		this.main = isMain;
 		this.lives = 3;
+		this.team = 1;
 		this.skill1 = Skill.speedUp(this);
 		this.skill2 = Skill.dashThrough(this);
 		this.skill3 = Skill.grosseBertha(this);
@@ -108,7 +112,7 @@ public class Player {
 	public void deleteTank() {
 		tank = null;
 		lives--;
-		new Delay(5000, () -> createTank(200, 200));
+		new Delay(5000, () -> createTank(Calcul.r.nextInt(50, 1100), Calcul.r.nextInt(50, 670)));
 	}
 	
 	public void blowup(int x, int y, double lifetime) {
@@ -246,6 +250,14 @@ public class Player {
 	
 	public Skill getSkill3() {
 		return skill3;
+	}
+	
+	public int getTeam() {
+		return team;
+	}
+	
+	public void setTeam(int team) {
+		this.team = team;
 	}
 
 }
