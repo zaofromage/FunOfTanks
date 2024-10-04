@@ -12,6 +12,7 @@ import utils.Vector;
 import javax.imageio.ImageIO;
 
 import client.GamePanel;
+import gamestate.GameMode;
 import utils.Calcul;
 import utils.Delay;
 import map.Obstacle;
@@ -67,8 +68,17 @@ public class Tank {
 		//se lance a la creation du joueur et pas du jeu
 		new Delay(2000, () -> {
 			invinsible = false;
-			if (owner.isMain()) color = Color.blue;
-			else color = Color.red;
+			if (GameMode.gameMode == GameMode.FFA) {
+				if (owner.isMain()) color = Color.blue;
+				else color = Color.red;				
+			} else {
+				switch (owner.getTeam()) {
+				case 1: color = Color.blue;break;
+				case 2: color = Color.red;break;
+				case 3: color = Color.cyan;break;
+				case 4: color = Color.orange;break;
+				}
+			}
 		});
 		cannon = new Cannon(this);
 		aim = new Vector(x, y);
@@ -250,6 +260,8 @@ public class Tank {
 		if (mode == PlayerMode.AIM) {
 			g.drawImage(crosshair, (int) aim.x, (int) aim.y, null);
 		}
+		g.setColor(Color.white);
+		g.drawString(""+owner.getTeam(), x, y);
 	}
 
 	// getters setters

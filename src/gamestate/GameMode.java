@@ -1,14 +1,15 @@
 package gamestate;
 
 public enum GameMode {
-	FFA, TEAM;
+	FFA, TEAM, DOMINATION;
 	public static GameMode gameMode = FFA;
 	
 	public String toString() {
 		switch (gameMode) {
 		case FFA: return "ffa";
 		case TEAM: return "team";
-		default: return "";
+		case DOMINATION: return "domination";
+		default: return "ffa";
 		}
 	}
 	
@@ -16,6 +17,7 @@ public enum GameMode {
 		switch (mode) {
 		case "ffa": return FFA;
 		case "team": return TEAM;
+		case "domination": return DOMINATION;
 		default: return FFA;
 		}
 	}

@@ -7,10 +7,12 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import client.Game;
+import gamestate.Domination;
 import gamestate.GameMode;
 import gamestate.GameState;
 import gamestate.Menu;
 import gamestate.Playing;
+import gamestate.TeamMode;
 import map.Obstacle;
 import player.Player;
 import serverClass.ServerBullet;
@@ -51,6 +53,13 @@ public class ServerConnection implements Runnable {
 									toAdd.add(new Player(name, Role.GUEST, game, false));
 								}
 							}
+							if (GameMode.gameMode == GameMode.FFA) {
+								int i = 1;
+								for (Player p : game.getMenu().getPlayers()) {
+									p.setTeam(i);
+									i++;
+								}								
+							}
 							menu.getPlayers().addAll(toAdd);
 						} else if (header.equals("ready")) {
 							System.out.println(serverResponse);
@@ -59,8 +68,11 @@ public class ServerConnection implements Runnable {
 								p.setReady(Boolean.parseBoolean(body[1]));
 							}
 						} else if (header.equals("play")) {
-							game.setPlaying(
-									new Playing(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));
+							switch(GameMode.gameMode) {
+							case FFA:game.setPlaying(new Playing(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));break;
+							case TEAM:game.setPlaying(new TeamMode(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));break;
+							case DOMINATION:game.setPlaying(new Domination(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));break;
+							}
 							GameState.state = GameState.PLAYING;
 						} else if (header.equals("team")) {
 							Player p = Finder.findPlayer(body[0], menu.getPlayers());
@@ -68,6 +80,12 @@ public class ServerConnection implements Runnable {
 						} else if (header.equals("mode")) {
 							GameMode.gameMode = GameMode.toMode(body[0]);
 							if (body[0].equals("ffa")) {
+								int i = 1;
+								for (Player p : game.getMenu().getPlayers()) {
+									p.setTeam(i);
+									i++;
+								}
+							} else {
 								for (Player p : game.getMenu().getPlayers()) {
 									p.setTeam(1);
 								}

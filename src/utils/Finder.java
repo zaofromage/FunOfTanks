@@ -14,11 +14,8 @@ public final class Finder {
 		return players.stream().filter(p -> p.getName().equals(name)).findFirst().orElse(null);
 	}
 	
-	public static int findIndexPlayer(String name, ArrayList<String> players) {
-		return IntStream.range(0, players.size())
-			    .filter(n-> players.get(n).equals(name))
-			    .findFirst()
-			    .getAsInt();
+	public static ServerPlayer findServerPlayer(String name, ArrayList<ServerPlayer> players) {
+		return players.stream().filter(p -> p.name.equals(name)).findAny().orElse(null);
 	}
 
 	public static ServerTank findServerTank(String name, ArrayList<ServerTank> tanks) {

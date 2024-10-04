@@ -10,6 +10,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import client.Game;
+import gamestate.Domination;
 import gamestate.GameMode;
 import gamestate.GameState;
 import gamestate.Playing;
@@ -72,6 +73,9 @@ public class HostMenu extends PopUpMenu {
 							game.setPlaying(
 									new TeamMode(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));							
 							break;
+						case DOMINATION:
+							game.setPlaying(new Domination(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));
+							break;
 						}
 						GameState.state = GameState.PLAYING;
 					} else {
@@ -84,7 +88,7 @@ public class HostMenu extends PopUpMenu {
 		}));
 		buttons.get(3).setEnabled(false);
 		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 600, 300, 75, Color.white, "SWITCH MODE", () -> {
-			GameMode.gameMode = GameMode.gameMode == GameMode.FFA ? GameMode.TEAM:GameMode.FFA;
+			GameMode.gameMode = GameMode.gameMode == GameMode.FFA ? GameMode.DOMINATION:GameMode.FFA;
 			game.getPlayer().getClient().send("mode;"+GameMode.gameMode.toString());
 		}));
 		name = new TextInput(x + 50, y + 50, 180, 30, "name ", new Font("SansSerif", Font.PLAIN, 20), 15);

@@ -29,6 +29,8 @@ public abstract class PopUpMenu {
 	public void draw(Graphics g) {
 		g.setColor(backgroundColor);
 		g.fillRect(x, y, width, height);
+		g.setColor(Color.black);
+		g.drawString(GameMode.gameMode.toString(), 100, 700);
 	}
 	
 	public void formatPlayers(String players, Graphics g) {
@@ -37,7 +39,11 @@ public abstract class PopUpMenu {
 			Player pl = Finder.findPlayer(p[i], game.getMenu().getPlayers());
 			if (pl != null) {
 				String ready = pl.isReady()?"V":"X";
-				g.drawString(p[i] + "  " + ready, pl.getTeam() == 1 ? 100:950, 100 + 50 * i);
+				if (GameMode.gameMode == GameMode.FFA) {
+					g.drawString(p[i] + "  " + ready, 100, 100 + 50 * i);
+				} else {
+					g.drawString(p[i] + "  " + ready, pl.getTeam() == 1 ? 100:950, 100 + 50 * i);
+				}
 			}
 		}
 	}

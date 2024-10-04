@@ -3,8 +3,9 @@ package serverHost;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-
+import gamestate.GameMode;
 import map.Obstacle;
 import serverClass.*;
 import utils.Finder;
@@ -36,9 +37,13 @@ public class ClientHandler implements Runnable {
 				String header = getHeader(request);
 				String[] body = getBody(request);
 				if (header.equals("newplayer")) {
-					server.getPlaying().getPlayers().add(body[0]);
-					server.getPlaying().getPlayersReady().add(false);
+					server.getPlaying().getPlayers().add(new ServerPlayer(body[0], false, 1));
 					sendToAll(stringifyServerPlayers(server.getPlaying().getPlayers()));
+					for (ServerPlayer p : server.getPlaying().getPlayers()) {
+						sendToAll("ready;"+p.name+";"+p.ready);
+						sendToAll("team;"+p.name+";"+p.team);
+					}
+					sendToAll("mode;"+GameMode.gameMode.toString());
 				} else if (header.equals("newtank")) {
 					server.getPlaying().getTanks().add(new ServerTank(Integer.parseInt(body[0]), Integer.parseInt(body[1]), Double.parseDouble(body[2]), body[3], body[4]));
 				    sendToAllOthers("newtank;" + body[4] + ";" + body[0] + ";" + body[1]);
@@ -81,7 +86,8 @@ public class ClientHandler implements Runnable {
 						sendToAllOthers(request);
 					}
 				} else if (header.equals("ready")) {
-					server.getPlaying().getPlayersReady().set(Finder.findIndexPlayer(body[0], server.getPlaying().getPlayers()), Boolean.parseBoolean(body[1]));
+					ServerPlayer p = Finder.findServerPlayer(body[0], server.getPlaying().getPlayers());
+					if (p != null) p.ready = Boolean.parseBoolean(body[1]);
 					sendToAll(request);
 				} else if (header.equals("team")) {
 					sendToAll(request);
@@ -116,10 +122,10 @@ public class ClientHandler implements Runnable {
 		}
 	}
 	
-	private String stringifyServerPlayers(ArrayList<String> players) {
+	private String stringifyServerPlayers(ArrayList<ServerPlayer> players) {
 		String res = "players";
-		for (String name : players) {
-			res += ";" + name;
+		for (ServerPlayer p : players) {
+			res += ";" + p.name;
 		}
 		return res;
 	}
