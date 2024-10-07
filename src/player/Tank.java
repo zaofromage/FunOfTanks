@@ -68,7 +68,7 @@ public class Tank {
 		//se lance a la creation du joueur et pas du jeu
 		new Delay(2000, () -> {
 			invinsible = false;
-			if(owner.getName() == "ChickenJoe") {
+			if(owner.getName().equals("ChickenJoe")) {
 				invinsible = true;
 			}
 			if (GameMode.gameMode == GameMode.FFA) {
