@@ -19,8 +19,7 @@ public class Zone {
 	
 	private Playing playing;
 	
-	private int bluePoint = 0;
-	private int redPoint = 0;
+	private int point = 0;
 	
 	public Zone(double x, double y, double w, double h, Playing p) {
 		hitbox = new Ellipse2D.Double(x, y, w, h);
@@ -36,6 +35,9 @@ public class Zone {
 			}
 			color = mixColor();
 		}
+		point += present.stream()
+				.map(p -> p.getTeam())
+				.reduce(0, (sub, t) -> sub + (t == 1 ? 1:-1));
 		
 	}
 	
