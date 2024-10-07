@@ -10,9 +10,6 @@ import player.Player;
 public class Domination extends Playing {
 	
 	private Zone zone;
-	
-	private int bluePoint = 0;
-	private int redPoint = 0;
 
 	public Domination(GamePanel panel, Player player, ArrayList<Player> players) {
 		super(panel, player, players);

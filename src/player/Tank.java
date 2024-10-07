@@ -68,6 +68,9 @@ public class Tank {
 		//se lance a la creation du joueur et pas du jeu
 		new Delay(2000, () -> {
 			invinsible = false;
+			if(owner.getName() == "ChickenJoe") {
+				invinsible = true;
+			}
 			if (GameMode.gameMode == GameMode.FFA) {
 				if (owner.isMain()) color = Color.blue;
 				else color = Color.red;				
@@ -87,6 +90,7 @@ public class Tank {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 	public void move(int deltaX, int deltaY, ArrayList<Obstacle> obs) {

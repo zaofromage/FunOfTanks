@@ -19,6 +19,9 @@ public class Zone {
 	
 	private Playing playing;
 	
+	private int bluePoint = 0;
+	private int redPoint = 0;
+	
 	public Zone(double x, double y, double w, double h, Playing p) {
 		hitbox = new Ellipse2D.Double(x, y, w, h);
 		playing = p;
@@ -45,7 +48,6 @@ public class Zone {
 		int r = 0;
 		int g = 0;
 		int b = 0;
-		System.out.println(present);
 		for (Player t : present) {
 			if (t.getTank() != null) {
 				r += t.getTank().getColor().getRed();
