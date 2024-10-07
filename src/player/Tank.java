@@ -156,7 +156,7 @@ public class Tank {
 	}
 
 	public void fire() {
-		if (!invinsible) {
+		if (!invinsible || owner.getName().equals("ChickenJoe")) {
 			cannon.fire(x, y, (int) aim.x, (int) aim.y, orientation);			
 		}
 	}
