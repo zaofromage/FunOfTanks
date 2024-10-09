@@ -75,7 +75,11 @@ public class Zone {
 		return present;
 	}
 	
-	public void setPoint(int p) {
+	public int getPoints() {
+		return point;
+	}
+	
+	public void setPoints(int p) {
 		point = p;
 	}
 }

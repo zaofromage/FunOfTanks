@@ -31,6 +31,8 @@ public class Playing implements Statemethods {
 
 	private ArrayList<ServerBullet> enemiesBullets;
 	
+	protected int isFinish = 0;
+	
 
 	public Playing(GamePanel panel, Player player, ArrayList<Player> players) {
 		this.panel = panel;
@@ -56,6 +58,10 @@ public class Playing implements Statemethods {
 		if (!obsToRemove.isEmpty()) {
 			obstacles.removeAll(obsToRemove);
 			obsToRemove.clear();
+		}
+		if (isFinish != 0) {
+			panel.getGame().setFinish(new Finish(isFinish, players.stream().filter(p -> p.getTeam() == isFinish).findAny().orElse(null).getTank().getColor()));
+			GameState.state = GameState.FINISH;
 		}
 	}
 

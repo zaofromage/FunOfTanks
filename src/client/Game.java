@@ -21,6 +21,7 @@ public class Game implements Runnable {
 	
 	private Menu menu;
 	private Playing playing;
+	private Finish finish;
 	
 	private static String errorMessage;
 	private Font errorMessageFont;
@@ -48,6 +49,9 @@ public class Game implements Runnable {
 		case PLAYING:
 			playing.update();
 			break;
+		case FINISH:
+			finish.update();
+			break;
 		}
 	}
 	
@@ -58,6 +62,9 @@ public class Game implements Runnable {
 			break;
 		case PLAYING:
 			playing.draw(g);
+			break;
+		case FINISH:
+			finish.draw(g);
 			break;
 		}
 		if (errorMessage != null) {
@@ -129,6 +136,10 @@ public class Game implements Runnable {
 	
 	public void setPlaying(Playing p) {
 		playing = p;
+	}
+	
+	public void setFinish(Finish f) {
+		finish = f;
 	}
 
 	public Player getPlayer() {

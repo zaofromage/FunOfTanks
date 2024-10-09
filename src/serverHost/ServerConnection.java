@@ -143,7 +143,7 @@ public class ServerConnection implements Runnable {
 						} else if (header.equals("point")) {
 							if (play instanceof Domination) {
 								Domination dom = (Domination) play;
-								dom.getZone().setPoint(Integer.parseInt(body[0]));
+								dom.getZone().setPoints(Integer.parseInt(body[0]));
 							}
 						}
 						break;

@@ -9,6 +9,8 @@ import player.Player;
 
 public class Domination extends Playing {
 	
+	public static final int FINISH_POINTS = 10000;
+	
 	private Zone zone;
 
 	public Domination(GamePanel panel, Player player, ArrayList<Player> players) {
@@ -20,6 +22,11 @@ public class Domination extends Playing {
 	public void update() {
 		zone.update();
 		super.update();
+		if (zone.getPoints() >= FINISH_POINTS) {
+			isFinish = 1;
+		} else if (zone.getPoints() <= -1*FINISH_POINTS) {
+			isFinish = 2;
+		}
 	}
 	
 	@Override
