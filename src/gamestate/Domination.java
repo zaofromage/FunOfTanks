@@ -27,5 +27,9 @@ public class Domination extends Playing {
 		zone.draw(g);
 		super.draw(g);
 	}
+	
+	public Zone getZone() {
+		return zone;
+	}
  
 }

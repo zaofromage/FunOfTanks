@@ -95,6 +95,8 @@ public class ClientHandler implements Runnable {
 					sendToAll(request);
 			    } else if (header.equals("play")) {
 					sendToAllOthers(request);
+				} else if (header.equals("point")) {
+					sendToAllOthers(request);
 				}
 				else {
 					out.println("wrong request");

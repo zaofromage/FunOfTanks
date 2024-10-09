@@ -6,6 +6,8 @@ import java.awt.geom.Ellipse2D;
 
 import player.Player;
 import player.Tank;
+import serverHost.Role;
+
 import java.util.HashSet;
 
 import gamestate.Playing;
@@ -38,7 +40,10 @@ public class Zone {
 		point += present.stream()
 				.map(p -> p.getTeam())
 				.reduce(0, (sub, t) -> sub + (t == 1 ? 1:-1));
-		
+		System.out.println(point);
+		if (playing.getPlayer().getRole() == Role.HOST) {
+			playing.getPlayer().getClient().send("point;"+point);			
+		}
 	}
 	
 	public void draw(Graphics g) {
@@ -68,5 +73,9 @@ public class Zone {
 	
 	public HashSet<Player> getPresent() {
 		return present;
+	}
+	
+	public void setPoint(int p) {
+		point = p;
 	}
 }
