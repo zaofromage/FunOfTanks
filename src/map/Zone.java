@@ -35,7 +35,9 @@ public class Zone {
 				p.getTank().setInZone(true);
 			} else {
 				present.remove(p);
-				p.getTank().setInZone(false);
+				if (p.getTank() != null) {
+					p.getTank().setInZone(false);					
+				}
 			}
 			color = mixColor();
 		}

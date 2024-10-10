@@ -78,7 +78,6 @@ public class Game implements Runnable {
 			g.setFont(errorMessageFont);
 			g.drawString(message, panel.getDimension().width/2 - g.getFontMetrics().stringWidth(errorMessage)/2, panel.getDimension().height/4 * 3);
 		}
-		System.out.println(message);
 	}
 
 	@Override
