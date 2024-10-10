@@ -83,6 +83,7 @@ public class Tank {
 				case 3: color = Color.cyan;break;
 				case 4: color = Color.orange;break;
 				}
+				owner.tankColor = color;
 			}
 		});
 		cannon = new Cannon(this);

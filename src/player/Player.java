@@ -52,6 +52,7 @@ public class Player {
 	private String name;
 
 	private Tank tank;
+	public Color tankColor;
 	
 	private boolean ready;
 	

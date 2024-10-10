@@ -12,6 +12,7 @@ import utils.Calcul;
 import utils.Delay;
 import player.Player;
 import player.PlayerMode;
+import player.Tank;
 import client.GamePanel;
 import effect.Particle;
 import effect.ParticleSystem;
@@ -60,7 +61,7 @@ public class Playing implements Statemethods {
 			obsToRemove.clear();
 		}
 		if (isFinish != 0) {
-			panel.getGame().setFinish(new Finish(isFinish, players.stream().filter(p -> p.getTeam() == isFinish).findAny().orElse(null).getTank().getColor()));
+			panel.getGame().setFinish(new Finish(isFinish, players.stream().filter(p -> p.getTeam() == isFinish).findAny().orElse(null).tankColor));				
 			GameState.state = GameState.FINISH;
 		}
 	}
