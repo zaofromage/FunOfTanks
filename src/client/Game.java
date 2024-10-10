@@ -76,7 +76,7 @@ public class Game implements Runnable {
 		if (message != null) {
 			g.setColor(Color.black);
 			g.setFont(errorMessageFont);
-			g.drawString(message, panel.getDimension().width/2 - g.getFontMetrics().stringWidth(errorMessage)/2, panel.getDimension().height/4 * 3);
+			g.drawString(message, panel.getDimension().width/2 - g.getFontMetrics().stringWidth(message)/2, panel.getDimension().height/4 * 3);
 		}
 	}
 
