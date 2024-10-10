@@ -32,17 +32,18 @@ public class Zone {
 		for (Player p : playing.getPlayers()) {
 			if (p.getTank() != null && hitbox.contains(p.getTank().getHitbox())) {
 				present.add(p);
+				p.getTank().setInZone(true);
 			} else {
 				present.remove(p);
+				p.getTank().setInZone(false);
 			}
 			color = mixColor();
 		}
 		point += present.stream()
 				.map(p -> p.getTeam())
 				.reduce(0, (sub, t) -> sub + (t == 1 ? 1:-1));
-		System.out.println(point);
 		if (playing.getPlayer().getRole() == Role.HOST) {
-			playing.getPlayer().getClient().send("point;"+point);			
+			playing.getPlayer().getClient().send("point;"+point);		
 		}
 	}
 	
@@ -59,16 +60,16 @@ public class Zone {
 			if (t.getTank() != null) {
 				r += t.getTank().getColor().getRed();
 				g += t.getTank().getColor().getGreen();
-				b += t.getTank().getColor().getBlue();				
+				b += t.getTank().getColor().getBlue();	
 			}
 		}
 		if (present.size() == 0) {
-			return Color.gray;
+			return new Color(128, 128, 128, 50);
 		}
 		r /= present.size();
 		g /= present.size();
 		b /= present.size();
-		return new Color(r, g, b);
+		return new Color(r, g, b, 50);
 	}
 	
 	public HashSet<Player> getPresent() {

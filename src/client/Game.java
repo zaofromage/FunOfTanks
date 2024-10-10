@@ -24,6 +24,7 @@ public class Game implements Runnable {
 	private Finish finish;
 	
 	private static String errorMessage;
+	private static String message;
 	private Font errorMessageFont;
 	
 	public Game() {
@@ -72,6 +73,12 @@ public class Game implements Runnable {
 			g.setFont(errorMessageFont);
 			g.drawString(errorMessage, panel.getDimension().width/2 - g.getFontMetrics().stringWidth(errorMessage)/2, panel.getDimension().height/4 * 3);
 		}
+		if (message != null) {
+			g.setColor(Color.black);
+			g.setFont(errorMessageFont);
+			g.drawString(message, panel.getDimension().width/2 - g.getFontMetrics().stringWidth(errorMessage)/2, panel.getDimension().height/4 * 3);
+		}
+		System.out.println(message);
 	}
 
 	@Override
@@ -120,6 +127,11 @@ public class Game implements Runnable {
 	public static void printErrorMessage(String msg) {
 		errorMessage = msg;
 		new Delay(3000, () -> errorMessage = null);
+	}
+	
+	public static void printMessage(String msg) {
+		message = msg;
+		new Delay(3000, () -> message = null);
 	}
 	
 	public GamePanel getPanel() {

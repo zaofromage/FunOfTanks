@@ -1,15 +1,18 @@
 package gamestate;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+import client.Game;
 import client.GamePanel;
 import map.Zone;
 import player.Player;
+import utils.Delay;
 
 public class Domination extends Playing {
 	
-	public static final int FINISH_POINTS = 10000;
+	public static final int FINISH_POINTS = 5000;
 	
 	private Zone zone;
 
@@ -23,9 +26,15 @@ public class Domination extends Playing {
 		zone.update();
 		super.update();
 		if (zone.getPoints() >= FINISH_POINTS) {
-			isFinish = 1;
+			new Delay(3000, () -> {
+				isFinish = 1;				
+			});
+			Game.printMessage("Fin de partie");
 		} else if (zone.getPoints() <= -1*FINISH_POINTS) {
-			isFinish = 2;
+			new Delay(3000, () -> {
+				isFinish = 2;				
+			});
+			Game.printMessage("Fin de partie");
 		}
 	}
 	
@@ -33,6 +42,10 @@ public class Domination extends Playing {
 	public void draw(Graphics g) {
 		zone.draw(g);
 		super.draw(g);
+		g.setColor(Color.RED);
+		g.fillRect(310, 10, 640, 30);
+		g.setColor(Color.BLUE);
+		g.fillRect(310, 10, 320+(zone.getPoints()*320/FINISH_POINTS), 30);
 	}
 	
 	public Zone getZone() {

@@ -56,6 +56,8 @@ public class Tank {
 	
 	private boolean invinsible;
 	
+	private boolean isInZone = false;
+	
 	// skills
 	private boolean canDashThrough = false;
 
@@ -180,7 +182,8 @@ public class Tank {
 			if (possibleObstacle.getHitbox().getX() >= GamePanel.dimension.width - GamePanel.tileSize * 2
 					|| possibleObstacle.getHitbox().getX() <= GamePanel.tileSize
 					|| possibleObstacle.getHitbox().getY() >= GamePanel.dimension.height - GamePanel.tileSize * 2
-					|| possibleObstacle.getHitbox().getY() <= GamePanel.tileSize) {
+					|| possibleObstacle.getHitbox().getY() <= GamePanel.tileSize
+					|| isInZone) {
 				return;
 			}
 			obstacles.add(o);
@@ -215,7 +218,8 @@ public class Tank {
 					|| possibleObstacle.getHitbox().getX() >= GamePanel.dimension.width - GamePanel.tileSize * 2
 					|| possibleObstacle.getHitbox().getX() <= GamePanel.tileSize
 					|| possibleObstacle.getHitbox().getY() >= GamePanel.dimension.height - GamePanel.tileSize * 2
-					|| possibleObstacle.getHitbox().getY() <= GamePanel.tileSize) {
+					|| possibleObstacle.getHitbox().getY() <= GamePanel.tileSize
+					|| isInZone) {
 				possibleObstacle.setColor(Obstacle.possibleWrong);
 			} else {
 				possibleObstacle.setColor(Obstacle.possible);
@@ -256,6 +260,9 @@ public class Tank {
 		g.setColor(color);
 		g.fillRect(x - displayOffset, y - displayOffset, size, size);
 		g.setColor(Color.black);
+		if (isInZone) {
+			g.drawRect(x - displayOffset, y - displayOffset, size, size);
+		}
 		g.drawString(owner.getName(), x - displayOffset, y - displayOffset - 10);
 		cannon.drawCannon(g, x, y, orientation);
 		if (possibleObstacle != null) {
@@ -356,6 +363,10 @@ public class Tank {
 		} else if (mode != PlayerMode.BLOC) {
 			possibleObstacle = null;
 		}
+	}
+	
+	public void setInZone(boolean in) {
+		isInZone = in;
 	}
 	
 	public boolean isInvinsible() {
