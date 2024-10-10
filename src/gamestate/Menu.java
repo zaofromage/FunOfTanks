@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import UI.Button;
 import UI.HostMenu;
 import UI.JoinMenu;
+import UI.Settings;
 import client.Game;
 import player.Player;
 
@@ -27,6 +28,7 @@ public class Menu implements Statemethods {
 	
 	private HostMenu hostMenu;
 	private JoinMenu joinMenu;
+	private Settings settings;
 
 	public Menu(Game game) {
 		this.game = game;
@@ -35,6 +37,7 @@ public class Menu implements Statemethods {
 		cancelButton = new Button(50, 50, 50, 50, Color.red, "X", () -> {
 			hostMenu = null;
 			joinMenu = null;
+			settings = null;
 			activeCancelButton = false;
 			if (game.getPlayer() != null) {
 				game.getPlayer().close();
@@ -50,6 +53,10 @@ public class Menu implements Statemethods {
 			activeCancelButton = true;
 			joinMenu = new JoinMenu(game.getPanel().getDimension().width / 2 - 500/2, 50, game);
 		}));
+		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 550, 300, 75, Color.darkGray, "Settings", () -> {
+			activeCancelButton = true;
+			settings = new Settings(game.getPanel().getDimension().width / 2 - 500/2, 50, game);
+		}));
 	}
 
 	@Override
@@ -62,6 +69,9 @@ public class Menu implements Statemethods {
 		}
 		if (joinMenu != null) {
 			joinMenu.update();
+		}
+		if (settings != null) {
+			settings.update();
 		}
 		if (activeCancelButton) cancelButton.update();
 	}
@@ -81,6 +91,9 @@ public class Menu implements Statemethods {
 		}
 		if (joinMenu != null) {
 			joinMenu.draw(g);
+		}
+		if (settings != null) {
+			settings.update();
 		}
 		if (activeCancelButton) cancelButton.draw(g);
 	}

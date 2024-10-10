@@ -2,6 +2,7 @@ package UI;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 import client.Game;
 import gamestate.GameMode;
@@ -13,6 +14,7 @@ public abstract class PopUpMenu {
 	private int x, y, width, height;
 	private Color backgroundColor;
 	protected Game game;
+	protected ArrayList<Button> buttons = new ArrayList<>();
 	
 	public PopUpMenu(int x, int y, int width, int height, Color bcolor) {
 		this.x = x;
@@ -23,7 +25,9 @@ public abstract class PopUpMenu {
 	}
 	
 	public void update() {
-
+		for (Button b : buttons) {
+			b.update();
+		}
 	}
 	
 	public void draw(Graphics g) {
@@ -31,6 +35,9 @@ public abstract class PopUpMenu {
 		g.fillRect(x, y, width, height);
 		g.setColor(Color.black);
 		g.drawString(GameMode.gameMode.toString(), 100, 700);
+		for (Button b : buttons) {
+			b.draw(g);
+		}
 	}
 	
 	public void formatPlayers(String players, Graphics g) {

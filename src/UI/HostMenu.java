@@ -23,7 +23,6 @@ import utils.Calcul;
 public class HostMenu extends PopUpMenu {
 
 	private TextInput name;
-	private ArrayList<Button> buttons;
 
 	private String ip;
 	
