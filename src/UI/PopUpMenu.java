@@ -54,4 +54,8 @@ public abstract class PopUpMenu {
 			}
 		}
 	}
+	
+	public ArrayList<Button> getButtons() {
+		return buttons;
+	}
 }

@@ -128,8 +128,4 @@ public class HostMenu extends PopUpMenu {
 	public void keyPressed(KeyEvent e) {
 		name.keyPressed(e);
 	}
-
-	public ArrayList<Button> getButtons() {
-		return buttons;
-	}
 }

@@ -93,7 +93,7 @@ public class Menu implements Statemethods {
 			joinMenu.draw(g);
 		}
 		if (settings != null) {
-			settings.update();
+			settings.draw(g);
 		}
 		if (activeCancelButton) cancelButton.draw(g);
 	}
@@ -122,6 +122,11 @@ public class Menu implements Statemethods {
 				b.onClick(e);
 			}
 			joinMenu.mouseClicked(e);
+		} else if (settings != null) {
+			for (Button b : settings.getButtons()) {
+				b.onClick(e);
+			}
+			settings.mouseClicked(e);
 		}
 		else {
 			for (Button b : buttons) {
@@ -166,6 +171,8 @@ public class Menu implements Statemethods {
 			hostMenu.keyPressed(e);
 		} else if (joinMenu != null) {
 			joinMenu.keyPressed(e);
+		} else if (settings != null) {
+			settings.keyPressed(e);
 		}
 	}
 

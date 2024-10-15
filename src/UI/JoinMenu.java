@@ -83,8 +83,4 @@ public class JoinMenu extends PopUpMenu {
 		ip.keyPressed(e);
 		port.keyPressed(e);
 	}
-
-	public ArrayList<Button> getButtons() {
-		return buttons;
-	}
 }
