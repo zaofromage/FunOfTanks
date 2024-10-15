@@ -30,7 +30,7 @@ public class Zone {
 	
 	public void update() {
 		for (Player p : playing.getPlayers()) {
-			if (p.getTank() != null && hitbox.contains(p.getTank().getHitbox())) {
+			if (p.getTank() != null && hitbox.contains(p.getTank().getCenter())) {
 				present.add(p);
 				p.getTank().setInZone(true);
 			} else {

@@ -2,6 +2,7 @@ package player;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -45,6 +46,7 @@ public class Tank {
 	private Cannon cannon;
 
 	private Rectangle hitbox = new Rectangle(x - displayOffset, y - displayOffset, size, size);
+	private Point center = new Point((int)hitbox.getCenterX(), (int)hitbox.getCenterY());
 
 	private PlayerMode mode = PlayerMode.BASE;
 
@@ -152,6 +154,8 @@ public class Tank {
 
 	public void updateHitbox() {
 		hitbox.setBounds(x - displayOffset, y - displayOffset, size, size);
+		center.x = (int)hitbox.getCenterX();
+		center.y = (int)hitbox.getCenterY();
 	}
 
 	private boolean detectObstacle(Obstacle obstacle, int x, int y) {
@@ -389,5 +393,9 @@ public class Tank {
 	@Override
 	public String toString() {
 		return owner.getName();
+	}
+	
+	public Point getCenter() {
+		return center;
 	}
 }
