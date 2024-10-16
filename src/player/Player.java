@@ -42,6 +42,8 @@ public class Player {
 	 * son du jeu
 	 * systeme qui detruit une partie du tank quand tu prend une explosion (operation booleene tah blender) et tu meurt quand ton tank ne contient plus de pixel
 	 */
+	public static int RESPAWN = 5000;
+	
 	private Role role;
 	private Server server;
 	private Client client;
@@ -111,9 +113,11 @@ public class Player {
 	}
 
 	public void deleteTank() {
-		tank = null;
-		lives--;
-		new Delay(5000, () -> createTank(Calcul.r.nextInt(50, 1100), Calcul.r.nextInt(50, 670)));
+		if (tank != null) {
+			tank = null;
+			lives--;
+			new Delay(RESPAWN, () -> createTank(Calcul.r.nextInt(50, 1100), Calcul.r.nextInt(50, 670)));			
+		}
 	}
 	
 	public void blowup(int x, int y, double lifetime) {

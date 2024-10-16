@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import map.Obstacle;
 import serverClass.ServerBullet;
@@ -32,7 +33,11 @@ public class Playing implements Statemethods {
 
 	private ArrayList<ServerBullet> enemiesBullets;
 	
+	private HashMap<Player, Integer> leaderBoard = new HashMap<>();
+	
 	protected int isFinish = 0;
+
+	private boolean drawLeaderBoard;
 	
 
 	public Playing(GamePanel panel, Player player, ArrayList<Player> players) {
@@ -44,6 +49,7 @@ public class Playing implements Statemethods {
 		setUpWalls();
 		for (Player p : players) {
 			p.createTank(Calcul.r.nextInt(100, (int)panel.getDimension().getWidth()-150), Calcul.r.nextInt(100, (int)panel.getDimension().getHeight()-150));
+			leaderBoard.put(p, 0);
 		}
 	}
 
@@ -78,6 +84,9 @@ public class Playing implements Statemethods {
 			p.drawPlayer(g);
 		}
 		player.drawSkills(g);
+		if (drawLeaderBoard) {
+			System.out.println(leaderBoard);
+		}
 	}
 
 	public Player getPlayer() {
@@ -90,6 +99,10 @@ public class Playing implements Statemethods {
 
 	public ArrayList<ServerBullet> getEnemiesBullets() {
 		return enemiesBullets;
+	}
+	
+	public HashMap<Player, Integer> getLeaderBoard() {
+		return leaderBoard;
 	}
 
 	private void setUpWalls() {
@@ -201,13 +214,23 @@ public class Playing implements Statemethods {
 				player.getTank().setRight(true);
 			}
 		} else if (keyCode == PlayerInputs.dash) {
-			player.getTank().dash(obstacles);
+			if (player.getTank() != null) {
+				player.getTank().dash(obstacles);				
+			}
 		} else if (keyCode == PlayerInputs.skill1) {
-			player.getSkill1().launch();
+			if (player.getTank() != null) {
+				player.getSkill1().launch();				
+			}
 		} else if (keyCode == PlayerInputs.skill2) {
-			player.getSkill2().launch();
+			if (player.getTank() != null) {
+				player.getSkill2().launch();				
+			}
 		} else if (keyCode == PlayerInputs.skill3) {
-			player.getSkill3().launch();
+			if (player.getTank() != null) {
+				player.getSkill3().launch();				
+			}
+		} else if (keyCode == PlayerInputs.leaderBoard) {
+			drawLeaderBoard = true;
 		}
 	}
 
@@ -232,6 +255,8 @@ public class Playing implements Statemethods {
 			}
 		} else if (keyCode == PlayerInputs.escape) {
 			GameState.state = GameState.MENU;
+		} else if (keyCode == PlayerInputs.leaderBoard) {
+			drawLeaderBoard = false;
 		}
 	}
 

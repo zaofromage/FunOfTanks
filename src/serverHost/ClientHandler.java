@@ -59,7 +59,7 @@ public class ClientHandler implements Runnable {
 					ServerTank tank = Finder.findServerTank(body[0], server.getPlaying().getTanks());
 					if (tank != null) {
 						server.getPlaying().getTanks().remove(tank);
-						sendToAllOthers(request);						
+						sendToAll(request);						
 					}
 				} else if (header.equals("newbullet")) {
 					server.getPlaying().getBullets().add(new ServerBullet(Integer.parseInt(body[0]), Integer.parseInt(body[1]), Double.parseDouble(body[2]), body[3], Integer.parseInt(body[4]), Boolean.parseBoolean(body[5])));

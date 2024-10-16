@@ -112,6 +112,7 @@ public class ServerConnection implements Runnable {
 							System.out.println(serverResponse);
 							Player p = Finder.findPlayer(body[0], play.getPlayers());
 							if (p != null) {
+								play.getLeaderBoard().merge(p, 1, Integer::sum);
 								p.deleteTank();
 							}
 						} else if (header.equals("newbullet")) {

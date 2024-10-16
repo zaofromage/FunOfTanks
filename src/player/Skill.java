@@ -74,7 +74,11 @@ public class Skill {
 			return new Skill("Speed up", 20000, ImageIO.read(Skill.class.getResource("/images/speedup.png")), () -> {
 				if (player.getTank() != null) {
 					player.getTank().setSpeed(player.getTank().BASE_SPEED * 3);
-					new Delay(3000, () -> player.getTank().setSpeed(player.getTank().BASE_SPEED));
+					new Delay(3000, () -> {
+						if (player.getTank() != null) {
+							player.getTank().setSpeed(player.getTank().BASE_SPEED);						
+						}
+					});
 				}
 			});
 		} catch (IOException e) {

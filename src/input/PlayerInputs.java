@@ -15,4 +15,6 @@ public class PlayerInputs {
 	public static int dash = KeyEvent.VK_SPACE;
 	
 	public static int escape = KeyEvent.VK_ESCAPE;
+	
+	public static int leaderBoard = KeyEvent.VK_TAB;
 }
