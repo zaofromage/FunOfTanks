@@ -1,6 +1,5 @@
 package gamestate;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -10,16 +9,10 @@ import java.util.HashMap;
 import map.Obstacle;
 import serverClass.ServerBullet;
 import utils.Calcul;
-import utils.Delay;
 import player.Player;
 import player.PlayerMode;
-import player.Tank;
 import client.GamePanel;
-import effect.Particle;
-import effect.ParticleSystem;
-import effect.Shape;
 import input.PlayerInputs;
-import utils.Vector;
 
 public class Playing implements Statemethods {
 
