@@ -53,6 +53,10 @@ public class Button {
 		this.enabled = e;
 	}
 	
+	public void setText(String text) {
+		this.text = text;
+	}
+	
 	public void setColor(Color c) {
 		color = c;
 	}
