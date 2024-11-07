@@ -258,7 +258,7 @@ public class Tank {
 			aim.y = hitbox.getY();
 		}
 		if (owner.getClient() != null)
-			owner.getClient().send("updatetank;" + owner.getName() + ";" + x + ";" + y + ";" + orientation);
+			owner.getClient().sendUDP("updatetank;" + owner.getName() + ";" + x + ";" + y + ";" + orientation);
 	}
 
 	public void drawTank(Graphics g) {

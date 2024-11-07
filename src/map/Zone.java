@@ -45,7 +45,7 @@ public class Zone {
 				.map(p -> p.getTeam())
 				.reduce(0, (sub, t) -> sub + (t == 1 ? 1:-1));
 		if (playing.getPlayer().getRole() == Role.HOST) {
-			playing.getPlayer().getClient().send("point;"+point);		
+			playing.getPlayer().getClient().sendUDP("point;"+point);
 		}
 	}
 	

@@ -86,7 +86,7 @@ public class Bullet {
 		y += vectorY * speed;
 		updateHitbox();
 		if (owner.getOwner().getOwner() != null) {
-			owner.getOwner().getOwner().getClient().send(
+			owner.getOwner().getOwner().getClient().sendUDP(
 					"updatebullet;" + id + ";" + (int) x + ";" + (int) y + ";" + owner.getOwner().getOwner().getName());
 		}
 	}

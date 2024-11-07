@@ -81,7 +81,7 @@ public class Player {
 		if (this.role == Role.HOST) {
 			try {
 				server = new Server();
-				udpServer = new UDPServer();
+				udpServer = new UDPServer(server);
 				client = new Client(InetAddress.getLocalHost().toString().split("/")[1], Server.PORT, game);
 			} catch (IOException e) {
 				e.printStackTrace();
