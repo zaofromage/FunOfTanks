@@ -42,6 +42,7 @@ public class UDPServer implements Runnable {
 				serverSocket.receive(packet);
 				clients.add(packet.getAddress());
 				String request = new String(packet.getData(), 0, packet.getLength());
+				System.out.println(request);
 				String header = ClientHandler.getHeader(request);
 				String[] body = ClientHandler.getBody(request);
 				if (header.equals("updatetank")) {
