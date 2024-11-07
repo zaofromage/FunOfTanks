@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import client.Game;
+import client.GamePanel;
 import effect.ParticleSystem;
 import effect.Shape;
 import effect.Particle;
@@ -115,11 +116,9 @@ public class Player {
 	}
 
 	public void deleteTank() {
-		if (tank != null) {
-			tank = null;
-			lives--;
-			new Delay(RESPAWN, () -> createTank(Calcul.r.nextInt(50, 1100), Calcul.r.nextInt(50, 670)));			
-		}
+		tank = null;
+		lives--;
+		new Delay(5000, () -> createTank(Calcul.r.nextInt(51, GamePanel.dimension.width - 100), Calcul.r.nextInt(51, GamePanel.dimension.height - 100)));
 	}
 	
 	public void blowup(int x, int y, double lifetime) {

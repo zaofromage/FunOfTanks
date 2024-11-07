@@ -5,9 +5,13 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 import client.Game;
 import gamestate.Domination;
@@ -39,12 +43,8 @@ public class HostMenu extends PopUpMenu {
 						Player p = new Player(name.getText(), Role.HOST, game, true);
 						game.setPlayer(p);
 						game.getMenu().getPlayers().add(p);
-						try {
-							ip = "IP : " + InetAddress.getLocalHost().toString().split("/")[1] + " PORT : "
-									+ Server.PORT;
-						} catch (UnknownHostException e) {
-							e.printStackTrace();
-						}
+						ip = "IP : " + getNetworkIPAddress() + " PORT : "
+								+ Server.PORT;
 						game.getPlayer().getClient().send("newplayer;" + game.getPlayer().getName());
 						buttons.get(1).setEnabled(true);
 						buttons.get(3).setEnabled(true);
@@ -119,7 +119,33 @@ public class HostMenu extends PopUpMenu {
 		}
 	}
 	
+	public static String getNetworkIPAddress() {
+        try {
+            Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+            
+            while (networkInterfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = networkInterfaces.nextElement();
+                
+                // On ignore les interfaces inactives ou de boucle locale
+                if (!networkInterface.isUp() || networkInterface.isLoopback()) {
+                    continue;
+                }
 
+                Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
+                while (addresses.hasMoreElements()) {
+                    InetAddress address = addresses.nextElement();
+                    
+                    // On vérifie que l'adresse est IPv4 et non loopback
+                    if (address instanceof Inet4Address && !address.isLoopbackAddress()) {
+                        return address.getHostAddress();
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        return "Adresse IP réseau non trouvée";
+    }
 
 	public void mouseClicked(MouseEvent e) {
 		name.onClick(e);

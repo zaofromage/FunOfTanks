@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /serverHost/
 /player/
 /map/
@@ -7,4 +8,10 @@
 /gamestate/
 /input/
 /serverClass/
+=======
+/player/
+/serverClass/
+/serverHost/
+>>>>>>> main
 /utils/
+/inputs
