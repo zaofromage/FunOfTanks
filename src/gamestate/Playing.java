@@ -129,7 +129,7 @@ public class Playing implements Statemethods {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
+		player.getClient().sendUDP("X : " + e.getX() + " Y : " + e.getY());
 	}
 
 	@Override
