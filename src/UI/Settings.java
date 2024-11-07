@@ -16,12 +16,12 @@ public class Settings extends PopUpMenu {
 
 	public Settings(int x, int y, Game game) {
 		super(x, y, 500, 700, Color.yellow);
-		int i = 200;
+		int i = 100;
 		for (Map.Entry<String, Integer> item : PlayerInputs.getKeyBindings().entrySet()) {
 			buttons.add(new Button(500, i, 250, 50, Color.gray, item.getKey() + " : " + item.getValue(), () -> {
 				new Delay(100, () -> waitForInput = item.getKey() );
 			}));
-			i += 50;
+			i += 70;
 		}
 	}
 	

@@ -17,7 +17,6 @@ public class JoinMenu extends PopUpMenu {
 	private TextInput name;
 	private TextInput ip;
 	private TextInput port;
-	private ArrayList<Button> buttons;
 	
 	public JoinMenu(int x, int y, Game game) {
 		super(x, y, 500, 700, Color.yellow);
@@ -51,6 +50,7 @@ public class JoinMenu extends PopUpMenu {
 
 	@Override
 	public void update() {
+		super.update();
 		name.update();
 		ip.update();
 		port.update();
