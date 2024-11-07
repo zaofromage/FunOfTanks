@@ -1,17 +1,1 @@
-<<<<<<< HEAD
 /serverHost/
-/player/
-/map/
-/UI/
-/client/
-/effect/
-/gamestate/
-/input/
-/serverClass/
-=======
-/player/
-/serverClass/
-/serverHost/
->>>>>>> main
-/utils/
-/inputs

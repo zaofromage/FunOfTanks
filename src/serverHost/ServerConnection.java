@@ -99,15 +99,6 @@ public class ServerConnection implements Runnable {
 							if (p != null) {
 								p.createTank(Integer.parseInt(body[1]), Integer.parseInt(body[2]));
 							}
-						} else if (header.equals("updatetank")) {
-							Player p = Finder.findPlayer(body[0], play.getPlayers());
-							if (p != null) {
-								if (p.getTank() != null) {
-									p.getTank().setX(Integer.parseInt(body[1]));
-									p.getTank().setY(Integer.parseInt(body[2]));
-									p.getTank().setOrientation(Double.parseDouble(body[3]));
-								}
-							}
 						} else if (header.equals("deletetank")) {
 							System.out.println(serverResponse);
 							Player p = Finder.findPlayer(body[0], play.getPlayers());
@@ -147,6 +138,8 @@ public class ServerConnection implements Runnable {
 								dom.getZone().setPoints(Integer.parseInt(body[0]));
 							}
 						}
+						break;
+					case FINISH:
 						break;
 					}
 				}
