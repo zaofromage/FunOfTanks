@@ -110,12 +110,6 @@ public class ServerConnection implements Runnable {
 							play.getEnemiesBullets()
 									.add(new ServerBullet(Integer.parseInt(body[0]), Integer.parseInt(body[1]),
 											Double.parseDouble(body[2]), body[3], Integer.parseInt(body[4]), Boolean.parseBoolean(body[5])));
-						} else if (header.equals("updatebullet")) {
-							ServerBullet b = Finder.findServerBullet(body[3], Integer.parseInt(body[0]),
-									play.getEnemiesBullets());
-							if (b != null) {
-								b.update(Integer.parseInt(body[1]), Integer.parseInt(body[2]));
-							}
 						} else if (header.equals("deletebullet")) {
 							ServerBullet bullet = Finder.findServerBullet(body[0], Integer.parseInt(body[1]),
 									play.getEnemiesBullets());
@@ -131,11 +125,6 @@ public class ServerConnection implements Runnable {
 									play.getObstacles());
 							if (o != null) {
 								play.getObsToRemove().add(o);
-							}
-						} else if (header.equals("point")) {
-							if (play instanceof Domination) {
-								Domination dom = (Domination) play;
-								dom.getZone().setPoints(Integer.parseInt(body[0]));
 							}
 						}
 						break;

@@ -1,1 +1,10 @@
 /serverHost/
+/UI/
+/client/
+/effect/
+/gamestate/
+/input/
+/map/
+/player/
+/serverClass/
+/utils/
