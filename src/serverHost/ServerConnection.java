@@ -37,7 +37,6 @@ public class ServerConnection implements Runnable {
 		try {
 			while (true) {
 				serverResponse = in.readLine();
-				// System.out.println("Server says : " + serverResponse);
 				if (serverResponse != null) {
 					String header = ClientHandler.getHeader(serverResponse);
 					String[] body = ClientHandler.getBody(serverResponse);
@@ -62,7 +61,6 @@ public class ServerConnection implements Runnable {
 							}
 							menu.getPlayers().addAll(toAdd);
 						} else if (header.equals("ready")) {
-							System.out.println(serverResponse);
 							Player p = Finder.findPlayer(body[0], menu.getPlayers());
 							if (p != null) {
 								p.setReady(Boolean.parseBoolean(body[1]));
@@ -100,11 +98,14 @@ public class ServerConnection implements Runnable {
 								p.createTank(Integer.parseInt(body[1]), Integer.parseInt(body[2]));
 							}
 						} else if (header.equals("deletetank")) {
-							System.out.println(serverResponse);
 							Player p = Finder.findPlayer(body[0], play.getPlayers());
+							Player killer = Finder.findPlayer(body[1], play.getPlayers());
 							if (p != null) {
-								play.getLeaderBoard().merge(p, 1, Integer::sum);
 								p.deleteTank();
+								if (game != null) {
+									game.getPlaying().getLeaderBoard().get(p).death++;
+									game.getPlaying().getLeaderBoard().get(killer).kills++;
+								}
 							}
 						} else if (header.equals("newbullet")) {
 							play.getEnemiesBullets()

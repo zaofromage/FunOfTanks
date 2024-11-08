@@ -39,7 +39,6 @@ public class UDPServerConnection implements Runnable {
 				DatagramPacket packet = new DatagramPacket(data, data.length);
 				socket.receive(packet);
 				String res = new String(packet.getData(), 0, packet.getLength());
-				System.out.println("rep du serveur : " + res);
 				if (res != null) {
 					String header = ClientHandler.getHeader(res);
 					String[] body = ClientHandler.getBody(res);

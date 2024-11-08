@@ -1,16 +1,19 @@
 package gamestate;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import map.Obstacle;
 import serverClass.ServerBullet;
 import utils.Calcul;
 import player.Player;
 import player.PlayerMode;
+import player.Stats;
 import client.GamePanel;
 import input.PlayerInputs;
 
@@ -25,13 +28,12 @@ public class Playing implements Statemethods {
 	private ArrayList<Obstacle> obsToRemove = new ArrayList<Obstacle>();
 
 	private ArrayList<ServerBullet> enemiesBullets;
-	
-	private HashMap<Player, Integer> leaderBoard = new HashMap<>();
-	
+
+	private HashMap<Player, Stats> leaderBoard = new HashMap<>();
+
 	protected int isFinish = 0;
 
 	private boolean drawLeaderBoard;
-	
 
 	public Playing(GamePanel panel, Player player, ArrayList<Player> players) {
 		this.panel = panel;
@@ -41,8 +43,9 @@ public class Playing implements Statemethods {
 		enemiesBullets = new ArrayList<ServerBullet>();
 		setUpWalls();
 		for (Player p : players) {
-			p.createTank(Calcul.r.nextInt(100, (int)panel.getDimension().getWidth()-150), Calcul.r.nextInt(100, (int)panel.getDimension().getHeight()-150));
-			leaderBoard.put(p, 0);
+			p.createTank(Calcul.r.nextInt(100, (int) panel.getDimension().getWidth() - 150),
+					Calcul.r.nextInt(100, (int) panel.getDimension().getHeight() - 150));
+			leaderBoard.put(p, new Stats());
 		}
 	}
 
@@ -60,7 +63,8 @@ public class Playing implements Statemethods {
 			obsToRemove.clear();
 		}
 		if (isFinish != 0) {
-			panel.getGame().setFinish(new Finish(isFinish, players.stream().filter(p -> p.getTeam() == isFinish).findAny().orElse(null).tankColor));				
+			panel.getGame().setFinish(new Finish(isFinish,
+					players.stream().filter(p -> p.getTeam() == isFinish).findAny().orElse(null).tankColor));
 			GameState.state = GameState.FINISH;
 		}
 	}
@@ -77,8 +81,116 @@ public class Playing implements Statemethods {
 			p.drawPlayer(g);
 		}
 		player.drawSkills(g);
+		// draw leaderBoard
 		if (drawLeaderBoard) {
-			System.out.println(leaderBoard);
+			drawLeaderBoard(g);
+		}
+	}
+	
+	public void drawLeaderBoard(Graphics g) {
+		int i = 0;
+		g.setColor(new Color(255, 0, 0, 50));
+		g.fillRect(GamePanel.dimension.width / 2 - ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2),
+				175 + Stats.STAT_HEIGHT * i, 100, Stats.STAT_HEIGHT);
+		g.fillRect(
+				GamePanel.dimension.width / 2 + Stats.STAT_WIDTH * 2
+						- ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2),
+				175 + Stats.STAT_HEIGHT * i, Stats.STAT_WIDTH, Stats.STAT_HEIGHT);
+		g.fillRect(
+				GamePanel.dimension.width / 2 + Stats.STAT_WIDTH * 3
+						- ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2),
+				175 + Stats.STAT_HEIGHT * i, Stats.STAT_WIDTH, Stats.STAT_HEIGHT);
+		g.fillRect(
+				GamePanel.dimension.width / 2 + Stats.STAT_WIDTH * 4
+						- ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2),
+				175 + Stats.STAT_HEIGHT * i, Stats.STAT_WIDTH, Stats.STAT_HEIGHT);
+		g.setColor(Color.BLACK);
+		g.drawRect(GamePanel.dimension.width / 2 - ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2),
+				175 + Stats.STAT_HEIGHT * i, 100, Stats.STAT_HEIGHT);
+		g.drawRect(
+				GamePanel.dimension.width / 2 + Stats.STAT_WIDTH * 2
+						- ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2),
+				175 + Stats.STAT_HEIGHT * i, Stats.STAT_WIDTH, Stats.STAT_HEIGHT);
+		g.drawRect(
+				GamePanel.dimension.width / 2 + Stats.STAT_WIDTH * 3
+						- ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2),
+				175 + Stats.STAT_HEIGHT * i, Stats.STAT_WIDTH, Stats.STAT_HEIGHT);
+		g.drawRect(
+				GamePanel.dimension.width / 2 + Stats.STAT_WIDTH * 4
+						- ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2),
+				175 + Stats.STAT_HEIGHT * i, Stats.STAT_WIDTH, Stats.STAT_HEIGHT);
+		g.setColor(Color.BLACK);
+		g.drawString("PLAYER",
+				GamePanel.dimension.width / 2 - ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2) + 50
+						- g.getFontMetrics().stringWidth("PLAYER") / 2,
+				175 + Stats.STAT_HEIGHT*i+Stats.STAT_HEIGHT/2+g.getFontMetrics().getAscent()/2);
+		g.drawString("KILLS",
+				GamePanel.dimension.width / 2 + Stats.STAT_WIDTH * 2
+						- ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2) + Stats.STAT_WIDTH / 2
+						- g.getFontMetrics().stringWidth("KILLS") / 2,
+				175 + Stats.STAT_HEIGHT*i+Stats.STAT_HEIGHT/2+g.getFontMetrics().getAscent()/2);
+		g.drawString("DEATH",
+				GamePanel.dimension.width / 2 + Stats.STAT_WIDTH * 3
+						- ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2) + Stats.STAT_WIDTH / 2
+						- g.getFontMetrics().stringWidth("DEATH") / 2,
+				175 + Stats.STAT_HEIGHT*i+Stats.STAT_HEIGHT/2+g.getFontMetrics().getAscent()/2);
+		g.drawString("RATIO",
+				GamePanel.dimension.width / 2 + Stats.STAT_WIDTH * 4
+						- ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2) + Stats.STAT_WIDTH / 2
+						- g.getFontMetrics().stringWidth("RATIO") / 2,
+				175 + Stats.STAT_HEIGHT*i+Stats.STAT_HEIGHT/2+g.getFontMetrics().getAscent()/2);
+		for (Map.Entry<Player, Stats> l : leaderBoard.entrySet()) {
+			g.setColor(new Color(255, 0, 0, 50));
+			g.fillRect(GamePanel.dimension.width / 2 - ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2),
+					200 + Stats.STAT_HEIGHT * i, 100, Stats.STAT_HEIGHT);
+			g.fillRect(
+					GamePanel.dimension.width / 2 + Stats.STAT_WIDTH * 2
+							- ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2),
+					200 + Stats.STAT_HEIGHT * i, Stats.STAT_WIDTH, Stats.STAT_HEIGHT);
+			g.fillRect(
+					GamePanel.dimension.width / 2 + Stats.STAT_WIDTH * 3
+							- ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2),
+					200 + Stats.STAT_HEIGHT * i, Stats.STAT_WIDTH, Stats.STAT_HEIGHT);
+			g.fillRect(
+					GamePanel.dimension.width / 2 + Stats.STAT_WIDTH * 4
+							- ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2),
+					200 + Stats.STAT_HEIGHT * i, Stats.STAT_WIDTH, Stats.STAT_HEIGHT);
+			g.setColor(Color.BLACK);
+			g.drawRect(GamePanel.dimension.width / 2 - ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2),
+					200 + Stats.STAT_HEIGHT * i, 100, Stats.STAT_HEIGHT);
+			g.drawRect(
+					GamePanel.dimension.width / 2 + Stats.STAT_WIDTH * 2
+							- ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2),
+					200 + Stats.STAT_HEIGHT * i, Stats.STAT_WIDTH, Stats.STAT_HEIGHT);
+			g.drawRect(
+					GamePanel.dimension.width / 2 + Stats.STAT_WIDTH * 3
+							- ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2),
+					200 + Stats.STAT_HEIGHT * i, Stats.STAT_WIDTH, Stats.STAT_HEIGHT);
+			g.drawRect(
+					GamePanel.dimension.width / 2 + Stats.STAT_WIDTH * 4
+							- ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2),
+					200 + Stats.STAT_HEIGHT * i, Stats.STAT_WIDTH, Stats.STAT_HEIGHT);
+			g.setColor(Color.BLACK);
+			g.drawString(l.getKey().getName(),
+					GamePanel.dimension.width / 2 - ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2) + 50
+							- g.getFontMetrics().stringWidth(l.getKey().getName()) / 2,
+					200 + Stats.STAT_HEIGHT*i+Stats.STAT_HEIGHT/2+g.getFontMetrics().getAscent()/2);
+			g.drawString("" + l.getValue().kills,
+					GamePanel.dimension.width / 2 + Stats.STAT_WIDTH * 2
+							- ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2) + Stats.STAT_WIDTH / 2
+							- g.getFontMetrics().stringWidth("" + l.getValue().kills) / 2,
+					200 + Stats.STAT_HEIGHT*i+Stats.STAT_HEIGHT/2+g.getFontMetrics().getAscent()/2);
+			g.drawString("" + l.getValue().death,
+					GamePanel.dimension.width / 2 + Stats.STAT_WIDTH * 3
+							- ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2) + Stats.STAT_WIDTH / 2
+							- g.getFontMetrics().stringWidth("" + l.getValue().death) / 2,
+					200 + Stats.STAT_HEIGHT*i+Stats.STAT_HEIGHT/2+g.getFontMetrics().getAscent()/2);
+			g.drawString("" + l.getValue().ratio(),
+					GamePanel.dimension.width / 2 + Stats.STAT_WIDTH * 4
+							- ((100 + Stats.STAT_WIDTH * Stats.STATS_NUMBER) / 2) + Stats.STAT_WIDTH / 2
+							- g.getFontMetrics().stringWidth("" + l.getValue().ratio()) / 2,
+					200 + Stats.STAT_HEIGHT*i+Stats.STAT_HEIGHT/2+g.getFontMetrics().getAscent()/2);
+			i++;
 		}
 	}
 
@@ -93,8 +205,8 @@ public class Playing implements Statemethods {
 	public ArrayList<ServerBullet> getEnemiesBullets() {
 		return enemiesBullets;
 	}
-	
-	public HashMap<Player, Integer> getLeaderBoard() {
+
+	public HashMap<Player, Stats> getLeaderBoard() {
 		return leaderBoard;
 	}
 
@@ -139,8 +251,7 @@ public class Playing implements Statemethods {
 				if (player.getTank().getMode() == PlayerMode.BASE && player.getTank().getCannon().canFire()) {
 					player.getTank().switchMode(PlayerMode.AIM);
 				}
-			}
-		    else if (e.getButton() == MouseEvent.BUTTON3) {
+			} else if (e.getButton() == MouseEvent.BUTTON3) {
 				player.getTank().switchMode(PlayerMode.BLOC);
 			}
 		}
@@ -158,7 +269,8 @@ public class Playing implements Statemethods {
 				break;
 			case BLOC:
 				if (e.getButton() == MouseEvent.BUTTON1) {
-					player.getTank().dropObstacle(Calcul.limitRange(e.getX(), player.getTank().getX()), Calcul.limitRange(e.getY(), player.getTank().getY()), true, players, getObstacles());
+					player.getTank().dropObstacle(Calcul.limitRange(e.getX(), player.getTank().getX()),
+							Calcul.limitRange(e.getY(), player.getTank().getY()), true, players, getObstacles());
 				} else if (e.getButton() == MouseEvent.BUTTON3) {
 					player.getTank().switchMode(PlayerMode.BASE);
 				}
@@ -183,7 +295,6 @@ public class Playing implements Statemethods {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -208,19 +319,19 @@ public class Playing implements Statemethods {
 			}
 		} else if (keyCode == PlayerInputs.dash) {
 			if (player.getTank() != null) {
-				player.getTank().dash(obstacles);				
+				player.getTank().dash(obstacles);
 			}
 		} else if (keyCode == PlayerInputs.skill1) {
 			if (player.getTank() != null) {
-				player.getSkill1().launch();				
+				player.getSkill1().launch();
 			}
 		} else if (keyCode == PlayerInputs.skill2) {
 			if (player.getTank() != null) {
-				player.getSkill2().launch();				
+				player.getSkill2().launch();
 			}
 		} else if (keyCode == PlayerInputs.skill3) {
 			if (player.getTank() != null) {
-				player.getSkill3().launch();				
+				player.getSkill3().launch();
 			}
 		} else if (keyCode == PlayerInputs.leaderBoard) {
 			drawLeaderBoard = true;
@@ -256,11 +367,11 @@ public class Playing implements Statemethods {
 	public ArrayList<Obstacle> getObstacles() {
 		return obstacles;
 	}
-	
+
 	public ArrayList<Obstacle> getObsToRemove() {
 		return obsToRemove;
 	}
-	
+
 	public ArrayList<Obstacle> getObsToAdd() {
 		return obsToAdd;
 	}

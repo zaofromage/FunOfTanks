@@ -19,7 +19,10 @@ public class Settings extends PopUpMenu {
 		int i = 100;
 		for (Map.Entry<String, Integer> item : PlayerInputs.getKeyBindings().entrySet()) {
 			buttons.add(new Button(500, i, 250, 50, Color.gray, item.getKey() + " : " + item.getValue(), () -> {
-				new Delay(100, () -> waitForInput = item.getKey() );
+				new Delay(300, () -> {
+					waitForInput = item.getKey();
+					Game.printMessage("Enter an input");
+				});
 			}));
 			i += 70;
 		}

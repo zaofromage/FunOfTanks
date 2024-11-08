@@ -24,7 +24,6 @@ public class JoinMenu extends PopUpMenu {
 		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 250, 300, 75, Color.cyan,
 				"CREATE PLAYER", () -> {
 					Player p = new Player(name.getText(), Role.GUEST, ip.getIP(), port.getPort(), game, true);
-					System.out.println("prout");
 					game.setPlayer(p);
 					game.getMenu().getPlayers().add(p);
 					game.getPlayer().getClient().send("newplayer;" + game.getPlayer().getName());

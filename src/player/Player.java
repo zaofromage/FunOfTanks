@@ -43,7 +43,10 @@ public class Player {
 	 * son du jeu
 	 * systeme qui detruit une partie du tank quand tu prend une explosion (operation booleene tah blender) et tu meurt quand ton tank ne contient plus de pixel
 	 */
-	public static int RESPAWN = 5000;
+	public static final int RESPAWN = 5000;
+	public static final int MAX_LIVES = 3;
+	
+	private Game game;
 	
 	private Role role;
 	private Server server;
@@ -71,10 +74,11 @@ public class Player {
 	private int team;
 	
 	public Player(String name, Role role, Game game, boolean isMain) {
+		this.game = game;
 		this.name = name;
 		this.role = role;
 		this.main = isMain;
-		this.lives = 3;
+		this.lives = MAX_LIVES;
 		this.team = 1;
 		this.skill1 = Skill.speedUp(this);
 		this.skill2 = Skill.dashThrough(this);
@@ -92,6 +96,7 @@ public class Player {
 	}
 
 	public Player(String name, Role role, String ip, int port, Game game, boolean isMain) {
+		this.game = game;
 		this.name = name;
 		this.role = role;
 		this.main = isMain;
@@ -236,6 +241,10 @@ public class Player {
 	@Override
 	public String toString() {
 		return name;
+	}
+	
+	public Game getGame() {
+		return game;
 	}
 
 	public boolean isReady() {

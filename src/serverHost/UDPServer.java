@@ -3,15 +3,10 @@ package serverHost;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import serverClass.ServerBullet;
 import serverClass.ServerTank;
@@ -47,7 +42,6 @@ public class UDPServer implements Runnable {
 				String header = ClientHandler.getHeader(request);
 				String[] body = ClientHandler.getBody(request);
 				if (header.equals("updatetank")) {
-					System.out.println(request);
 					ServerTank tank = Finder.findServerTank(body[0], server.getPlaying().getTanks());
 					if (tank != null) {
 						tank.x = Integer.parseInt(body[1]);
@@ -83,26 +77,5 @@ public class UDPServer implements Runnable {
 				e.printStackTrace();
 			}			
 		}
-	}
-	
-	private boolean isLocalhost(InetAddress a) {
-		try {
-	        return a.equals(InetAddress.getByName("localhost"));
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return false;
-	    }
-	}
-	
-	private void sendToAllOthers(String msg) {
-		/*byte[] response = msg.getBytes();
-		for (InetAddress a : clients.stream().filter(ad -> !isLocalhost(ad)).collect(Collectors.toList())) {
-			DatagramPacket toSend = new DatagramPacket(response, response.length, a, PORT);
-			try {
-				serverSocket.send(toSend);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}			
-		}*/
 	}
 }

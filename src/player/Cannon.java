@@ -70,7 +70,7 @@ public class Cannon {
 				haveToRemove = b;
 				p.deleteTank();
 				owner.getOwner().getClient().send("deletebullet;" + owner.getOwner().getName() + ";" + b.getId());
-				owner.getOwner().getClient().send("deletetank;" + p.getName());
+				owner.getOwner().getClient().send("deletetank;" + p.getName() + ";" + owner.getOwner().getName());
 				owner.getOwner().debris(haveToRemove.getX(), haveToRemove.getY(), haveToRemove.getOrientation() - 50,
 						haveToRemove.getOrientation() + 50);
 			} else if (b.hasReachLimit(obs)) {
