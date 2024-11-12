@@ -42,6 +42,9 @@ public class Player {
 	 * ajouter une grenade
 	 * son du jeu
 	 * systeme qui detruit une partie du tank quand tu prend une explosion (operation booleene tah blender) et tu meurt quand ton tank ne contient plus de pixel
+	 * IMPORTANT REFACTORING il faut que a terme chaque feature soit serverside ça veut dire que quand je tire l'action coté client c'est juste 
+	 * "server tire une balle mais moi je fais rien"
+	 * et surtout pour etre sur que tout soit comme ça il faut que le serveur utilise seulement sendToAll et pas sendToAllOthers 
 	 */
 	public static final int RESPAWN = 5000;
 	public static final int MAX_LIVES = 3;
@@ -63,10 +66,9 @@ public class Player {
 	
 	private boolean ready;
 	
-	
-	private ParticleSystem blowup = new ParticleSystem(new Particle(50, Shape.RECTANGLE, 0.75, new Vector(), Color.RED), 20, 200);
+	private ParticleSystem blowup = new ParticleSystem(new Particle(50, Shape.RECTANGLE, 0.75, new Vector(), Color.RED), 20);
     private ParticleSystem debris = new ParticleSystem(new Particle(50, Shape.RECTANGLE, 0.75, new Vector(), Color.ORANGE), 10);
-    private ParticleSystem trainee = new ParticleSystem(new Particle(35, Shape.RECTANGLE, 0.25, new Vector(), Color.GRAY), 3, 2);
+    private ParticleSystem trainee = new ParticleSystem(new Particle(35, Shape.RECTANGLE, 0.3, new Vector(), Color.GRAY), 3, 30);
 	
 	private Skill skill1;
 	private Skill skill2;
@@ -81,7 +83,7 @@ public class Player {
 		this.main = isMain;
 		this.lives = MAX_LIVES;
 		this.team = 1;
-		this.skill1 = Skill.speedUp(this);
+		this.skill1 = Skill.tripleShot(this);
 		this.skill2 = Skill.dashThrough(this);
 		this.skill3 = Skill.grosseBertha(this);
 		if (this.role == Role.HOST) {

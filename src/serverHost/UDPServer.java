@@ -57,6 +57,8 @@ public class UDPServer implements Runnable {
 					}
 				} else if (header.equals("point")) {
 					sendToAll(request);
+				} else if (header.equals("trainee")) {
+					sendToAll(request);
 				} else {
 					sendToAll("wrong request");
 				}

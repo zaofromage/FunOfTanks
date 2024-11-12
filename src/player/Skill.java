@@ -113,4 +113,17 @@ public class Skill {
 			return null;
 		}
 	}
+	
+	public static Skill tripleShot(Player player) {
+		try {
+			return new Skill("la plante vs zombie la", 8000, ImageIO.read(Skill.class.getResource("/images/dashthrough.png")), () -> {
+				if (player.getTank() != null) {
+					player.getTank().getCannon().setCanTripleShot(true);
+				}
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

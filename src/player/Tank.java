@@ -164,7 +164,7 @@ public class Tank {
 
 	public void fire() {
 		if (!invinsible || owner.getName().equals("ChickenJoe")) {
-			cannon.fire(x, y, (int) aim.x, (int) aim.y, orientation);			
+			cannon.fire(x, y, (int) aim.x, (int) aim.y, orientation);		
 		}
 	}
 
@@ -257,14 +257,15 @@ public class Tank {
 			aim.x = hitbox.getX();
 			aim.y = hitbox.getY();
 		}
-		if (owner.getClient() != null)
+		if (owner.getClient() != null) {
 			owner.getClient().sendUDP("updatetank;" + owner.getName() + ";" + x + ";" + y + ";" + orientation);
+			if (speed > 1 || inDash) {
+				owner.getClient().sendUDP("trainee;" + x + ";" + y);
+			}
+		}
 	}
 
 	public void drawTank(Graphics g) {
-		if (speed > 1 || inDash) {
-			owner.trainee(x, y);
-		}
 		g.setColor(color);
 		g.fillRect(x - displayOffset, y - displayOffset, size, size);
 		g.setColor(Color.black);

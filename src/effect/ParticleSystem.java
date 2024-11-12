@@ -16,7 +16,6 @@ public class ParticleSystem {
 	protected ArrayList<Particle> particles;
 	private double spawnSize;
 	private int offset;
-	private Timer timer = new Timer();
 	
 	public ParticleSystem(Particle particle, int nb) {
 		spawnSize = particle.getSize();
@@ -42,6 +41,7 @@ public class ParticleSystem {
 		for (int i = 0; i < particles.size(); i++) {
 			double angle = alpha + Calcul.r.nextDouble() * (beta - alpha);
 			Particle p = particles.get(i);
+			// faut faire gaffe je sais pas a quelle point c'est gourmand de recreer un thread a chaque fois, a revoir si le jeu est lent
 			new Delay(offset*i, () -> p.reset(x, y, new Vector(Math.cos(angle), Math.sin(angle)), spawnSize));
 		}
 	}
@@ -49,10 +49,11 @@ public class ParticleSystem {
 	public void interval(int x, int y, int min, int max) {
 		double alpha = Math.toRadians(min);
 		double beta  = Math.toRadians(max);
-		for (Particle p : particles) {
+		for (int i = 0; i < particles.size(); i++) {
+			Particle p = particles.get(i);
 			if (p.isDead()) {				
 				double angle = alpha + Calcul.r.nextDouble() * (beta - alpha);
-				p.reset(x, y, new Vector(Math.cos(angle), Math.sin(angle)), spawnSize);
+				new Delay(offset*i, () -> p.reset(x, y, new Vector(Math.cos(angle), Math.sin(angle)), spawnSize));
 			}
 		}
 	}

@@ -193,6 +193,17 @@ public class Playing implements Statemethods {
 			i++;
 		}
 	}
+	
+	public void deleteBullet(ServerBullet b) {
+		if (b != null) {
+			if (b.bertha) {
+				player.blowup(b.x, b.y, 1);
+			} else {
+				player.blowup(b.x, b.y, 0.2);
+			}
+			enemiesBullets.remove(b);			
+		}
+	}
 
 	public Player getPlayer() {
 		return player;
@@ -246,39 +257,12 @@ public class Playing implements Statemethods {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		if (player.getTank() != null) {
-			if (e.getButton() == PlayerInputs.aim) {
-				if (player.getTank().getMode() == PlayerMode.BASE && player.getTank().getCannon().canFire()) {
-					player.getTank().switchMode(PlayerMode.AIM);
-				}
-			} else if (e.getButton() == PlayerInputs.blocMode) {
-				player.getTank().switchMode(PlayerMode.BLOC);
-			}
-		}
+		handleInputsPressed(e.getButton());
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		if (player.getTank() != null) {
-			switch (player.getTank().getMode()) {
-			case AIM:
-				if (e.getButton() == PlayerInputs.aim) {
-					player.getTank().fire();
-					player.getTank().switchMode(PlayerMode.BASE);
-				}
-				break;
-			case BLOC:
-				if (e.getButton() == PlayerInputs.build) {
-					player.getTank().dropObstacle(Calcul.limitRange(e.getX(), player.getTank().getX()),
-							Calcul.limitRange(e.getY(), player.getTank().getY()), true, players, getObstacles());
-				} else if (e.getButton() == PlayerInputs.blocMode) {
-					player.getTank().switchMode(PlayerMode.BASE);
-				}
-				break;
-			default:
-				break;
-			}
-		}
+		handleInputsReleased(e.getButton());
 	}
 
 	@Override
@@ -300,7 +284,27 @@ public class Playing implements Statemethods {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		int keyCode = e.getKeyCode();
+		handleInputsPressed(e.getKeyCode());
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		handleInputsReleased(e.getKeyCode());
+	}
+
+	public ArrayList<Obstacle> getObstacles() {
+		return obstacles;
+	}
+
+	public ArrayList<Obstacle> getObsToRemove() {
+		return obsToRemove;
+	}
+
+	public ArrayList<Obstacle> getObsToAdd() {
+		return obsToAdd;
+	}
+	
+	public void handleInputsPressed(int keyCode) {
 		if (keyCode == PlayerInputs.up) {
 			if (player.getTank() != null) {
 				player.getTank().setUp(true);
@@ -337,19 +341,17 @@ public class Playing implements Statemethods {
 			drawLeaderBoard = true;
 		}
 		if (player.getTank() != null) {
-			if (e.getKeyCode() == PlayerInputs.aim) {
+			if (keyCode == PlayerInputs.aim) {
 				if (player.getTank().getMode() == PlayerMode.BASE && player.getTank().getCannon().canFire()) {
 					player.getTank().switchMode(PlayerMode.AIM);
 				}
-			} else if (e.getKeyCode() == PlayerInputs.blocMode) {
+			} else if (keyCode == PlayerInputs.blocMode) {
 				player.getTank().switchMode(PlayerMode.BLOC);
 			}
 		}
 	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		int keyCode = e.getKeyCode();
+	
+	public void handleInputsReleased(int keyCode) {
 		if (keyCode == PlayerInputs.up) {
 			if (player.getTank() != null) {
 				player.getTank().setUp(false);
@@ -374,13 +376,13 @@ public class Playing implements Statemethods {
 		if (player.getTank() != null) {
 			switch (player.getTank().getMode()) {
 			case AIM:
-				if (e.getKeyCode() == PlayerInputs.aim) {
+				if (keyCode == PlayerInputs.aim) {
 					player.getTank().fire();
 					player.getTank().switchMode(PlayerMode.BASE);
 				}
 				break;
 			case BLOC:
-				if (e.getKeyCode() == PlayerInputs.blocMode) {
+				if (keyCode == PlayerInputs.blocMode) {
 					player.getTank().switchMode(PlayerMode.BASE);
 				}
 				break;
@@ -388,18 +390,6 @@ public class Playing implements Statemethods {
 				break;
 			}
 		}
-	}
-
-	public ArrayList<Obstacle> getObstacles() {
-		return obstacles;
-	}
-
-	public ArrayList<Obstacle> getObsToRemove() {
-		return obsToRemove;
-	}
-
-	public ArrayList<Obstacle> getObsToAdd() {
-		return obsToAdd;
 	}
 
 }

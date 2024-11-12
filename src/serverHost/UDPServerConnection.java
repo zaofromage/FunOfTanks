@@ -66,6 +66,8 @@ public class UDPServerConnection implements Runnable {
 								Domination dom = (Domination) play;
 								dom.getZone().setPoints(Integer.parseInt(body[0]));
 							}
+						} else if (header.equals("trainee")) {
+							play.getPlayer().trainee(Integer.parseInt(body[0]), Integer.parseInt(body[1]));
 						}
 						break;
 					case FINISH:

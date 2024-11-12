@@ -28,6 +28,8 @@ public class Cannon {
 	private boolean canBertha = false;
 	private Ellipse2D bertha = new Ellipse2D.Double(0, 0, 200, 200);
 	private boolean activeBertha = false;
+	
+	private boolean canTripleShot = false;
 
 	public Cannon(Tank owner) {
 		color = Color.black;
@@ -73,6 +75,7 @@ public class Cannon {
 				owner.getOwner().getClient().send("deletetank;" + p.getName() + ";" + owner.getOwner().getName());
 				owner.getOwner().debris(haveToRemove.getX(), haveToRemove.getY(), haveToRemove.getOrientation() - 50,
 						haveToRemove.getOrientation() + 50);
+				owner.getOwner().blowup((int) haveToRemove.getX(), (int) haveToRemove.getY(), 0.20);
 			} else if (b.hasReachLimit(obs)) {
 				haveToRemove = b;
 				owner.getOwner().getClient().send("deletebullet;" + owner.getOwner().getName() + ";" + b.getId());
@@ -109,14 +112,33 @@ public class Cannon {
 	public void fire(int x, int y, int targetX, int targetY, double orientation) {
 		if (canFire) {
 			Bullet b = new Bullet(x, y, targetX, targetY, orientation, this, canBertha);
+			double dist = Math.sqrt((targetX-x)*(targetX-x) + (targetY-y)*(targetY-y));
+			Bullet haut = null;
+			Bullet bas = null;
+			if (canTripleShot) {
+				haut = new Bullet(x, y, (int) (x+(dist*Math.cos(Math.toRadians(orientation)+Math.toRadians(15)))), (int) (y+(dist*Math.sin(Math.toRadians(orientation)+Math.toRadians(15)))), orientation+15, this, canBertha);
+				bas = new Bullet(x, y, (int) (x+(dist*Math.cos(Math.toRadians(orientation)-Math.toRadians(15)))), (int) (y+(dist*Math.sin(Math.toRadians(orientation)-Math.toRadians(15)))), orientation-15, this, canBertha);
+			}
 			canFire = false;
 			if (canBertha) {
 				canBertha = false;
 				canFire = true;
 			}
 			bullets.add(b);
+			if (haut != null && bas != null) {
+				bullets.add(haut);
+				bullets.add(bas);
+			}
+			if (canTripleShot)
+				canTripleShot = false;
 			owner.getOwner().getClient().send("newbullet;" + x + ";" + y + ";" + orientation + ";"
 					+ owner.getOwner().getName() + ";" + b.getId() + ";" + b.isBertha());
+			if (haut != null && bas != null) {
+				owner.getOwner().getClient().send("newbullet;" + x + ";" + y + ";" + (orientation+15) + ";"
+						+ owner.getOwner().getName() + ";" + haut.getId() + ";" + false);
+				owner.getOwner().getClient().send("newbullet;" + x + ";" + y + ";" + (orientation-15) + ";"
+						+ owner.getOwner().getName() + ";" + bas.getId() + ";" + false);
+			}
 			new Delay(cooldown, () -> canFire = true);
 		}
 	}
@@ -148,6 +170,14 @@ public class Cannon {
 
 	public boolean canFire() {
 		return canFire;
+	}
+	
+	public boolean canTripleShot() {
+		return canTripleShot;
+	}
+	
+	public void setCanTripleShot(boolean can) {
+		canTripleShot = can;
 	}
 
 	public void setCanBertha(boolean bertha) {
