@@ -6,12 +6,18 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerInputs {
+	
+	public static int aim = MouseEvent.BUTTON1;
+	public static int blocMode = MouseEvent.BUTTON3;
+	public static int build = MouseEvent.BUTTON1;
+	
 	public static int up = KeyEvent.VK_Z;
 	public static int down = KeyEvent.VK_S;
 	public static int right = KeyEvent.VK_D;

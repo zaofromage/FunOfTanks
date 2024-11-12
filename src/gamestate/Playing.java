@@ -241,17 +241,17 @@ public class Playing implements Statemethods {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		player.getClient().sendUDP("X : " + e.getX() + " Y : " + e.getY());
+		
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if (player.getTank() != null) {
-			if (e.getButton() == MouseEvent.BUTTON1) {
+			if (e.getButton() == PlayerInputs.aim) {
 				if (player.getTank().getMode() == PlayerMode.BASE && player.getTank().getCannon().canFire()) {
 					player.getTank().switchMode(PlayerMode.AIM);
 				}
-			} else if (e.getButton() == MouseEvent.BUTTON3) {
+			} else if (e.getButton() == PlayerInputs.blocMode) {
 				player.getTank().switchMode(PlayerMode.BLOC);
 			}
 		}
@@ -262,16 +262,16 @@ public class Playing implements Statemethods {
 		if (player.getTank() != null) {
 			switch (player.getTank().getMode()) {
 			case AIM:
-				if (e.getButton() == MouseEvent.BUTTON1) {
+				if (e.getButton() == PlayerInputs.aim) {
 					player.getTank().fire();
 					player.getTank().switchMode(PlayerMode.BASE);
 				}
 				break;
 			case BLOC:
-				if (e.getButton() == MouseEvent.BUTTON1) {
+				if (e.getButton() == PlayerInputs.build) {
 					player.getTank().dropObstacle(Calcul.limitRange(e.getX(), player.getTank().getX()),
 							Calcul.limitRange(e.getY(), player.getTank().getY()), true, players, getObstacles());
-				} else if (e.getButton() == MouseEvent.BUTTON3) {
+				} else if (e.getButton() == PlayerInputs.blocMode) {
 					player.getTank().switchMode(PlayerMode.BASE);
 				}
 				break;
@@ -336,6 +336,15 @@ public class Playing implements Statemethods {
 		} else if (keyCode == PlayerInputs.leaderBoard) {
 			drawLeaderBoard = true;
 		}
+		if (player.getTank() != null) {
+			if (e.getKeyCode() == PlayerInputs.aim) {
+				if (player.getTank().getMode() == PlayerMode.BASE && player.getTank().getCannon().canFire()) {
+					player.getTank().switchMode(PlayerMode.AIM);
+				}
+			} else if (e.getKeyCode() == PlayerInputs.blocMode) {
+				player.getTank().switchMode(PlayerMode.BLOC);
+			}
+		}
 	}
 
 	@Override
@@ -361,6 +370,23 @@ public class Playing implements Statemethods {
 			GameState.state = GameState.MENU;
 		} else if (keyCode == PlayerInputs.leaderBoard) {
 			drawLeaderBoard = false;
+		}
+		if (player.getTank() != null) {
+			switch (player.getTank().getMode()) {
+			case AIM:
+				if (e.getKeyCode() == PlayerInputs.aim) {
+					player.getTank().fire();
+					player.getTank().switchMode(PlayerMode.BASE);
+				}
+				break;
+			case BLOC:
+				if (e.getKeyCode() == PlayerInputs.blocMode) {
+					player.getTank().switchMode(PlayerMode.BASE);
+				}
+				break;
+			default:
+				break;
+			}
 		}
 	}
 

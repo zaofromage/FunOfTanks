@@ -64,8 +64,9 @@ public class Player {
 	private boolean ready;
 	
 	
-	private ParticleSystem blowup = new ParticleSystem(new Particle(50, Shape.RECTANGLE, 0.75, new Vector(), Color.RED), 20);
+	private ParticleSystem blowup = new ParticleSystem(new Particle(50, Shape.RECTANGLE, 0.75, new Vector(), Color.RED), 20, 200);
     private ParticleSystem debris = new ParticleSystem(new Particle(50, Shape.RECTANGLE, 0.75, new Vector(), Color.ORANGE), 10);
+    private ParticleSystem trainee = new ParticleSystem(new Particle(35, Shape.RECTANGLE, 0.25, new Vector(), Color.GRAY), 3, 2);
 	
 	private Skill skill1;
 	private Skill skill2;
@@ -135,6 +136,10 @@ public class Player {
 		debris.emit((int) x, (int) y, (int) min, (int) max);
 	}
 	
+	public void trainee(double x, double y) {
+		trainee.interval((int)x, (int)y, -180, 180);
+	}
+	
 	public void close() {
 		if (server != null) {
 			server.close();
@@ -158,9 +163,11 @@ public class Player {
 		}
 		blowup.update();
 		debris.update();
+		trainee.update();
 	}
 	
 	public void drawPlayer(Graphics g) {
+		trainee.draw(g);
 		if (tank != null) {
 			tank.drawTank(g);
 		}

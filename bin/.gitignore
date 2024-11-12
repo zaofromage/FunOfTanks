@@ -1,5 +1,8 @@
+/input/
+/map/
+/player/
 /serverClass/
 /serverHost/
 /utils/
+/UI/
 /gamestate/
-/player/

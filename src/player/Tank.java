@@ -262,6 +262,9 @@ public class Tank {
 	}
 
 	public void drawTank(Graphics g) {
+		if (speed > 1 || inDash) {
+			owner.trainee(x, y);
+		}
 		g.setColor(color);
 		g.fillRect(x - displayOffset, y - displayOffset, size, size);
 		g.setColor(Color.black);

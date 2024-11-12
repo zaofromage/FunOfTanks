@@ -99,7 +99,7 @@ public class Cannon {
 			for (Player p : players) {
 				if (p.getTank() != null && bertha.intersects(p.getTank().getHitbox()) && !p.getTank().isInvinsible()) {
 					p.deleteTank();
-					owner.getOwner().getClient().send("deletetank;" + p.getName());
+					owner.getOwner().getClient().send("deletetank;" + p.getName() + ";" + owner.getOwner().getName());
 				}
 			}
 			destroyObstacle(obs);

@@ -16,26 +16,42 @@ public class Settings extends PopUpMenu {
 
 	public Settings(int x, int y, Game game) {
 		super(x, y, 500, 700, Color.yellow);
-		int i = 100;
+		int i = 60;
 		for (Map.Entry<String, Integer> item : PlayerInputs.getKeyBindings().entrySet()) {
-			buttons.add(new Button(500, i, 250, 50, Color.gray, item.getKey() + " : " + item.getValue(), () -> {
-				new Delay(300, () -> {
-					waitForInput = item.getKey();
-					Game.printMessage("Enter an input");
-				});
+			String val = null;
+			if (item.getValue().equals("1")) {
+				val = "Left CLick";
+			} else if (item.getValue().equals("2")) {
+				val = "Middle Click";
+			} else if (item.getValue().equals("3")) {
+				val = "Right CLick";
+			} else {
+				val = KeyEvent.getKeyText(item.getValue());
+			}
+			buttons.add(new Button(475, i, 325, 40, Color.gray, item.getKey() + " : " + val, () -> {
+				if (waitForInput == null) {
+					new Delay(300, () -> {
+						if (waitForInput == null) {
+							waitForInput = item.getKey();
+							Game.printMessage("Enter an input");						
+						}
+					});					
+				}
 			}));
-			i += 70;
+			i += 50;
 		}
 	}
 	
 	@Override
 	public void update() {
 		super.update();
+		System.out.println(waitForInput);
 	}
 
 
 	public void mouseClicked(MouseEvent e) {
 		changeInput(e.getButton());
+		
 	}
 
 	public void keyPressed(KeyEvent e) {
@@ -58,7 +74,17 @@ public class Settings extends PopUpMenu {
 			waitForInput = null;
 			int i = 0;
 			for (Map.Entry<String, Integer> item : PlayerInputs.getKeyBindings().entrySet()) {
-				buttons.get(i).setText(item.getKey() + " : " + item.getValue());;
+				String val = null;
+				if (item.getValue() == 1) {
+					val = "Left CLick";
+				} else if (item.getValue() == 2) {
+					val = "Middle Click";
+				} else if (item.getValue() == 3) {
+					val = "Right CLick";
+				} else {
+					val = KeyEvent.getKeyText(item.getValue());
+				}
+				buttons.get(i).setText(item.getKey() + " : " + val);
 				i++;
 			}
 		}

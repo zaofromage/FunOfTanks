@@ -99,7 +99,7 @@ public class ServerConnection implements Runnable {
 							}
 						} else if (header.equals("deletetank")) {
 							Player p = Finder.findPlayer(body[0], play.getPlayers());
-							Player killer = Finder.findPlayer(body[1], play.getPlayers());
+							Player killer = Finder.findPlayer(body[1], play.getPlayers());								
 							if (p != null) {
 								p.deleteTank();
 								if (game != null) {
