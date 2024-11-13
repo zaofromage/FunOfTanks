@@ -32,12 +32,12 @@ public class HostMenu extends PopUpMenu {
 	
 	public static Font playerFont = new Font("SansSerif", Font.BOLD, 30);
 	private Font ipFont;
+	
 
 	public HostMenu(int x, int y, Game game) {
-		super(x, y, 500, 700, Color.yellow);
-		buttons = new ArrayList<Button>();
+		super(x, y, 500, 700, Color.yellow, game);
 		ipFont = new Font("SansSerif", Font.PLAIN, 25);
-		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 200, 300, 75, Color.cyan,
+		buttons.add(new Button(x+width/2-150, 200, 300, 75, Color.cyan,
 				"CREATE PLAYER", () -> {
 					if (name.getText().length() > 0) {
 						Player p = new Player(name.getText(), Role.HOST, game, true);
@@ -46,20 +46,20 @@ public class HostMenu extends PopUpMenu {
 						ip = "IP : " + getNetworkIPAddress() + " PORT : "
 								+ Server.PORT;
 						game.getPlayer().getClient().send("newplayer;" + game.getPlayer().getName());
-						buttons.get(1).setEnabled(true);
-						buttons.get(3).setEnabled(true);
+						buttons.get(previousLength+1).setEnabled(true);
+						buttons.get(previousLength+3).setEnabled(true);
 					} else {
 						Game.printErrorMessage("Please enter a name !");
 					}
 				}));
 		buttons.add(
-				new Button(game.getPanel().getDimension().width / 2 - 150, 300, 300, 75, Color.red, "READY", () -> {
+				new Button(x+width/2-150, 300, 300, 75, Color.red, "READY", () -> {
 					game.getPlayer().setReady(!game.getPlayer().isReady());
 					game.getPlayer().getClient().send("ready;" + game.getPlayer().getName() + ";" + game.getPlayer().isReady());
-					buttons.get(1).setColor(game.getPlayer().isReady() ? Color.green : Color.red);
+					buttons.get(previousLength+1).setColor(game.getPlayer().isReady() ? Color.green : Color.red);
 				}));
-		buttons.get(1).setEnabled(false);
-		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 400, 300, 75, Color.green, "PLAY",
+		buttons.get(previousLength+1).setEnabled(false);
+		buttons.add(new Button(x+width/2-150, 400, 300, 75, Color.green, "PLAY",
 				() -> {
 					if (game.getPlayer() != null) {
 						game.getPlayer().getClient().send("play;");
@@ -81,41 +81,35 @@ public class HostMenu extends PopUpMenu {
 						Game.printErrorMessage("crée un joueur stp soit pas con");
 					}
 				}));
-		buttons.add(new Button(game.getPanel().getDimension().width/2-150, 500, 300, 75, Color.blue, "SWITCH TEAM", () -> {
+		buttons.add(new Button(x+width/2-150, 500, 300, 75, Color.blue, "SWITCH TEAM", () -> {
 			game.getPlayer().setTeam(game.getPlayer().getTeam() == 1 ? 2:1);
 			game.getPlayer().getClient().send("team;"+game.getPlayer().getName()+";"+game.getPlayer().getTeam());
 		}));
-		buttons.get(3).setEnabled(false);
-		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 600, 300, 75, Color.white, "SWITCH MODE", () -> {
+		buttons.get(previousLength+3).setEnabled(false);
+		buttons.add(new Button(x+width/2-150, 600, 300, 75, Color.white, "SWITCH MODE", () -> {
 			GameMode.gameMode = GameMode.gameMode == GameMode.FFA ? GameMode.DOMINATION:GameMode.FFA;
 			game.getPlayer().getClient().send("mode;"+GameMode.gameMode.toString());
 		}));
 		name = new TextInput(x + 50, y + 50, 180, 30, "name ", new Font("SansSerif", Font.PLAIN, 20), 15);
-		this.game = game;
+		name.setSelected(true);
 	}
 
 	@Override
 	public void update() {
+		super.update();
 		name.update();
-		buttons.get(2).setEnabled(game.getMenu().getPlayers().size() > 0 && game.getMenu().getPlayers().stream().filter(p -> p.isReady()).count() == game.getMenu().getPlayers().size());
-		buttons.get(3).setEnabled(GameMode.gameMode != GameMode.FFA);
-		buttons.get(4).setEnabled(game.getPlayer() != null);
+		buttons.get(previousLength+2).setEnabled(game.getMenu().getPlayers().size() > 0 && game.getMenu().getPlayers().stream().filter(p -> p.isReady()).count() == game.getMenu().getPlayers().size());
+		buttons.get(previousLength+3).setEnabled(GameMode.gameMode != GameMode.FFA);
+		buttons.get(previousLength+4).setEnabled(game.getPlayer() != null);
 	}
 
 	@Override
 	public void draw(Graphics g) {
 		super.draw(g);
-		for (Button b : buttons) {
-			b.draw(g);
-		}
 		name.draw(g);
-		if (game.getMenu().getPlayersPresent() != null) {
-			g.setFont(playerFont);
-			formatPlayers(game.getMenu().getPlayersPresent(), g);
-		}
 		if (ip != null) {
 			g.setFont(ipFont);
-			g.drawString(ip, game.getPanel().getDimension().width / 2 - g.getFontMetrics().stringWidth(ip) / 2, 720);
+			g.drawString(ip, x+width/2 - g.getFontMetrics().stringWidth(ip) / 2, 720);
 		}
 	}
 	
@@ -147,11 +141,15 @@ public class HostMenu extends PopUpMenu {
         return "Adresse IP réseau non trouvée";
     }
 
+	@Override
 	public void mouseClicked(MouseEvent e) {
+		super.mouseClicked(e);
 		name.onClick(e);
 	}
 
+	@Override
 	public void keyPressed(KeyEvent e) {
+		super.keyPressed(e);
 		name.keyPressed(e);
 	}
 }

@@ -124,4 +124,8 @@ public class TextInput {
 	public void setText(StringBuilder t) {
 		text = t;
 	}
+	
+	public void setSelected(boolean s) {
+		selected = s;
+	}
 }

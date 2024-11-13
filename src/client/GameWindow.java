@@ -19,7 +19,7 @@ public class GameWindow {
 			
 			@Override
 			public void windowOpened(WindowEvent e) {
-				PlayerInputs.loadInputs();
+				//PlayerInputs.loadInputs();
 			}
 			
 			@Override

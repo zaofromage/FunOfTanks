@@ -83,9 +83,9 @@ public class Player {
 		this.main = isMain;
 		this.lives = MAX_LIVES;
 		this.team = 1;
-		this.skill1 = Skill.tripleShot(this);
-		this.skill2 = Skill.dashThrough(this);
-		this.skill3 = Skill.grosseBertha(this);
+		this.skill1 = null;
+		this.skill2 = null;
+		this.skill3 = null;
 		if (this.role == Role.HOST) {
 			try {
 				server = new Server();
@@ -159,9 +159,12 @@ public class Player {
 		}
 		//ui
 		if (main) {
-			skill1.update();
-			skill2.update();
-			skill3.update();
+			if (skill1 != null)
+				skill1.update();
+			if (skill2 != null)
+				skill2.update();
+			if (skill3 != null)
+				skill3.update();
 		}
 		blowup.update();
 		debris.update();
@@ -179,9 +182,12 @@ public class Player {
 	
 	public void drawSkills(Graphics g) {
 		if (main) {
-			skill1.draw(g, 25, 725);
-			skill2.draw(g, 100, 725);
-			skill3.draw(g, 175, 725);
+			if (skill1 != null)
+				skill1.draw(g, 25, 725);
+			if (skill2 != null)
+				skill2.draw(g, 100, 725);
+			if (skill3 != null)
+				skill3.draw(g, 175, 725);
 		}
 	}
 
@@ -268,12 +274,24 @@ public class Player {
 		return skill1;
 	}
 	
+	public void setSkill1(Skill s) {
+		skill1 = s;
+	}
+	
 	public Skill getSkill2() {
 		return skill2;
 	}
 	
+	public void setSkill2(Skill s) {
+		skill2 = s;
+	}
+	
 	public Skill getSkill3() {
 		return skill3;
+	}
+	
+	public void setSkill3(Skill s) {
+		skill3 = s;
 	}
 	
 	public int getTeam() {

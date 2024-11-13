@@ -199,70 +199,69 @@ public class Tank {
 	}
 
 	public void updateTank(ArrayList<Obstacle> obs, ArrayList<Player> players, Player player) {
-		//System.out.println(invinsible);
-		if (up) {
-			move(0, -1, obs);
-		}
-		if (down) {
-			move(0, 1, obs);
-		}
-		if (left) {
-			move(-1, 0, obs);
-		}
-		if (right) {
-			move(1, 0, obs);
-		}
 		if (owner.isMain()) {
+			if (up) {
+				move(0, -1, obs);
+			}
+			if (down) {
+				move(0, 1, obs);
+			}
+			if (left) {
+				move(-1, 0, obs);
+			}
+			if (right) {
+				move(1, 0, obs);
+			}
 			findOrientation();
+			if (possibleObstacle != null) {
+				possibleObstacle.updateObstacle(Calcul.limitRange((int)target.x, x), Calcul.limitRange((int)target.y, y));
+				if (possibleObstacle.getHitbox().intersects(hitbox)
+						|| possibleObstacle.getHitbox().getX() >= GamePanel.dimension.width - GamePanel.tileSize * 2
+						|| possibleObstacle.getHitbox().getX() <= GamePanel.tileSize
+						|| possibleObstacle.getHitbox().getY() >= GamePanel.dimension.height - GamePanel.tileSize * 2
+						|| possibleObstacle.getHitbox().getY() <= GamePanel.tileSize
+						|| isInZone) {
+					possibleObstacle.setColor(Obstacle.possibleWrong);
+				} else {
+					possibleObstacle.setColor(Obstacle.possible);
+				}
+			}
+			// si t'es bloqué dans un obstacle quand tu dash through
+			for (Obstacle o : obs) {
+				while (detectObstacle(o, x, y)) {
+					if (up)
+						y -= 1;
+					else if (left)
+						x -= 1;
+					else if (right)
+						x += 1;
+					else if (down)
+						y += 1;
+					else
+						y += 1;
+				}
+			}
+			//aim calculation
+			if (mode == PlayerMode.AIM) {
+				if (aimDistance < maxRange) {
+					aimDistance += aimSpeed;				
+				}
+				aim.x = hitbox.getX() + Math.cos(orientation*(Math.PI/180.0)) * aimDistance;
+				aim.y = hitbox.getY() + Math.sin(orientation*(Math.PI/180.0)) * aimDistance;
+			} else {
+				aimDistance = 0.;
+				aim.x = hitbox.getX();
+				aim.y = hitbox.getY();
+			}
+			if (owner.getClient() != null) {
+				owner.getClient().sendUDP("updatetank;" + owner.getName() + ";" + x + ";" + y + ";" + orientation);
+				if (speed > 1 || inDash) {
+					owner.getClient().sendUDP("trainee;" + x + ";" + y);
+				}
+			}
 		}
 		updateHitbox();
 		cannon.updateCannon(obs, players, player);
-		if (possibleObstacle != null) {
-			possibleObstacle.updateObstacle(Calcul.limitRange((int)target.x, x), Calcul.limitRange((int)target.y, y));
-			if (possibleObstacle.getHitbox().intersects(hitbox)
-					|| possibleObstacle.getHitbox().getX() >= GamePanel.dimension.width - GamePanel.tileSize * 2
-					|| possibleObstacle.getHitbox().getX() <= GamePanel.tileSize
-					|| possibleObstacle.getHitbox().getY() >= GamePanel.dimension.height - GamePanel.tileSize * 2
-					|| possibleObstacle.getHitbox().getY() <= GamePanel.tileSize
-					|| isInZone) {
-				possibleObstacle.setColor(Obstacle.possibleWrong);
-			} else {
-				possibleObstacle.setColor(Obstacle.possible);
-			}
-		}
-		// si t'es bloqué dans un obstacle quand tu dash through
-		for (Obstacle o : obs) {
-			while (detectObstacle(o, x, y)) {
-				if (up)
-					y -= 1;
-				else if (left)
-					x -= 1;
-				else if (right)
-					x += 1;
-				else if (down)
-					y += 1;
-				else
-					y += 1;
-			}
-		}
-		//aim calculation
-		if (mode == PlayerMode.AIM) {
-			if (aimDistance < maxRange) {
-				aimDistance += aimSpeed;				
-			}
-			aim.x = hitbox.getX() + Math.cos(orientation*(Math.PI/180.0)) * aimDistance;
-			aim.y = hitbox.getY() + Math.sin(orientation*(Math.PI/180.0)) * aimDistance;
-		} else {
-			aimDistance = 0.;
-			aim.x = hitbox.getX();
-			aim.y = hitbox.getY();
-		}
-		if (owner.getClient() != null) {
-			owner.getClient().sendUDP("updatetank;" + owner.getName() + ";" + x + ";" + y + ";" + orientation);
-			if (speed > 1 || inDash) {
-				owner.getClient().sendUDP("trainee;" + x + ";" + y);
-			}
-		}
 	}
 
 	public void drawTank(Graphics g) {
@@ -352,6 +351,10 @@ public class Tank {
 	public void setRight(boolean right) {
 		this.right = right;
 	}
+	
+	public Vector getTarget() {
+		return target;
+	}
 
 	public void setTargetX(int targetX) {
 		this.target.x = targetX;
@@ -376,6 +379,10 @@ public class Tank {
 	
 	public void setInZone(boolean in) {
 		isInZone = in;
+	}
+	
+	public BufferedImage getCrosshair() {
+		return crosshair;
 	}
 	
 	public boolean isInvinsible() {

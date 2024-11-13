@@ -3,8 +3,8 @@ package player;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
@@ -69,6 +69,23 @@ public class Skill {
 		}
 	}
 	
+	public void draw(Graphics g, int x, int y, int size) {
+		g.drawImage(img, x, y, size, size, null);
+		if (inCooldown) {
+			g.setColor(cooldownColor);
+			g.fillRect(x, y + cooldownOffset, 50, 50 - cooldownOffset);
+		}
+	}
+	
+	public static Skill[] getAllSkills(Player p) {
+		Skill[] res = new Skill[4];
+		res[0] = speedUp(p);
+		res[1] = dashThrough(p);
+		res[2] = grosseBertha(p);
+		res[3] = tripleShot(p);
+		return res;
+	}
+	
 	public static Skill speedUp(Player player) {
 		try {
 			return new Skill("Speed up", 20000, ImageIO.read(Skill.class.getResource("/images/speedup.png")), () -> {
@@ -103,7 +120,7 @@ public class Skill {
 	
 	public static Skill grosseBertha(Player player) {
 		try {
-			return new Skill("Next shot goes hard", 10000, ImageIO.read(Skill.class.getResource("/images/dashthrough.png")), () -> {
+			return new Skill("Next shot goes hard", 10000, ImageIO.read(Skill.class.getResource("/images/bertha.png")), () -> {
 				if (player.getTank() != null) {
 					player.getTank().getCannon().setCanBertha(true);
 				}
@@ -116,7 +133,7 @@ public class Skill {
 	
 	public static Skill tripleShot(Player player) {
 		try {
-			return new Skill("la plante vs zombie la", 8000, ImageIO.read(Skill.class.getResource("/images/dashthrough.png")), () -> {
+			return new Skill("la plante vs zombie la", 4000, ImageIO.read(Skill.class.getResource("/images/tripleshot.png")), () -> {
 				if (player.getTank() != null) {
 					player.getTank().getCannon().setCanTripleShot(true);
 				}
@@ -126,4 +143,29 @@ public class Skill {
 			return null;
 		}
 	}
+	
+	public String getTitle() {
+		return title;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(cooldown, cooldownColor, cooldownOffset, endOfTimer, inCooldown, title);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Skill other = (Skill) obj;
+		return cooldown == other.cooldown && Objects.equals(cooldownColor, other.cooldownColor)
+				&& cooldownOffset == other.cooldownOffset && endOfTimer == other.endOfTimer
+				&& inCooldown == other.inCooldown && Objects.equals(title, other.title);
+	}
+	
+	
 }

@@ -1,6 +1,7 @@
 package player;
 
 import java.awt.Rectangle;
+import utils.Vector;
 import java.util.ArrayList;
 
 import map.Obstacle;
@@ -20,18 +21,20 @@ public class Bullet {
 	private double x, y;
 	private int id;
 	private Rectangle hitbox;
-	private double vectorX, vectorY;
+	private Vector vector;
 	private int targetX, targetY;
 	private double orientation;
-	private int width, height;
+	private int width = 20;
+	private int height = 10;
+	private int displayOffset = height/2;
 
-	private int blowOffset;
+	private int blowOffset = 7;
 
-	private double speed;
+	private double speed = 4;
 	
-	private boolean friendlyFire;
+	private boolean friendlyFire = false;
 
-	private Color color;
+	private Color color = Color.gray;
 	
 	private boolean isBertha;
 
@@ -44,18 +47,11 @@ public class Bullet {
 		counter++;
 		this.targetX = targetX;
 		this.targetY = targetY;
-		width = 20;
-		height = 10;
-		hitbox = new Rectangle(x, y, width, height);
+		hitbox = new Rectangle(x+displayOffset, y-displayOffset, width, height);
 		double[] nvect = Calcul.normalizeVector(targetX - x, targetY - y);
-		vectorX = nvect[0];
-		vectorY = nvect[1];
-		speed = 4;
-		blowOffset = 5;
+		vector = new Vector(nvect[0], nvect[1]);
 		this.orientation = orientation;
-		color = Color.gray;
 		this.owner = owner;
-		this.friendlyFire = false;
 		this.isBertha = bertha;
 		new Delay(1000, () -> friendlyFire = true);
 	}
@@ -67,7 +63,6 @@ public class Bullet {
 		} else {
 			g2.setColor(color);			
 		}
-
 		AffineTransform transform = new AffineTransform();
 		transform.rotate(Math.toRadians(orientation), x, y);
 
@@ -78,12 +73,12 @@ public class Bullet {
 	}
 
 	public void updateHitbox() {
-		hitbox.setBounds((int) x, (int) y, width, height);
+		hitbox.setBounds((int) x+displayOffset, (int) y-displayOffset, width, height);
 	}
 
 	public void updateBullet() {
-		x += vectorX * speed;
-		y += vectorY * speed;
+		x += vector.x * speed;
+		y += vector.y * speed;
 		updateHitbox();
 		if (owner.getOwner().getOwner() != null) {
 			owner.getOwner().getOwner().getClient().sendUDP(
@@ -133,11 +128,11 @@ public class Bullet {
 	}
 	
 	public void bounceX() {
-		vectorX *= -1;
+		vector.x *= -1;
 	}
 	
 	public void bounceY() {
-		vectorY *= -1;
+		vector.y *= -1;
 	}
 
 	// getters setters
@@ -148,6 +143,14 @@ public class Bullet {
 
 	public double getY() {
 		return y;
+	}
+	
+	public int getTargetX() {
+		return targetX;
+	}
+	
+	public int getTargetY() {
+		return targetY;
 	}
 
 	public int getId() {

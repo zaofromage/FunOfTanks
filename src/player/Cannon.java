@@ -42,6 +42,9 @@ public class Cannon {
 	}
 
 	public void drawCannon(Graphics g, int x, int y, double orientation) {
+		for (Bullet b : bullets) {
+			b.drawBullet(g);
+		}
 		Graphics2D g2d = (Graphics2D) g;
 		Rectangle rect = new Rectangle(x + displayOffset, y - displayOffset, width, height);
 
@@ -55,9 +58,6 @@ public class Cannon {
 			// (int)bertha.getHeight());
 		}
 
-		for (Bullet b : bullets) {
-			b.drawBullet(g);
-		}
 		g2d.setColor(color);
 		g2d.draw(rotated);
 		g2d.fill(rotated);
@@ -111,13 +111,13 @@ public class Cannon {
 
 	public void fire(int x, int y, int targetX, int targetY, double orientation) {
 		if (canFire) {
-			Bullet b = new Bullet(x, y, targetX, targetY, orientation, this, canBertha);
-			double dist = Math.sqrt((targetX-x)*(targetX-x) + (targetY-y)*(targetY-y));
+			Bullet b = new Bullet(x, y, targetX+(owner.getCrosshair().getWidth()/2), targetY+(owner.getCrosshair().getHeight()/2), orientation, this, canBertha);
 			Bullet haut = null;
 			Bullet bas = null;
 			if (canTripleShot) {
-				haut = new Bullet(x, y, (int) (x+(dist*Math.cos(Math.toRadians(orientation)+Math.toRadians(15)))), (int) (y+(dist*Math.sin(Math.toRadians(orientation)+Math.toRadians(15)))), orientation+15, this, canBertha);
-				bas = new Bullet(x, y, (int) (x+(dist*Math.cos(Math.toRadians(orientation)-Math.toRadians(15)))), (int) (y+(dist*Math.sin(Math.toRadians(orientation)-Math.toRadians(15)))), orientation-15, this, canBertha);
+				double dist = Math.sqrt((targetX-x)*(targetX-x) + (targetY-y)*(targetY-y));
+				haut = new Bullet(x, y, (int) (x+(dist*Math.cos(Math.toRadians(orientation)+Math.toRadians(15)))), (int) (y+(dist*Math.sin(Math.toRadians(orientation)+Math.toRadians(15)))), orientation+15, this, false);
+				bas = new Bullet(x, y, (int) (x+(dist*Math.cos(Math.toRadians(orientation)-Math.toRadians(15)))), (int) (y+(dist*Math.sin(Math.toRadians(orientation)-Math.toRadians(15)))), orientation-15, this, false);
 			}
 			canFire = false;
 			if (canBertha) {

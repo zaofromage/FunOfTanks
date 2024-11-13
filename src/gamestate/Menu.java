@@ -12,6 +12,7 @@ import UI.HostMenu;
 import UI.JoinMenu;
 import UI.Settings;
 import client.Game;
+import client.GamePanel;
 import player.Player;
 
 public class Menu implements Statemethods {
@@ -47,11 +48,11 @@ public class Menu implements Statemethods {
 		activeCancelButton = false;
 		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 200, 300, 75, Color.red, "HOST A GAME", () -> {
 			activeCancelButton = true;
-			hostMenu = new HostMenu(game.getPanel().getDimension().width / 2 - 500/2, 50, game);
+			hostMenu = new HostMenu(game.getPanel().getDimension().width / 2 - 500, 50, game);
 		}));
 		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 400, 300, 75, Color.blue, "JOIN A GAME", () -> {
 			activeCancelButton = true;
-			joinMenu = new JoinMenu(game.getPanel().getDimension().width / 2 - 500/2, 50, game);
+			joinMenu = new JoinMenu(game.getPanel().getDimension().width / 2 - 500, 50, game);
 		}));
 		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 550, 300, 75, Color.darkGray, "Settings", () -> {
 			activeCancelButton = true;
@@ -78,6 +79,8 @@ public class Menu implements Statemethods {
 
 	@Override
 	public void draw(Graphics g) {
+		g.setColor(Color.WHITE);
+		g.fillRect(0, 0, GamePanel.dimension.width, GamePanel.dimension.height);
 		g.setColor(Color.lightGray);
 		g.fillRect(game.getPanel().getDimension().width / 2 - 500/2, 50, 500, 700);
 		g.setColor(Color.black);

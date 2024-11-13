@@ -2,6 +2,7 @@ package UI;
 
 import java.lang.reflect.Field;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Map;
@@ -15,7 +16,7 @@ public class Settings extends PopUpMenu {
 	private String waitForInput = null;
 
 	public Settings(int x, int y, Game game) {
-		super(x, y, 500, 700, Color.yellow);
+		super(x, y, 500, 700, Color.yellow, game);
 		int i = 60;
 		for (Map.Entry<String, Integer> item : PlayerInputs.getKeyBindings().entrySet()) {
 			String val = null;
@@ -32,8 +33,7 @@ public class Settings extends PopUpMenu {
 				if (waitForInput == null) {
 					new Delay(300, () -> {
 						if (waitForInput == null) {
-							waitForInput = item.getKey();
-							Game.printMessage("Enter an input");						
+							waitForInput = item.getKey();						
 						}
 					});					
 				}
@@ -45,7 +45,16 @@ public class Settings extends PopUpMenu {
 	@Override
 	public void update() {
 		super.update();
-		System.out.println(waitForInput);
+		buttons.get(0).setEnabled(false);
+		buttons.get(1).setEnabled(false);
+	}
+	
+	@Override
+	public void draw(Graphics g) {
+		super.draw(g);
+		if (waitForInput != null) {
+			g.drawString("Enter an input", x+width+50, y+height/2);
+		}
 	}
 
 
