@@ -6,6 +6,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 
 import input.PlayerInputs;
+import player.Skill;
 
 public class GameWindow {
 	private JFrame jframe;
@@ -19,7 +20,7 @@ public class GameWindow {
 			
 			@Override
 			public void windowOpened(WindowEvent e) {
-				//PlayerInputs.loadInputs();
+				PlayerInputs.loadInputs();
 			}
 			
 			@Override

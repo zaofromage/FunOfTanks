@@ -329,15 +329,15 @@ public class Playing implements Statemethods {
 				player.getTank().dash(obstacles);
 			}
 		} else if (keyCode == PlayerInputs.skill1) {
-			if (player.getTank() != null) {
+			if (player.getTank() != null && player.getSkill1() != null) {
 				player.getSkill1().launch();
 			}
 		} else if (keyCode == PlayerInputs.skill2) {
-			if (player.getTank() != null) {
+			if (player.getTank() != null && player.getSkill2() != null) {
 				player.getSkill2().launch();
 			}
 		} else if (keyCode == PlayerInputs.skill3) {
-			if (player.getTank() != null) {
+			if (player.getTank() != null && player.getSkill3() != null) {
 				player.getSkill3().launch();
 			}
 		} else if (keyCode == PlayerInputs.leaderBoard) {

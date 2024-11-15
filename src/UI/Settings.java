@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.Map;
-
 import client.Game;
 import input.PlayerInputs;
 import utils.Delay;
@@ -17,36 +15,62 @@ public class Settings extends PopUpMenu {
 
 	public Settings(int x, int y, Game game) {
 		super(x, y, 500, 700, Color.yellow, game);
+		Field[] fields = PlayerInputs.getKeyBindings();
 		int i = 60;
-		for (Map.Entry<String, Integer> item : PlayerInputs.getKeyBindings().entrySet()) {
+		for (Field item : fields) {
 			String val = null;
-			if (item.getValue().equals("1")) {
-				val = "Left CLick";
-			} else if (item.getValue().equals("2")) {
-				val = "Middle Click";
-			} else if (item.getValue().equals("3")) {
-				val = "Right CLick";
-			} else {
-				val = KeyEvent.getKeyText(item.getValue());
+			try {
+				if ((int)item.get(null) == 1) {
+					val = "Left CLick";
+				} else if ((int) item.get(null) == 2) {
+					val = "Middle Click";
+				} else if ((int)item.get(null) == 3) {
+					val = "Right CLick";
+				} else {
+					val = KeyEvent.getKeyText((int) item.get(null));
+				}
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				e.printStackTrace();
 			}
-			buttons.add(new Button(475, i, 325, 40, Color.gray, item.getKey() + " : " + val, () -> {
+			buttons.add(new Button(x+width/2-200, i, 400, 40, Color.gray, item.getName() + " : " + val, () -> {
 				if (waitForInput == null) {
 					new Delay(300, () -> {
 						if (waitForInput == null) {
-							waitForInput = item.getKey();						
+							waitForInput = item.getName();						
 						}
 					});					
 				}
 			}));
 			i += 50;
 		}
+		buttons.add(new Button(x+width+50, y+height/2-25, 100, 50, Color.RED, "reset", () -> {
+			PlayerInputs.reset();
+			System.out.println(fields.length);
+			int j = 0;
+			for (Field item : fields) {
+				String val = null;
+					try {
+						if ((int)item.get(null) == 1) {
+							val = "Left CLick";
+						} else if ((int)item.get(null) == 2) {
+							val = "Middle Click";
+						} else if ((int)item.get(null) == 3) {
+							val = "Right CLick";
+						} else {
+							val = KeyEvent.getKeyText((int)item.get(null));
+						}
+					} catch (IllegalArgumentException | IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				buttons.get(previousLength+j).setText(item.getName() + " : " + val);
+				j++;
+			}
+		}));
 	}
 	
 	@Override
 	public void update() {
 		super.update();
-		buttons.get(0).setEnabled(false);
-		buttons.get(1).setEnabled(false);
 	}
 	
 	@Override
@@ -81,20 +105,24 @@ public class Settings extends PopUpMenu {
 				e1.printStackTrace();
 			}
 			waitForInput = null;
-			int i = 0;
-			for (Map.Entry<String, Integer> item : PlayerInputs.getKeyBindings().entrySet()) {
+			Field[] fields = PlayerInputs.getKeyBindings();
+			for (int i = 0; i < fields.length; i++) {
+				Field item = fields[i];
 				String val = null;
-				if (item.getValue() == 1) {
-					val = "Left CLick";
-				} else if (item.getValue() == 2) {
-					val = "Middle Click";
-				} else if (item.getValue() == 3) {
-					val = "Right CLick";
-				} else {
-					val = KeyEvent.getKeyText(item.getValue());
+				try {
+					if ((int)item.get(null) == 1) {
+						val = "Left CLick";
+					} else if ((int) item.get(null) == 2) {
+						val = "Middle Click";
+					} else if ((int)item.get(null) == 3) {
+						val = "Right CLick";
+					} else {
+						val = KeyEvent.getKeyText((int) item.get(null));
+					}
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					e.printStackTrace();
 				}
-				buttons.get(i).setText(item.getKey() + " : " + val);
-				i++;
+				buttons.get(previousLength+i).setText(item.getName() + " : " + val);
 			}
 		}
 	}

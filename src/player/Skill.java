@@ -3,11 +3,18 @@ package player;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
+import input.PlayerInputs;
 import utils.Delay;
 
 public class Skill {
@@ -88,7 +95,7 @@ public class Skill {
 	
 	public static Skill speedUp(Player player) {
 		try {
-			return new Skill("Speed up", 20000, ImageIO.read(Skill.class.getResource("/images/speedup.png")), () -> {
+			return new Skill("speedup", 20000, ImageIO.read(Skill.class.getResource("/images/speedup.png")), () -> {
 				if (player.getTank() != null) {
 					player.getTank().setSpeed(player.getTank().BASE_SPEED * 3);
 					new Delay(3000, () -> {
@@ -106,7 +113,7 @@ public class Skill {
 	
 	public static Skill dashThrough(Player player) {
 		try {
-			return new Skill("Dash through walls", 10000, ImageIO.read(Skill.class.getResource("/images/dashthrough.png")), () -> {
+			return new Skill("dashtrought", 10000, ImageIO.read(Skill.class.getResource("/images/dashthrough.png")), () -> {
 				if (player.getTank() != null) {
 					player.getTank().setCanDashThrough(true);
 					player.getTank().setCanDash(true);
@@ -120,7 +127,7 @@ public class Skill {
 	
 	public static Skill grosseBertha(Player player) {
 		try {
-			return new Skill("Next shot goes hard", 10000, ImageIO.read(Skill.class.getResource("/images/bertha.png")), () -> {
+			return new Skill("bertha", 10000, ImageIO.read(Skill.class.getResource("/images/bertha.png")), () -> {
 				if (player.getTank() != null) {
 					player.getTank().getCannon().setCanBertha(true);
 				}
@@ -133,7 +140,7 @@ public class Skill {
 	
 	public static Skill tripleShot(Player player) {
 		try {
-			return new Skill("la plante vs zombie la", 4000, ImageIO.read(Skill.class.getResource("/images/tripleshot.png")), () -> {
+			return new Skill("tripleshot", 4000, ImageIO.read(Skill.class.getResource("/images/tripleshot.png")), () -> {
 				if (player.getTank() != null) {
 					player.getTank().getCannon().setCanTripleShot(true);
 				}
@@ -146,6 +153,64 @@ public class Skill {
 	
 	public String getTitle() {
 		return title;
+	}
+	
+	public static void loadSkills(Player p) {
+		try {
+			File f = new File("res/skills");
+			if (f.exists()) {
+				FileReader fr = new FileReader(f);
+				BufferedReader r = new BufferedReader(fr);
+				String line = r.readLine();
+				String[] items = line.split(";");
+				p.setSkill1(string2Skill(items[0], p));
+				p.setSkill2(string2Skill(items[1], p));
+				p.setSkill3(string2Skill(items[2], p));
+				r.close();
+				fr.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void saveSkills(Player p) {
+		try {
+			File f = new File("res/skills");
+			if (f.exists()) {
+				f.createNewFile();
+			}
+			FileWriter fw = new FileWriter(f);
+			if (p.getSkill1() != null)
+				fw.write(p.getSkill1().getTitle() + ";");
+			else
+				fw.write("null;");
+			if (p.getSkill2() != null)
+				fw.write(p.getSkill2().getTitle() + ";");
+			else
+				fw.write("null;");
+			if (p.getSkill3() != null)
+				fw.write(p.getSkill3().getTitle() + ";");
+			else
+				fw.write("null;");
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static Skill string2Skill(String s, Player p) {
+		switch (s) {
+		case "speedup":return speedUp(p);
+		case "dashthrough":return dashThrough(p);
+		case "bertha":return grosseBertha(p);
+		case "tripleshot":return tripleShot(p);
+		default: return null;
+		}
 	}
 
 	@Override

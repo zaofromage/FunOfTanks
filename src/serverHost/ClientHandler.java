@@ -3,7 +3,6 @@ package serverHost;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import gamestate.GameMode;
 import map.Obstacle;
@@ -64,12 +63,12 @@ public class ClientHandler implements Runnable {
 						}
 					} else if (header.equals("newobstacle")) {
 						server.getPlaying().getObstacles().add(new Obstacle(Integer.parseInt(body[0]), Integer.parseInt(body[1]), Boolean.parseBoolean(body[2])));
-						sendToAllOthers(request);
+						sendToAll(request);
 					} else if (header.equals("deleteobstacle")) {
 						Obstacle o = Finder.findObstacle(Integer.parseInt(body[0]), Integer.parseInt(body[1]), server.getPlaying().getObstacles());
 						if (o != null) {
 							server.getPlaying().getObstacles().remove(o);
-							sendToAllOthers(request);
+							sendToAll(request);
 						}
 					} else if (header.equals("ready")) {
 						ServerPlayer p = Finder.findServerPlayer(body[0], server.getPlaying().getPlayers());

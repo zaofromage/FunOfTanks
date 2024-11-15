@@ -8,41 +8,41 @@ import java.io.IOException;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 public class PlayerInputs {
 	
 	public static int aim = MouseEvent.BUTTON1;
 	public static int blocMode = MouseEvent.BUTTON3;
 	public static int build = MouseEvent.BUTTON1;
-	
 	public static int up = KeyEvent.VK_Z;
 	public static int down = KeyEvent.VK_S;
 	public static int right = KeyEvent.VK_D;
 	public static int left = KeyEvent.VK_Q;
-	
 	public static int skill1 = KeyEvent.VK_E;
 	public static int skill2 = KeyEvent.VK_R;
 	public static int skill3 = KeyEvent.VK_A;
-	
 	public static int dash = KeyEvent.VK_SPACE;
-	
 	public static int escape = KeyEvent.VK_ESCAPE;
-	
 	public static int leaderBoard = KeyEvent.VK_TAB;
 	
-	public static HashMap<String, Integer> getKeyBindings() {
-		HashMap<String, Integer> res = new HashMap<String, Integer>();
-		for (Field f : PlayerInputs.class.getDeclaredFields()) {
-			try {
-				res.put(f.getName(), (int) f.get(null));
-			} catch (IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
-			}
-		}
-		return res;
+	public static Field[] getKeyBindings() {
+        return PlayerInputs.class.getDeclaredFields();
+	}
+	
+	public static void reset() {
+		aim = MouseEvent.BUTTON1;
+		blocMode = MouseEvent.BUTTON3;
+		build = MouseEvent.BUTTON1;	
+		up = KeyEvent.VK_Z;
+		down = KeyEvent.VK_S;
+		right = KeyEvent.VK_D;
+		left = KeyEvent.VK_Q;
+		skill1 = KeyEvent.VK_E;
+		skill2 = KeyEvent.VK_R;
+		skill3 = KeyEvent.VK_A;
+		dash = KeyEvent.VK_SPACE;
+		escape = KeyEvent.VK_ESCAPE;	
+		leaderBoard = KeyEvent.VK_TAB;
 	}
 	
 	public static void loadInputs() {
@@ -83,11 +83,11 @@ public class PlayerInputs {
 				f.createNewFile();
 			}
 			FileWriter fw = new FileWriter(f);
-			for (Map.Entry<String, Integer> item : PlayerInputs.getKeyBindings().entrySet()) {
-				fw.write(item.getKey() + ":" + item.getValue() + ";");
+			for (Field item : PlayerInputs.getKeyBindings()) {
+				fw.write(item.getName() + ":" + item.get(null) + ";");
 			}
 			fw.close();
-		} catch (IOException e) {
+		} catch (IOException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 	}

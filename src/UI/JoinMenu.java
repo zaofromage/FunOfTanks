@@ -52,6 +52,7 @@ public class JoinMenu extends PopUpMenu {
 		name.update();
 		ip.update();
 		port.update();
+		buttons.get(previousLength).setEnabled(game.getPlayer() == null);
 		buttons.get(previousLength+2).setEnabled(GameMode.gameMode != GameMode.FFA);
 	}
 

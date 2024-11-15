@@ -15,6 +15,7 @@ import gamestate.Playing;
 import gamestate.TeamMode;
 import map.Obstacle;
 import player.Player;
+import player.Skill;
 import serverClass.ServerBullet;
 import utils.Finder;
 
@@ -71,6 +72,7 @@ public class ServerConnection implements Runnable {
 							case TEAM:game.setPlaying(new TeamMode(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));break;
 							case DOMINATION:game.setPlaying(new Domination(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));break;
 							}
+							Skill.saveSkills(game.getPlayer());
 							GameState.state = GameState.PLAYING;
 						} else if (header.equals("team")) {
 							Player p = Finder.findPlayer(body[0], menu.getPlayers());

@@ -151,17 +151,16 @@ public class Cannon {
 		return null;
 	}
 
-	public boolean destroyObstacle(ArrayList<Obstacle> obs) {
+	public void destroyObstacle(ArrayList<Obstacle> obs) {
 		Obstacle o = detectObstacle(obs);
 		if (o == null)
-			return false;
+			return;
 		if (!o.isDestructible())
-			return true;
+			return;
 		if (owner.getOwner().getClient() != null) {
 			owner.getOwner().getClient()
 					.send("deleteobstacle;" + (int) o.getHitbox().getX() + ";" + (int) o.getHitbox().getY());
 		}
-		return obs.remove(o);
 	}
 
 	public Tank getOwner() {

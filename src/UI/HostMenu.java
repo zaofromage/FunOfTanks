@@ -20,6 +20,7 @@ import gamestate.GameState;
 import gamestate.Playing;
 import gamestate.TeamMode;
 import player.Player;
+import player.Skill;
 import serverHost.Role;
 import serverHost.Server;
 import utils.Calcul;
@@ -48,6 +49,7 @@ public class HostMenu extends PopUpMenu {
 						game.getPlayer().getClient().send("newplayer;" + game.getPlayer().getName());
 						buttons.get(previousLength+1).setEnabled(true);
 						buttons.get(previousLength+3).setEnabled(true);
+						Skill.loadSkills(p);
 					} else {
 						Game.printErrorMessage("Please enter a name !");
 					}
@@ -76,6 +78,7 @@ public class HostMenu extends PopUpMenu {
 							game.setPlaying(new Domination(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));
 							break;
 						}
+						Skill.saveSkills(game.getPlayer());
 						GameState.state = GameState.PLAYING;
 					} else {
 						Game.printErrorMessage("crée un joueur stp soit pas con");
@@ -98,6 +101,7 @@ public class HostMenu extends PopUpMenu {
 	public void update() {
 		super.update();
 		name.update();
+		buttons.get(previousLength).setEnabled(game.getPlayer() == null);
 		buttons.get(previousLength+2).setEnabled(game.getMenu().getPlayers().size() > 0 && game.getMenu().getPlayers().stream().filter(p -> p.isReady()).count() == game.getMenu().getPlayers().size());
 		buttons.get(previousLength+3).setEnabled(GameMode.gameMode != GameMode.FFA);
 		buttons.get(previousLength+4).setEnabled(game.getPlayer() != null);

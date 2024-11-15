@@ -191,7 +191,6 @@ public class Tank {
 					|| isInZone) {
 				return;
 			}
-			obstacles.add(o);
 			if (owner.getClient() != null) {
 				owner.getClient().send("newobstacle;" + x + ";" + y + ";" + destructible);
 			}

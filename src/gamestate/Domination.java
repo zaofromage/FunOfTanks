@@ -10,7 +10,7 @@ import map.Zone;
 import player.Player;
 import utils.Delay;
 
-public class Domination extends Playing {
+public class Domination extends TeamMode {
 	
 	public static final int FINISH_POINTS = 10000;
 	

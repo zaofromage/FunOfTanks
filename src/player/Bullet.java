@@ -124,7 +124,7 @@ public class Bullet {
 		if (owner.getOwner().getOwner().getClient() != null) {
 			owner.getOwner().getOwner().getClient().send("deleteobstacle;" + (int) o.getHitbox().getX() + ";" + (int) o.getHitbox().getY());
 		}
-		return obs.remove(o);
+		return true;
 	}
 	
 	public void bounceX() {
