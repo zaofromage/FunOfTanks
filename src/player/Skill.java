@@ -155,7 +155,7 @@ public class Skill {
 		return title;
 	}
 	
-	public static void loadSkills(Player p) {
+	public static void loadSkills(Player p, Skill[] skills) {
 		try {
 			File f = new File("res/skills");
 			if (f.exists()) {
@@ -163,9 +163,9 @@ public class Skill {
 				BufferedReader r = new BufferedReader(fr);
 				String line = r.readLine();
 				String[] items = line.split(";");
-				p.setSkill1(string2Skill(items[0], p));
-				p.setSkill2(string2Skill(items[1], p));
-				p.setSkill3(string2Skill(items[2], p));
+				p.setSkill1(string2Skill(items[0], p, skills));
+				p.setSkill2(string2Skill(items[1], p, skills));
+				p.setSkill3(string2Skill(items[2], p, skills));
 				r.close();
 				fr.close();
 			}
@@ -203,12 +203,12 @@ public class Skill {
 		}
 	}
 	
-	public static Skill string2Skill(String s, Player p) {
+	public static Skill string2Skill(String s, Player p, Skill[] skills) {
 		switch (s) {
-		case "speedup":return speedUp(p);
-		case "dashthrough":return dashThrough(p);
-		case "bertha":return grosseBertha(p);
-		case "tripleshot":return tripleShot(p);
+		case "speedup":return skills[0];
+		case "dashthrough":return skills[1];
+		case "bertha":return skills[2];
+		case "tripleshot":return skills[3];
 		default: return null;
 		}
 	}

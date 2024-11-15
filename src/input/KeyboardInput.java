@@ -3,27 +3,29 @@ package input;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import client.Game;
 import client.GamePanel;
 import gamestate.GameState;
 
 public class KeyboardInput implements KeyListener {
 	
-	private GamePanel panel;
+	private Game game;
 	
-	public KeyboardInput(GamePanel panel) {
-		this.panel = panel;
+	public KeyboardInput(Game game) {
+		this.game = game;
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
 		switch (GameState.state) {
 		case MENU:
-			panel.getGame().getMenu().keyTyped(e);
+			game.getMenu().keyTyped(e);
 			break;
 		case PLAYING:
-			panel.getGame().getPlaying().keyTyped(e);
+			game.getPlaying().keyTyped(e);
 			break;
 		case FINISH:
+			game.getFinish().keyTyped(e);
 			break;
 		}
 	}
@@ -32,12 +34,13 @@ public class KeyboardInput implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		switch (GameState.state) {
 		case MENU:
-			panel.getGame().getMenu().keyPressed(e);
+			game.getMenu().keyPressed(e);
 			break;
 		case PLAYING:
-			panel.getGame().getPlaying().keyPressed(e);
+			game.getPlaying().keyPressed(e);
 			break;
 		case FINISH:
+			game.getFinish().keyPressed(e);
 			break;
 		}
 	}
@@ -46,12 +49,13 @@ public class KeyboardInput implements KeyListener {
 	public void keyReleased(KeyEvent e) {
 		switch (GameState.state) {
 		case MENU:
-			panel.getGame().getMenu().keyReleased(e);
+			game.getMenu().keyReleased(e);
 			break;
 		case PLAYING:
-			panel.getGame().getPlaying().keyReleased(e);
+			game.getPlaying().keyReleased(e);
 			break;
 		case FINISH:
+			game.getFinish().keyReleased(e);
 			break;
 		}
 	}

@@ -20,14 +20,16 @@ public abstract class PopUpMenu {
 	protected ArrayList<Button> buttons = new ArrayList<>();
 	protected SkillMenu skillMenu = null;
 	protected int previousLength;
+	protected ArrayList<Player> players;
 	
-	public PopUpMenu(int x, int y, int width, int height, Color bcolor, Game game) {
+	public PopUpMenu(int x, int y, int width, int height, Color bcolor, Game game, ArrayList<Player> players) {
 		this.game = game;
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
 		this.backgroundColor = bcolor;
+		this.players = players;
 		buttons.add(new Button(x+width, y+height/2-25, 50, 50, Color.magenta, ">", () -> {
 			if (skillMenu == null) {
 				skillMenu = new SkillMenu(x+width+100, y+100, game.getPlayer());
@@ -56,31 +58,33 @@ public abstract class PopUpMenu {
 		g.setColor(backgroundColor);
 		g.fillRect(x, y, width, height);
 		g.setColor(Color.black);
-		if (game.getMenu().getPlayersPresent() != null && skillMenu == null) {
+		if (players != null && skillMenu == null) {
 			g.setFont(HostMenu.playerFont);
-			formatPlayers(game.getMenu().getPlayersPresent(), g);
+			formatPlayers(players, g);
 		} else if (skillMenu != null) {
 			skillMenu.draw(g);
 		}
 		g.setColor(Color.black);
-		g.drawString(GameMode.gameMode.toString(), x+width + 250, 750);
+		if (game.getMenu() != null && game.getMenu().getSettings() == null) {
+			g.drawString(GameMode.gameMode.toString(), x+width + 250, 750);			
+		}
 		for (Button b : buttons) {
 			b.draw(g);
 		}
 	}
 	
-	public void formatPlayers(String players, Graphics g) {
-		String[] p = players.split(";");
-		for (int i = 1; i < p.length; i++) {
-			Player pl = Finder.findPlayer(p[i], game.getMenu().getPlayers());
-			if (pl != null) {
-				String ready = pl.isReady()?"V":"X";
+	public void formatPlayers(ArrayList<Player> players, Graphics g) {
+		int i = 1;
+		for (Player p : players) {
+			if (p != null) {
+				String ready = p.isReady()?"V":"X";
 				if (GameMode.gameMode == GameMode.FFA) {
-					g.drawString(p[i] + "  " + ready, x+width+100, 75+50 * i);
+					g.drawString(p.getName() + "  " + ready, x+width+100, 75+50 * i);
 				} else {
-					g.drawString(p[i] + "  " + ready, pl.getTeam() == 1 ? x+width+100:x+width+400, 75+50 * i);
+					g.drawString(p.getName() + "  " + ready, p.getTeam() == 1 ? x+width+100:x+width+400, 75+50 * i);
 				}
 			}
+			i++;
 		}
 	}
 	
@@ -91,6 +95,9 @@ public abstract class PopUpMenu {
 	public void mouseClicked(MouseEvent e) {
 		if (skillMenu != null) {
 			skillMenu.mouseClicked(e);
+		}
+		for (Button b : buttons) {
+			b.onClick(e);
 		}
 	}
 	

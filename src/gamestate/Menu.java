@@ -120,19 +120,10 @@ public class Menu implements Statemethods {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (hostMenu != null) {
-			for (Button b : hostMenu.getButtons()) {
-				b.onClick(e);
-			}
 			hostMenu.mouseClicked(e);
 		} else if (joinMenu != null) {
-			for (Button b : joinMenu.getButtons()) {
-				b.onClick(e);
-			}
 			joinMenu.mouseClicked(e);
 		} else if (settings != null) {
-			for (Button b : settings.getButtons()) {
-				b.onClick(e);
-			}
 			settings.mouseClicked(e);
 		}
 		else {

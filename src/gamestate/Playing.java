@@ -63,9 +63,10 @@ public class Playing implements Statemethods {
 			obsToRemove.clear();
 		}
 		if (isFinish != 0) {
-			panel.getGame().setFinish(new Finish(isFinish,
-					players.stream().filter(p -> p.getTeam() == isFinish).findAny().orElse(null).tankColor));
 			GameState.state = GameState.FINISH;
+			panel.getGame().setFinish(new Finish(isFinish,
+					players.stream().filter(p -> p.getTeam() == isFinish).findAny().orElse(null).tankColor,
+					panel.getGame(), players));
 		}
 	}
 

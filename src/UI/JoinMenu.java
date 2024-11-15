@@ -19,12 +19,12 @@ public class JoinMenu extends PopUpMenu {
 	private TextInput port;
 	
 	public JoinMenu(int x, int y, Game game) {
-		super(x, y, 500, 700, Color.yellow, game);
+		super(x, y, 500, 700, Color.yellow, game, game.getMenu().getPlayers());
 		buttons.add(new Button(x+width/2-150, 250, 300, 75, Color.cyan,
 				"CREATE PLAYER", () -> {
 					Player p = new Player(name.getText(), Role.GUEST, ip.getIP(), port.getPort(), game, true);
 					game.setPlayer(p);
-					game.getMenu().getPlayers().add(p);
+					players.add(p);
 					game.getPlayer().getClient().send("newplayer;" + game.getPlayer().getName());
 					buttons.get(previousLength+1).setEnabled(true);
 				}));

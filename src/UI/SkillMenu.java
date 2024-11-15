@@ -30,7 +30,8 @@ public class SkillMenu {
 		this.player = player;
 		int yWrap = skillSize*-1;
 		int i = 0;
-		for (Skill s : Skill.getAllSkills(player)) {
+		Skill[] ss = Skill.getAllSkills(player);
+		for (Skill s : ss) {
 			if (i%3 == 0) {
 				yWrap += skillSize/5 + skillSize;
 			}
@@ -40,6 +41,7 @@ public class SkillMenu {
 		skill1 = new Rectangle(x+skillSize/5, y, skillSize, skillSize);
 		skill2 = new Rectangle(x+(skillSize/5)*2+skillSize, y, skillSize, skillSize);
 		skill3 = new Rectangle(x+(skillSize/5)*3+skillSize*2, y, skillSize, skillSize);
+		Skill.loadSkills(player, ss);
 	}
 	
 	public void update() {
@@ -84,7 +86,6 @@ public class SkillMenu {
 				}
 			}
 		}
-		//System.out.println(player.getSkill1()+ " " + player.getSkill2() + " " + player.getSkill3());
 	}
 	
 	public void keyPressed(KeyEvent e) {

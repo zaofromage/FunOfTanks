@@ -76,7 +76,10 @@ public class ServerConnection implements Runnable {
 							case DOMINATION:game.setPlaying(new Domination(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));break;
 							}
 							Skill.saveSkills(game.getPlayer());
+							game.getPlayer().setReady(false);
+							game.getPlayer().getClient().send("ready;" + game.getPlayer().getName() + ";" + game.getPlayer().isReady());
 							GameState.state = GameState.PLAYING;
+							game.setMenu(null);
 						} else if (header.equals("team")) {
 							Player p = Finder.findPlayer(body[0], menu.getPlayers());
 							p.setTeam(Integer.parseInt(body[1]));

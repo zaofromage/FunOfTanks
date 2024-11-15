@@ -36,60 +36,62 @@ public class HostMenu extends PopUpMenu {
 	
 
 	public HostMenu(int x, int y, Game game) {
-		super(x, y, 500, 700, Color.yellow, game);
+		super(x, y, 500, 700, Color.yellow, game, game.getMenu().getPlayers());
 		ipFont = new Font("SansSerif", Font.PLAIN, 25);
-		buttons.add(new Button(x+width/2-150, 200, 300, 75, Color.cyan,
+		buttons.add(new Button(x+width/2-150, y+150, 300, 75, Color.cyan,
 				"CREATE PLAYER", () -> {
 					if (name.getText().length() > 0) {
 						Player p = new Player(name.getText(), Role.HOST, game, true);
 						game.setPlayer(p);
-						game.getMenu().getPlayers().add(p);
+						players.add(p);
 						ip = "IP : " + getNetworkIPAddress() + " PORT : "
 								+ Server.PORT;
 						game.getPlayer().getClient().send("newplayer;" + game.getPlayer().getName());
 						buttons.get(previousLength+1).setEnabled(true);
 						buttons.get(previousLength+3).setEnabled(true);
-						Skill.loadSkills(p);
 					} else {
 						Game.printErrorMessage("Please enter a name !");
 					}
 				}));
 		buttons.add(
-				new Button(x+width/2-150, 300, 300, 75, Color.red, "READY", () -> {
+				new Button(x+width/2-150, y+250, 300, 75, Color.red, "READY", () -> {
 					game.getPlayer().setReady(!game.getPlayer().isReady());
 					game.getPlayer().getClient().send("ready;" + game.getPlayer().getName() + ";" + game.getPlayer().isReady());
 					buttons.get(previousLength+1).setColor(game.getPlayer().isReady() ? Color.green : Color.red);
 				}));
 		buttons.get(previousLength+1).setEnabled(false);
-		buttons.add(new Button(x+width/2-150, 400, 300, 75, Color.green, "PLAY",
+		buttons.add(new Button(x+width/2-150, y+350, 300, 75, Color.green, "PLAY",
 				() -> {
 					if (game.getPlayer() != null) {
 						game.getPlayer().getClient().send("play;");
+						game.getPlayer().setReady(false);
+						game.getPlayer().getClient().send("ready;" + game.getPlayer().getName() + ";" + game.getPlayer().isReady());
 						switch (GameMode.gameMode) {
 						case FFA:
 							game.setPlaying(
-									new Playing(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));							
+									new Playing(game.getPanel(), game.getPlayer(), players));							
 							break;
 						case TEAM:
 							game.setPlaying(
-									new TeamMode(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));							
+									new TeamMode(game.getPanel(), game.getPlayer(), players));							
 							break;
 						case DOMINATION:
-							game.setPlaying(new Domination(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));
+							game.setPlaying(new Domination(game.getPanel(), game.getPlayer(), players));
 							break;
 						}
 						Skill.saveSkills(game.getPlayer());
 						GameState.state = GameState.PLAYING;
+						game.setMenu(null);
 					} else {
 						Game.printErrorMessage("crée un joueur stp soit pas con");
 					}
 				}));
-		buttons.add(new Button(x+width/2-150, 500, 300, 75, Color.blue, "SWITCH TEAM", () -> {
+		buttons.add(new Button(x+width/2-150, y+450, 300, 75, Color.blue, "SWITCH TEAM", () -> {
 			game.getPlayer().setTeam(game.getPlayer().getTeam() == 1 ? 2:1);
 			game.getPlayer().getClient().send("team;"+game.getPlayer().getName()+";"+game.getPlayer().getTeam());
 		}));
 		buttons.get(previousLength+3).setEnabled(false);
-		buttons.add(new Button(x+width/2-150, 600, 300, 75, Color.white, "SWITCH MODE", () -> {
+		buttons.add(new Button(x+width/2-150, y+550, 300, 75, Color.white, "SWITCH MODE", () -> {
 			GameMode.gameMode = GameMode.gameMode == GameMode.FFA ? GameMode.DOMINATION:GameMode.FFA;
 			game.getPlayer().getClient().send("mode;"+GameMode.gameMode.toString());
 		}));
@@ -102,7 +104,7 @@ public class HostMenu extends PopUpMenu {
 		super.update();
 		name.update();
 		buttons.get(previousLength).setEnabled(game.getPlayer() == null);
-		buttons.get(previousLength+2).setEnabled(game.getMenu().getPlayers().size() > 0 && game.getMenu().getPlayers().stream().filter(p -> p.isReady()).count() == game.getMenu().getPlayers().size());
+		buttons.get(previousLength+2).setEnabled(players.size() > 0 && players.stream().filter(p -> p.isReady()).count() == players.size());
 		buttons.get(previousLength+3).setEnabled(GameMode.gameMode != GameMode.FFA);
 		buttons.get(previousLength+4).setEnabled(game.getPlayer() != null);
 	}

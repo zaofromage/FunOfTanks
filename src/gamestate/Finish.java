@@ -4,29 +4,32 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+
+import UI.*;
+import client.Game;
+import client.GamePanel;
+import player.Player;
 
 public class Finish implements Statemethods {
 	
-	private int winner;
-	private Color color;
+	private PopUpMenu menu;
+	private ArrayList<Player> players;
 	
-	public Finish(int winner, Color c) {
-		this.winner= winner;
-		color = c;
+	public Finish(int winner, Color c, Game game, ArrayList<Player> players) {
+		game.setPlaying(null);
+		this.players = players;
+		menu = new FinishMenu(GamePanel.dimension.width/2-500, 50, game, c, this);
 	}
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-		
+		menu.update();
 	}
 
 	@Override
 	public void draw(Graphics g) {
-		g.setColor(Color.pink);
-		g.fillRect(200, 200, 200, 200);
-		g.setColor(color);
-		g.drawString("The winner is " + color.toString(), 200, 200);
+		menu.draw(g);
 	}
 
 	@Override
@@ -43,8 +46,9 @@ public class Finish implements Statemethods {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		if (menu != null) {
+			menu.mouseClicked(e);
+		}
 	}
 
 	@Override
@@ -79,14 +83,19 @@ public class Finish implements Statemethods {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
+		if (menu != null) {
+			menu.keyPressed(e);
+		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public ArrayList<Player> getPlayers() {
+		return players;
 	}
 
 }

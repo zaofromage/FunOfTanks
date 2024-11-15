@@ -14,7 +14,7 @@ public class Settings extends PopUpMenu {
 	private String waitForInput = null;
 
 	public Settings(int x, int y, Game game) {
-		super(x, y, 500, 700, Color.yellow, game);
+		super(x, y, 500, 700, Color.yellow, game, game.getMenu().getPlayers());
 		Field[] fields = PlayerInputs.getKeyBindings();
 		int i = 60;
 		for (Field item : fields) {
@@ -45,7 +45,6 @@ public class Settings extends PopUpMenu {
 		}
 		buttons.add(new Button(x+width+50, y+height/2-25, 100, 50, Color.RED, "reset", () -> {
 			PlayerInputs.reset();
-			System.out.println(fields.length);
 			int j = 0;
 			for (Field item : fields) {
 				String val = null;

@@ -140,6 +140,10 @@ public class Game implements Runnable {
 	public Menu getMenu() {
 		return menu;
 	}
+	
+	public void setMenu(Menu menu) {
+		this.menu = menu;
+	}
 
 	public Playing getPlaying() {
 		return playing;
@@ -147,6 +151,10 @@ public class Game implements Runnable {
 	
 	public void setPlaying(Playing p) {
 		playing = p;
+	}
+	
+	public Finish getFinish() {
+		return finish;
 	}
 	
 	public void setFinish(Finish f) {
