@@ -113,7 +113,7 @@ public class Skill {
 	
 	public static Skill dashThrough(Player player) {
 		try {
-			return new Skill("dashtrought", 10000, ImageIO.read(Skill.class.getResource("/images/dashthrough.png")), () -> {
+			return new Skill("dashthrough", 10000, ImageIO.read(Skill.class.getResource("/images/dashthrough.png")), () -> {
 				if (player.getTank() != null) {
 					player.getTank().setCanDashThrough(true);
 					player.getTank().setCanDash(true);
