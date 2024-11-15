@@ -14,6 +14,8 @@ public class Server implements Runnable {
 
 	private ExecutorService pool;
 	
+	private boolean running = true;
+	
 	
 	//Game
 	private ServerPlaying playing;
@@ -29,27 +31,35 @@ public class Server implements Runnable {
 
 	@Override
 	public void run() {
-		while (true) {
+		while (running) {
 			try {
 				Socket client = server.accept();
 				ClientHandler ch = new ClientHandler(client, clients, this);
 				clients.add(ch);
 				pool.execute(ch);
 			} catch (IOException e) {
-				e.printStackTrace();
+				if (running) {
+					e.printStackTrace();					
+				} else {
+					System.out.println("Serveur arreté proprement");
+				}
 			}
 		}
 	}
 	
 	public void close() {
-		try {
-			server.close();
-			for (ClientHandler ch : clients) {
-				ch.close();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		running = false;
+	    try {
+	        if (server != null && !server.isClosed()) {
+	            server.close(); // Cela lève une SocketException dans le thread `run()`
+	        }
+	        for (ClientHandler ch : clients) {
+	            ch.close();
+	        }
+	        pool.shutdownNow();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
 	}
 
 	public ServerPlaying getPlaying() {

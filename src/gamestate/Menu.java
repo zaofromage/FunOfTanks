@@ -41,9 +41,13 @@ public class Menu implements Statemethods {
 			settings = null;
 			activeCancelButton = false;
 			if (game.getPlayer() != null) {
+				if (game.getPlayer().getClient() != null) {
+					game.getPlayer().getClient().send("cancel;" + game.getPlayer().getName() + ";" + game.getPlayer().getRole());
+				}
 				game.getPlayer().close();
 				game.setPlayer(null);
 			}
+			players.clear();
 		});
 		activeCancelButton = false;
 		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 200, 300, 75, Color.red, "HOST A GAME", () -> {
@@ -199,6 +203,38 @@ public class Menu implements Statemethods {
 
 	public void setPlayersPresent(String playersPresent) {
 		this.playersPresent = playersPresent;
+	}
+
+	public HostMenu getHostMenu() {
+		return hostMenu;
+	}
+
+	public void setHostMenu(HostMenu hostMenu) {
+		this.hostMenu = hostMenu;
+	}
+
+	public JoinMenu getJoinMenu() {
+		return joinMenu;
+	}
+
+	public void setJoinMenu(JoinMenu joinMenu) {
+		this.joinMenu = joinMenu;
+	}
+
+	public Settings getSettings() {
+		return settings;
+	}
+
+	public void setSettings(Settings settings) {
+		this.settings = settings;
+	}
+
+	public boolean isActiveCancelButton() {
+		return activeCancelButton;
+	}
+
+	public void setActiveCancelButton(boolean activeCancelButton) {
+		this.activeCancelButton = activeCancelButton;
 	}
 
 }

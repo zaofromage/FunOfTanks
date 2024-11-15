@@ -26,7 +26,7 @@ public class JoinMenu extends PopUpMenu {
 					game.setPlayer(p);
 					game.getMenu().getPlayers().add(p);
 					game.getPlayer().getClient().send("newplayer;" + game.getPlayer().getName());
-					buttons.get(1).setEnabled(true);
+					buttons.get(previousLength+1).setEnabled(true);
 				}));
 		buttons.add(
 				new Button(x+width/2-150, 350, 300, 75, Color.red, "READY", () -> {

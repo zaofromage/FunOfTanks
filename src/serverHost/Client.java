@@ -38,9 +38,10 @@ public class Client {
 	
 	public void close() {
 		try {
-			socket.shutdownOutput();
+			socket.close();
 			out.close();
 			serverConn.close();
+			udpConn.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

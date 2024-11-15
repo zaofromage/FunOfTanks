@@ -11,4 +11,9 @@ public class ServerPlayer {
 		ready = r;
 		team = t;
 	}
+	
+	@Override
+	public String toString() {
+		return name;
+	}
 }

@@ -90,7 +90,7 @@ public class Player {
 			try {
 				server = new Server();
 				udpServer = new UDPServer(server);
-				client = new Client(InetAddress.getLocalHost().toString().split("/")[1], Server.PORT, game);
+				client = new Client(InetAddress.getLocalHost().getHostAddress(), Server.PORT, game);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -143,13 +143,17 @@ public class Player {
 	}
 	
 	public void close() {
+		if (client != null) {
+			client.close();
+			client = null;
+		}
 		if (server != null) {
 			server.close();
 			server = null;
 		}
-		if (client != null) {
-			client.close();
-			client = null;
+		if (udpServer != null) {
+			udpServer.close();
+			udpServer = null;
 		}
 	}
 

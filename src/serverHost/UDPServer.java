@@ -20,6 +20,7 @@ public class UDPServer implements Runnable {
 	private DatagramSocket serverSocket;
 	private Server server;
 	private byte[] data = new byte[1024];
+	private boolean running = true;
 	
 	public UDPServer(Server s) {
 		server = s;
@@ -33,7 +34,7 @@ public class UDPServer implements Runnable {
 
 	@Override
 	public void run() {
-		while (true) {
+		while (running) {
 			try {
 				DatagramPacket packet = new DatagramPacket(data, data.length);
 				serverSocket.receive(packet);
@@ -63,7 +64,11 @@ public class UDPServer implements Runnable {
 					sendToAll("wrong request");
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				if (running) {
+					System.out.println("pas normal udp");
+				} else {
+					System.out.println("udp bien fermé");
+				}
 			}
 			
 		}
@@ -79,5 +84,10 @@ public class UDPServer implements Runnable {
 				e.printStackTrace();
 			}			
 		}
+	}
+	
+	public void close() {
+		running = false;
+		serverSocket.close();
 	}
 }

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 import client.Game;
@@ -25,6 +26,8 @@ public class ServerConnection implements Runnable {
 	private BufferedReader in;
 
 	private Game game;
+	
+	private boolean running = true;
 
 	public ServerConnection(Socket s, Game game) throws IOException {
 		this.game = game;
@@ -36,7 +39,7 @@ public class ServerConnection implements Runnable {
 	public void run() {
 		String serverResponse;
 		try {
-			while (true) {
+			while (running) {
 				serverResponse = in.readLine();
 				if (serverResponse != null) {
 					String header = ClientHandler.getHeader(serverResponse);
@@ -90,6 +93,21 @@ public class ServerConnection implements Runnable {
 									p.setTeam(1);
 								}
 							}
+						} else if (header.equals("cancel")) {
+							Player p = Finder.findPlayer(body[0], menu.getPlayers());
+							if (body[1].equals("HOST")) {
+								menu.setHostMenu(null);
+								menu.setJoinMenu(null);
+								menu.setSettings(null);
+								menu.setActiveCancelButton(false);
+								if (game.getPlayer() != null) {
+									game.getPlayer().close();
+									game.setPlayer(null);
+								}
+								menu.getPlayers().clear();								
+							} else {
+								menu.getPlayers().remove(p);
+							}
 						}
 						break;
 					case PLAYING:
@@ -136,7 +154,11 @@ public class ServerConnection implements Runnable {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			if (running) {
+				System.out.println("pas normal server conn");
+			} else {
+				System.out.println("server fermé");
+			}
 		} finally {
 			try {
 				in.close();
@@ -147,6 +169,7 @@ public class ServerConnection implements Runnable {
 	}
 
 	public void close() {
+		running = false;
 		try {
 			in.close();
 		} catch (IOException e) {

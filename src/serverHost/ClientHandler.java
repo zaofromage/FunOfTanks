@@ -18,6 +18,8 @@ public class ClientHandler implements Runnable {
 	private ArrayList<ClientHandler> clients;
 	private Server server;
 	
+	private boolean running = true;
+	
 	public ClientHandler(Socket clientSocket, ArrayList<ClientHandler> clients, Server server) throws IOException {
 		client = clientSocket;
 		this.server = server;
@@ -30,7 +32,7 @@ public class ClientHandler implements Runnable {
 	@Override
 	public void run() {
 		try {
-			while (true) {
+			while (running) {
 				String request = in.readLine();
 				if (request != null) {
 					String header = getHeader(request);
@@ -80,6 +82,12 @@ public class ClientHandler implements Runnable {
 						sendToAll(request);
 					} else if (header.equals("play")) {
 						sendToAllOthers(request);
+					} else if (header.equals("cancel")) {
+						ServerPlayer p = server.getPlaying().getPlayers().stream().filter(player -> player.name.equals(body[0])).findAny().orElse(null);
+						if (p != null) {
+							server.getPlaying().getPlayers().remove(p);
+						}
+						sendToAll(request);
 					}
 					else {
 						out.println("wrong request");
@@ -88,7 +96,11 @@ public class ClientHandler implements Runnable {
 				
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			if (running) {
+				System.out.println("client handler pas normal");
+			} else {
+				System.out.println("server fermé");
+			}
 		} finally {
 			try {
 				in.close();
@@ -100,6 +112,7 @@ public class ClientHandler implements Runnable {
 	}
 	
 	public void close() {
+		running = false;
 		try {
 			in.close();
 			out.close();

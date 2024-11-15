@@ -22,6 +22,8 @@ public class UDPServerConnection implements Runnable {
 	
 	private Game game;
 	
+	private boolean running = true;
+	
 	public UDPServerConnection(Game g) {
 		try {
 			socket = new DatagramSocket();
@@ -33,7 +35,7 @@ public class UDPServerConnection implements Runnable {
 	
 	@Override
 	public void run() {
-		while (true) {
+		while (running) {
 			try {
 				byte[] data = new byte[1024];
 				DatagramPacket packet = new DatagramPacket(data, data.length);
@@ -75,7 +77,11 @@ public class UDPServerConnection implements Runnable {
 					}
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				if (running) {
+					System.out.println("udp conn pas normal");
+				} else {
+					System.out.println("server fermé");
+				}
 			}
 		}
 	}
@@ -88,6 +94,11 @@ public class UDPServerConnection implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void close() {
+		running = false;
+		socket.close();
 	}
 	
 }

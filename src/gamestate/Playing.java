@@ -263,7 +263,7 @@ public class Playing implements Statemethods {
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		handleInputsReleased(e.getButton());
-		if (player.getTank().getMode() == PlayerMode.BLOC && e.getButton() == PlayerInputs.build) {			
+		if (player.getTank() != null &&  player.getTank().getMode() == PlayerMode.BLOC && e.getButton() == PlayerInputs.build) {			
 			player.getTank().dropObstacle(Calcul.limitRange(e.getX(), player.getTank().getX()), Calcul.limitRange(e.getY(), player.getTank().getY()), true, players, getObstacles());
 		}
 	}
