@@ -30,6 +30,8 @@ public class Skill {
 	 *    - faire descendre un soldat qui tire des petites balles tout seul
 	 *    - tirer trois balles en un coup
 	*/
+	public static Skill[] skills = null;
+	
 	private String title;
 	private int cooldown;
 	private boolean inCooldown;
@@ -85,11 +87,12 @@ public class Skill {
 	}
 	
 	public static Skill[] getAllSkills(Player p) {
-		Skill[] res = new Skill[4];
+		Skill[] res = new Skill[5];
 		res[0] = speedUp(p);
 		res[1] = dashThrough(p);
 		res[2] = grosseBertha(p);
 		res[3] = tripleShot(p);
+		res[4] = grenade(p);
 		return res;
 	}
 	
@@ -129,7 +132,7 @@ public class Skill {
 		try {
 			return new Skill("bertha", 10000, ImageIO.read(Skill.class.getResource("/images/bertha.png")), () -> {
 				if (player.getTank() != null) {
-					player.getTank().getCannon().setCanBertha(true);
+					player.getTank().getCannon().setShot(TypeShot.BERTHA);
 				}
 			});
 		} catch (IOException e) {
@@ -142,7 +145,20 @@ public class Skill {
 		try {
 			return new Skill("tripleshot", 4000, ImageIO.read(Skill.class.getResource("/images/tripleshot.png")), () -> {
 				if (player.getTank() != null) {
-					player.getTank().getCannon().setCanTripleShot(true);
+					player.getTank().getCannon().setShot(TypeShot.TRIPLE);
+				}
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static Skill grenade(Player player) {
+		try {
+			return new Skill("grenade", 10000, ImageIO.read(Skill.class.getResource("/images/tripleshot.png")), () -> {
+				if (player.getTank() != null) {
+					player.getTank().getCannon().setShot(TypeShot.GRENADE);
 				}
 			});
 		} catch (IOException e) {
@@ -163,9 +179,9 @@ public class Skill {
 				BufferedReader r = new BufferedReader(fr);
 				String line = r.readLine();
 				String[] items = line.split(";");
-				p.setSkill1(string2Skill(items[0], p, skills));
-				p.setSkill2(string2Skill(items[1], p, skills));
-				p.setSkill3(string2Skill(items[2], p, skills));
+				p.setSkill1(parseSkill(items[0], p, skills));
+				p.setSkill2(parseSkill(items[1], p, skills));
+				p.setSkill3(parseSkill(items[2], p, skills));
 				r.close();
 				fr.close();
 			}
@@ -203,12 +219,13 @@ public class Skill {
 		}
 	}
 	
-	public static Skill string2Skill(String s, Player p, Skill[] skills) {
+	public static Skill parseSkill(String s, Player p, Skill[] skills) {
 		switch (s) {
 		case "speedup":return skills[0];
 		case "dashthrough":return skills[1];
 		case "bertha":return skills[2];
 		case "tripleshot":return skills[3];
+		case "grenade":return skills[4];
 		default: return null;
 		}
 	}

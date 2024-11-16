@@ -26,6 +26,9 @@ public class GameWindow {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				PlayerInputs.saveInputs();
+				if (panel.getGame().getPlayer() != null) {
+					Skill.saveSkills(panel.getGame().getPlayer());
+				}
 				jframe.dispose();
 			}
 		});

@@ -49,6 +49,8 @@ public class HostMenu extends PopUpMenu {
 						game.getPlayer().getClient().send("newplayer;" + game.getPlayer().getName());
 						buttons.get(previousLength+1).setEnabled(true);
 						buttons.get(previousLength+3).setEnabled(true);
+						Skill.skills = Skill.getAllSkills(p);
+						Skill.loadSkills(p, Skill.getAllSkills(p));
 					} else {
 						Game.printErrorMessage("Please enter a name !");
 					}

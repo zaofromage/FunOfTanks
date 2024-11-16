@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import gamestate.GameMode;
 import map.Obstacle;
+import player.TypeShot;
 import serverClass.*;
 import utils.Finder;
 
@@ -55,8 +56,27 @@ public class ClientHandler implements Runnable {
 							sendToAll(request);						
 						}
 					} else if (header.equals("newbullet")) {
-						server.getPlaying().getBullets().add(new ServerBullet(Integer.parseInt(body[0]), Integer.parseInt(body[1]), Double.parseDouble(body[2]), body[3], Integer.parseInt(body[4]), Boolean.parseBoolean(body[5])));
-						sendToAllOthers("newbullet;" + body[0] + ";" + body[1] + ";" + body[2] + ";" + body[3] + ";" + body[4] + ";" + body[5]);
+						ServerBullet b = null;
+						switch (TypeShot.parseTypeShot(body[5])) {
+						case NORMAL:
+							b = new ServerBullet(Integer.parseInt(body[0]), Integer.parseInt(body[1]),
+									Double.parseDouble(body[2]), body[3], Integer.parseInt(body[4]));
+							break;
+						case BERTHA:
+							b = new ServerBertha(Integer.parseInt(body[0]), Integer.parseInt(body[1]),
+									Double.parseDouble(body[2]), body[3], Integer.parseInt(body[4]));
+							break;
+						case GRENADE:
+							b = new ServerGrenade(Integer.parseInt(body[0]), Integer.parseInt(body[1]),
+									Double.parseDouble(body[2]), body[3], Integer.parseInt(body[4]));
+							break;
+						case TRIPLE:
+							b = new ServerTriple(Integer.parseInt(body[0]), Integer.parseInt(body[1]),
+									Double.parseDouble(body[2]), body[3], Integer.parseInt(body[4]));
+							break;
+						}
+						server.getPlaying().getBullets().add(b);
+						sendToAllOthers(request);
 					} else if (header.equals("deletebullet")) {
 						ServerBullet bullet = Finder.findServerBullet(body[0],Integer.parseInt(body[1]), server.getPlaying().getBullets());
 						if (bullet != null) {

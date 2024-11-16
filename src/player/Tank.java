@@ -197,7 +197,7 @@ public class Tank {
 		}
 	}
 
-	public void updateTank(ArrayList<Obstacle> obs, ArrayList<Player> players, Player player) {
+	public void update(ArrayList<Obstacle> obs, ArrayList<Player> players, Player player) {
 		if (owner.isMain()) {
 			if (up) {
 				move(0, -1, obs);
@@ -253,7 +253,7 @@ public class Tank {
 				aim.y = hitbox.getY();
 			}
 			if (owner.getClient() != null) {
-				owner.getClient().sendUDP("updatetank;" + owner.getName() + ";" + x + ";" + y + ";" + orientation);
+				owner.getClient().sendUDP("updatetank;" + owner.getName() + ";" + x + ";" + y + ";" + orientation + ";" + cannon.getShot());
 				if (speed > 1 || inDash) {
 					owner.getClient().sendUDP("trainee;" + x + ";" + y);
 				}
@@ -263,7 +263,7 @@ public class Tank {
 		cannon.updateCannon(obs, players, player);
 	}
 
-	public void drawTank(Graphics g) {
+	public void draw(Graphics g) {
 		g.setColor(color);
 		g.fillRect(x - displayOffset, y - displayOffset, size, size);
 		g.setColor(Color.black);

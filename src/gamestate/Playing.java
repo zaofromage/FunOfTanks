@@ -54,14 +54,6 @@ public class Playing implements Statemethods {
 		for (Player p : players) {
 			p.updatePlayer(getObstacles(), players);
 		}
-		if (!obsToAdd.isEmpty()) {
-			obstacles.addAll(obsToAdd);
-			obsToAdd.clear();
-		}
-		if (!obsToRemove.isEmpty()) {
-			obstacles.removeAll(obsToRemove);
-			obsToRemove.clear();
-		}
 		if (isFinish != 0) {
 			GameState.state = GameState.FINISH;
 			panel.getGame().setFinish(new Finish(isFinish,
@@ -75,8 +67,16 @@ public class Playing implements Statemethods {
 		for (Obstacle o : getObstacles()) {
 			o.drawObstacle(g);
 		}
+		if (!obsToAdd.isEmpty()) {
+			obstacles.addAll(obsToAdd);
+			obsToAdd.clear();
+		}
+		if (!obsToRemove.isEmpty()) {
+			obstacles.removeAll(obsToRemove);
+			obsToRemove.clear();
+		}
 		for (ServerBullet b : enemiesBullets) {
-			b.drawBullet(g);
+			b.draw(g);
 		}
 		for (Player p : players) {
 			p.drawPlayer(g);
@@ -197,11 +197,7 @@ public class Playing implements Statemethods {
 	
 	public void deleteBullet(ServerBullet b) {
 		if (b != null) {
-			if (b.bertha) {
-				player.blowup(b.x, b.y, 1);
-			} else {
-				player.blowup(b.x, b.y, 0.2);
-			}
+			b.die(player);
 			enemiesBullets.remove(b);			
 		}
 	}

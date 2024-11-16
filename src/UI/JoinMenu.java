@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import client.Game;
 import gamestate.GameMode;
 import player.Player;
+import player.Skill;
 import serverHost.Role;
 
 public class JoinMenu extends PopUpMenu {
@@ -27,6 +28,8 @@ public class JoinMenu extends PopUpMenu {
 					players.add(p);
 					game.getPlayer().getClient().send("newplayer;" + game.getPlayer().getName());
 					buttons.get(previousLength+1).setEnabled(true);
+					Skill.skills = Skill.getAllSkills(p);
+					Skill.loadSkills(p, Skill.getAllSkills(p));
 				}));
 		buttons.add(
 				new Button(x+width/2-150, 350, 300, 75, Color.red, "READY", () -> {
@@ -43,6 +46,7 @@ public class JoinMenu extends PopUpMenu {
 		ip = new TextInput(x + 50, y + 100, 200, 30, "ip ", new Font("SansSerif", Font.PLAIN, 20), 16);
 		port = new TextInput(x + 50, y + 150, 180, 30, "port ", new Font("SansSerif", Font.PLAIN, 20), 4);
 		ip.setText(new StringBuilder("192.168."));
+		port.setText(new StringBuilder("4551"));
 		name.setSelected(true);
 	}
 

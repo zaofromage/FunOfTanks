@@ -7,32 +7,32 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 
+import player.Player;
+import player.TypeShot;
+
 public class ServerBullet {
 	
 	public int id;
 	public int x, y;
 	public double orientation;
+	public Color color = Color.gray;
 	
 	public Rectangle hitbox;
 	
 	public String owner;
 	
-	public boolean bertha;
-	
-	public ServerBullet(int x, int y, double o, String owner, int id, boolean bertha) {
+	public ServerBullet(int x, int y, double o, String owner, int id) {
 		this.x = x;
 		this.y = y;
 		this.id = id;
 		this.orientation = o;
 		this.owner = owner;
 		hitbox = new Rectangle(x, y, 20, 10);
-		this.bertha = bertha;
 	}
 	
-	public void drawBullet(Graphics g) {
+	public void draw(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
-		g2.setColor(Color.gray);
-		if (bertha) g2.setColor(Color.BLUE);
+		g2.setColor(color);
 		
 		AffineTransform transform = new AffineTransform();
 		transform.rotate(Math.toRadians(orientation), x, y);
@@ -51,5 +51,9 @@ public class ServerBullet {
 	
 	public void updateHitbox() {
 		hitbox.setBounds((int)x, (int)y, 20, 10);
+	}
+	
+	public void die(Player p) {
+		p.blowup(x, y, .2);
 	}
 }

@@ -13,7 +13,6 @@ import player.Skill;
 
 public class SkillMenu {
 	
-	private int x, y;
 	private Player player;
 	private HashMap<Skill, Rectangle> skills = new HashMap<>();
 	public static int width = 300;
@@ -24,13 +23,10 @@ public class SkillMenu {
 	private Rectangle skill2;
 	private Rectangle skill3;
 	
-	public SkillMenu(int x, int y, Player player) {
-		this.x = x;
-		this.y = y;
+	public SkillMenu(int x, int y, Player player, Skill[] ss) {
 		this.player = player;
 		int yWrap = skillSize*-1;
 		int i = 0;
-		Skill[] ss = Skill.getAllSkills(player);
 		for (Skill s : ss) {
 			if (i%3 == 0) {
 				yWrap += skillSize/5 + skillSize;

@@ -10,6 +10,7 @@ import client.Game;
 import client.GamePanel;
 import gamestate.GameMode;
 import player.Player;
+import player.Skill;
 import utils.Finder;
 
 public abstract class PopUpMenu {
@@ -32,7 +33,7 @@ public abstract class PopUpMenu {
 		this.players = players;
 		buttons.add(new Button(x+width, y+height/2-25, 50, 50, Color.magenta, ">", () -> {
 			if (skillMenu == null) {
-				skillMenu = new SkillMenu(x+width+100, y+100, game.getPlayer());
+				skillMenu = new SkillMenu(x+width+100, y+100, game.getPlayer(), Skill.skills);
 				buttons.get(0).setText("<");
 			} else {
 				skillMenu = null;

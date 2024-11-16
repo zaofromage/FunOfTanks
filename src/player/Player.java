@@ -159,7 +159,7 @@ public class Player {
 
 	public void updatePlayer(ArrayList<Obstacle> obs, ArrayList<Player> players) {
 		if (tank != null) {
-			tank.updateTank(obs, players, this);
+			tank.update(obs, players, this);
 		}
 		//ui
 		if (main) {
@@ -178,7 +178,7 @@ public class Player {
 	public void drawPlayer(Graphics g) {
 		trainee.draw(g);
 		if (tank != null) {
-			tank.drawTank(g);
+			tank.draw(g);
 		}
 		blowup.draw(g);
 		debris.draw(g);

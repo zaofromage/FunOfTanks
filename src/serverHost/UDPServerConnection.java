@@ -6,6 +6,7 @@ import gamestate.Domination;
 import gamestate.GameState;
 import gamestate.Playing;
 import player.Player;
+import player.TypeShot;
 import serverClass.ServerBullet;
 import utils.Finder;
 
@@ -55,6 +56,9 @@ public class UDPServerConnection implements Runnable {
 									p.getTank().setX(Integer.parseInt(body[1]));
 									p.getTank().setY(Integer.parseInt(body[2]));
 									p.getTank().setOrientation(Double.parseDouble(body[3]));
+									if (!game.getPlayer().equals(p)) {
+										p.getTank().getCannon().setShot(TypeShot.parseTypeShot(body[4]));										
+									}
 								}
 							}
 						} else if (header.equals("updatebullet")) {

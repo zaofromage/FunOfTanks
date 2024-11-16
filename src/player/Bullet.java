@@ -18,10 +18,10 @@ public class Bullet {
 
 	public static int counter = 0;
 
-	private double x, y;
-	private int id;
-	private Rectangle hitbox;
-	private Vector vector;
+	protected double x, y;
+	protected int id;
+	protected Rectangle hitbox;
+	protected Vector vector;
 	private int targetX, targetY;
 	private double orientation;
 	private int width = 20;
@@ -30,17 +30,20 @@ public class Bullet {
 
 	private int blowOffset = 7;
 
-	private double speed = 4;
+	protected double speed = 4;
 	
 	private boolean friendlyFire = false;
 
-	private Color color = Color.gray;
+	protected Color color = Color.gray;
+
+	protected Cannon owner;
 	
-	private boolean isBertha;
+	protected boolean remove = false;
+	
+	protected ArrayList<Player> players;
+	protected Player player;
 
-	private Cannon owner;
-
-	public Bullet(int x, int y, int targetX, int targetY, double orientation, Cannon owner, boolean bertha) {
+	public Bullet(int x, int y, int targetX, int targetY, double orientation, Cannon owner) {
 		this.x = x;
 		this.y = y;
 		this.id = counter;
@@ -52,17 +55,14 @@ public class Bullet {
 		vector = new Vector(nvect[0], nvect[1]);
 		this.orientation = orientation;
 		this.owner = owner;
-		this.isBertha = bertha;
-		new Delay(1000, () -> friendlyFire = true);
+		players = owner.getOwner().getOwner().getGame().getPlaying().getPlayers();
+		player = owner.getOwner().getOwner().getGame().getPlayer();
+		new Delay(500, () -> friendlyFire = true);
 	}
 
-	public void drawBullet(Graphics g) {
+	public void draw(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
-		if (isBertha) {
-			g2.setColor(Color.BLUE);
-		} else {
-			g2.setColor(color);			
-		}
+		g2.setColor(color);
 		AffineTransform transform = new AffineTransform();
 		transform.rotate(Math.toRadians(orientation), x, y);
 
@@ -76,13 +76,31 @@ public class Bullet {
 		hitbox.setBounds((int) x+displayOffset, (int) y-displayOffset, width, height);
 	}
 
-	public void updateBullet() {
+	public void update(ArrayList<Obstacle> obs) {
 		x += vector.x * speed;
 		y += vector.y * speed;
 		updateHitbox();
 		if (owner.getOwner().getOwner() != null) {
 			owner.getOwner().getOwner().getClient().sendUDP(
 					"updatebullet;" + id + ";" + (int) x + ";" + (int) y + ";" + owner.getOwner().getOwner().getName());
+		}
+		Player p = detectPlayer(players, player);
+		if (p != null && !p.getTank().isInvinsible() && p.getTeam() != owner.getOwner().getOwner().getTeam()) {
+			remove = true;
+			owner.getOwner().getOwner().getClient().send("deletebullet;" + owner.getOwner().getOwner().getName() + ";" + id);
+			owner.getOwner().getOwner().getClient().send("deletetank;" + p.getName() + ";" + owner.getOwner().getOwner().getName());
+			owner.getOwner().getOwner().debris(x, y, orientation - 50,
+					orientation + 50);
+			owner.getOwner().getOwner().blowup((int) x, (int) y, 0.20);
+		} else if (hasReachLimit(obs)) {
+			remove = true;
+			owner.getOwner().getOwner().getClient().send("deletebullet;" + owner.getOwner().getOwner().getName() + ";" + id);
+			owner.getOwner().getOwner().blowup((int) x, (int) y, 0.20);
+		} else if (destroyObstacle(obs)) {
+			remove = true;
+			owner.getOwner().getOwner().getClient().send("deletebullet;" + owner.getOwner().getOwner().getName() + ";" + id);
+			owner.getOwner().getOwner().debris(x, y, orientation - 50,
+					orientation + 50);
 		}
 	}
 
@@ -159,10 +177,6 @@ public class Bullet {
 
 	public Rectangle getHitbox() {
 		return hitbox;
-	}
-	
-	public boolean isBertha() {
-		return isBertha;
 	}
 
 	public double getOrientation() {
