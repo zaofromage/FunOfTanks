@@ -8,13 +8,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.Map;
 import java.util.Objects;
-
 import javax.imageio.ImageIO;
-
-import input.PlayerInputs;
 import utils.Delay;
 
 public class Skill {
@@ -156,7 +151,8 @@ public class Skill {
 	
 	public static Skill grenade(Player player) {
 		try {
-			return new Skill("grenade", 10000, ImageIO.read(Skill.class.getResource("/images/tripleshot.png")), () -> {
+			File f = new File("res/images/grenade.png");
+			return new Skill("grenade", 7000, ImageIO.read(f), () -> {
 				if (player.getTank() != null) {
 					player.getTank().getCannon().setShot(TypeShot.GRENADE);
 				}

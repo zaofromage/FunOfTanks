@@ -21,6 +21,8 @@ public class ServerBullet {
 	
 	public String owner;
 	
+	public boolean holding = true;
+	
 	public ServerBullet(int x, int y, double o, String owner, int id) {
 		this.x = x;
 		this.y = y;
@@ -43,9 +45,10 @@ public class ServerBullet {
 		g2.fill(rotated);
 	}
 	
-	public void update(int x, int y) {
+	public void update(int x, int y, boolean holding) {
 		this.x = x;
 		this.y = y;
+		this.holding = holding;
 		updateHitbox();
 	}
 	

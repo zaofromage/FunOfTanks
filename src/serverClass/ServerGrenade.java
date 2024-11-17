@@ -21,23 +21,25 @@ public class ServerGrenade extends ServerBullet {
 	}
 	
 	@Override
-	public void update(int x, int y) {
-		super.update(x, y);
+	public void update(int x, int y, boolean holding) {
+		super.update(x, y, holding);
 		redIndex += redIndex+(double)255/((Grenade.timeToBlowUp/1000)*Game.FPS) < 255 ? (double)255/((Grenade.timeToBlowUp/1000)*Game.FPS):0;
-		greenIndex -= greenIndex-(double)255/((Grenade.timeToBlowUp/1000)*Game.FPS) > 255 ? (double)255/((Grenade.timeToBlowUp/1000)*Game.FPS):0;
+		greenIndex -= greenIndex-(double)255/((Grenade.timeToBlowUp/1000)*Game.FPS) > 0 ? (double)255/((Grenade.timeToBlowUp/1000)*Game.FPS)/2:0;
 		color = new Color((int)redIndex, (int)greenIndex, 0);
-		if (ascend) {
-			diam+=0.5;
-			if (diam > (75 - (bounce*15))) {
-				ascend = false;
-			}
-		} else {
-			if (diam >= 25) {
-				diam-=0.5;			
+		if (!holding) {
+			if (ascend) {
+				diam+=0.5;
+				if (diam > (75 - (bounce*26))) {
+					ascend = false;
+				}
 			} else {
-				ascend = true;
-				bounce++;
-			}
+				if (diam >= 25) {
+					diam-=0.5;			
+				} else {
+					ascend = true;
+					bounce++;
+				}
+			}			
 		}
 	}
 	

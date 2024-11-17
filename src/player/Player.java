@@ -24,22 +24,22 @@ public class Player {
 
 	// idees
 	/*
-	 * ui pour les capacités et les cooldown de dash etc...
-	 * ecran de fin de partie
-	 * ajouter un systeme de capacité
+	 * X ui pour les capacités et les cooldown de dash etc...
+	 * X ecran de fin de partie
+	 * X ajouter un systeme de capacité
 	 *  X - dash a travers les murs
 	 *    - rendre les balles rebondissantes
-	 *    - quand on drag la souris ça fait une sorte de mur temporaire qui renvoit les tires
-	 *    - reduire le cooldown de tir et dash
+	 *    - quand on drag la souris ça fait une sorte de mur temporaire qui renvoit les tirs
+	 *  X - reduire le cooldown de tir et dash
 	 *  X - augmenter la vitesse temporairement
 	 *    - full counter (si tu le cale tu gagnes instant)
 	 *    - augmenter le nombre de mur posés par pose de mur
 	 *    - faire descendre un soldat qui tire des petites balles tout seul
-	 *    - tirer trois balles en un coup
+	 *  X - tirer trois balles en un coup
 	 *    - portail qui tp le tank et les balles
 	 *    - forreuse (genkidama)
+	 *  X - ajouter une grenade
 	 * ajouter une mitrailleuse
-	 * ajouter une grenade
 	 * son du jeu
 	 * systeme qui detruit une partie du tank quand tu prend une explosion (operation booleene tah blender) et tu meurt quand ton tank ne contient plus de pixel
 	 * IMPORTANT REFACTORING il faut que a terme chaque feature soit serverside ça veut dire que quand je tire l'action coté client c'est juste 
@@ -126,7 +126,7 @@ public class Player {
 	public void deleteTank() {
 		tank = null;
 		lives--;
-		new Delay(5000, () -> createTank(Calcul.r.nextInt(51, GamePanel.dimension.width - 100), Calcul.r.nextInt(51, GamePanel.dimension.height - 100)));
+		new Delay(5000, () -> createTank(Calcul.r.nextInt(100, GamePanel.dimension.width - 100), Calcul.r.nextInt(100, GamePanel.dimension.height - 100)));
 	}
 	
 	public void blowup(int x, int y, double lifetime) {

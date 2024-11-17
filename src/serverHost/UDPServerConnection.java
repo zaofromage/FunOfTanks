@@ -65,7 +65,7 @@ public class UDPServerConnection implements Runnable {
 							ServerBullet b = Finder.findServerBullet(body[3], Integer.parseInt(body[0]),
 									play.getEnemiesBullets());
 							if (b != null) {
-								b.update(Integer.parseInt(body[1]), Integer.parseInt(body[2]));
+								b.update(Integer.parseInt(body[1]), Integer.parseInt(body[2]), Boolean.parseBoolean(body[4]));
 							}
 						} else if (header.equals("point")) {
 							if (play instanceof Domination) {

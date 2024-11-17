@@ -164,7 +164,7 @@ public class Tank {
 
 	public void fire() {
 		if (!invinsible || owner.getName().equals("ChickenJoe")) {
-			cannon.fire(x, y, (int) aim.x, (int) aim.y, orientation);		
+			cannon.fire(x, y, (int) aim.x, (int) aim.y, orientation);	
 		}
 	}
 
@@ -241,6 +241,7 @@ public class Tank {
 				}
 			}
 			//aim calculation
+			cannon.setHolding(mode == PlayerMode.AIM);
 			if (mode == PlayerMode.AIM) {
 				if (aimDistance < maxRange) {
 					aimDistance += aimSpeed;				

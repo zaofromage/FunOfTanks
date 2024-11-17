@@ -32,12 +32,11 @@ public class Settings extends PopUpMenu {
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
-			buttons.add(new Button(x+width/2-200, i, 400, 40, Color.gray, item.getName() + " : " + val, () -> {
+			buttons.add(new Button(x+width/2-200, i, 400, 40, Color.blue, item.getName() + " : " + val, () -> {
+				System.out.println("prout");
 				if (waitForInput == null) {
 					new Delay(300, () -> {
-						if (waitForInput == null) {
-							waitForInput = item.getName();						
-						}
+						waitForInput = item.getName();						
 					});					
 				}
 			}));
@@ -76,17 +75,19 @@ public class Settings extends PopUpMenu {
 	public void draw(Graphics g) {
 		super.draw(g);
 		if (waitForInput != null) {
-			g.drawString("Enter an input", x+width+50, y+height/2);
+			g.drawString("Enter an input", x+width+50, y+height/4);
 		}
 	}
 
-
+	@Override
 	public void mouseClicked(MouseEvent e) {
+		super.mouseClicked(e);
 		changeInput(e.getButton());
-		
 	}
 
+	@Override
 	public void keyPressed(KeyEvent e) {
+		super.keyPressed(e);
 		changeInput(e.getKeyCode());
 	}
 	

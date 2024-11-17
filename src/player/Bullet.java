@@ -82,7 +82,7 @@ public class Bullet {
 		updateHitbox();
 		if (owner.getOwner().getOwner() != null) {
 			owner.getOwner().getOwner().getClient().sendUDP(
-					"updatebullet;" + id + ";" + (int) x + ";" + (int) y + ";" + owner.getOwner().getOwner().getName());
+					"updatebullet;" + id + ";" + (int) x + ";" + (int) y + ";" + owner.getOwner().getOwner().getName() + ";" + owner.isHolding());
 		}
 		Player p = detectPlayer(players, player);
 		if (p != null && !p.getTank().isInvinsible() && p.getTeam() != owner.getOwner().getOwner().getTeam()) {

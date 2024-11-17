@@ -7,16 +7,20 @@ import java.util.ArrayList;
 
 import client.Game;
 import map.Obstacle;
+import utils.Calcul;
 import utils.Delay;
+import utils.Vector;
 
 public class Grenade extends Bullet {
 	
 	private double diam = 15;
 	private boolean ascend = true;
 	private int bounce = 0;
-	public static final int timeToBlowUp = 2000;
+	public static final int timeToBlowUp = 4000;
 	private double redIndex = 0;
 	private double greenIndex = 255;
+	
+	private final int blowDiam = 300;
 	
 	private boolean colliding = false;
 	
@@ -29,54 +33,63 @@ public class Grenade extends Bullet {
 	
 	@Override
 	public void update(ArrayList<Obstacle> obs) {
-		x += vector.x * speed;
-		y += vector.y * speed;
 		redIndex += redIndex+(double)255/((timeToBlowUp/1000)*Game.FPS) < 255 ? (double)255/((timeToBlowUp/1000)*Game.FPS):0;
-		greenIndex -= greenIndex-(double)255/((timeToBlowUp/1000)*Game.FPS) > 255 ? (double)255/((timeToBlowUp/1000)*Game.FPS):0;
+		greenIndex -= greenIndex-(double)255/((timeToBlowUp/1000)*Game.FPS) > 0 ? (double)255/((timeToBlowUp/1000)*Game.FPS)/2:0;
 		color = new Color((int)redIndex, (int)greenIndex, 0);
-		updateHitbox();
 		if (owner.getOwner().getOwner() != null) {
 			owner.getOwner().getOwner().getClient().sendUDP(
-					"updatebullet;" + id + ";" + (int) x + ";" + (int) y + ";" + owner.getOwner().getOwner().getName());
+					"updatebullet;" + id + ";" + (int) x + ";" + (int) y + ";" + owner.getOwner().getOwner().getName() + ";" + owner.isHolding());
 		}
-		if (ascend) {
-			diam+=0.5;
-			if (diam > (75 - (bounce*15))) {
-				ascend = false;
-			}
-		} else {
-			if (diam >= 25) {
-				diam-=0.5;			
+		updateHitbox();
+		if (!owner.isHolding()) {
+			x += vector.x * speed;
+			y += vector.y * speed;
+			if (ascend) {
+				diam+=0.5;
+				if (diam > (75 - (bounce*26))) {
+					ascend = false;
+				}
 			} else {
-				ascend = true;
-				bounce++;
-			}
-		}
-		if (diam < 50) {
-			int c = 0;
-			for (Obstacle o : obs) {
-				if (hitbox.intersects(o.getHitbox())) {
-					++c;
-					if (!colliding) {
-						double deltaX = hitbox.getCenterX() - o.getHitbox().getCenterX();
-						double deltaY = hitbox.getCenterY() - o.getHitbox().getCenterY();
-						double semiWidth  = (hitbox.width + o.getHitbox().width)/2;
-						double semiHeight = (hitbox.height + o.getHitbox().height)/2;
-						double overlapX = semiWidth - Math.abs(deltaX);
-						double overlapY = semiHeight - Math.abs(deltaY);
-						if (overlapX < overlapY) {
-							bounceX();
-						} else {
-							bounceY();
-						}
-						colliding = true;
-						break;
-					}
+				if (diam >= 25) {
+					diam-=0.5;			
+				} else {
+					ascend = true;
+					bounce++;
 				}
 			}
-			if (c == 0) {
-				colliding = false;
+			if (diam <= 50) {
+				speed -= speed - 0.003 > 0 ? 0.003:0.;
+				int c = 0;
+				for (Obstacle o : obs) {
+					if (hitbox.intersects(o.getHitbox())) {
+						++c;
+						if (!colliding) {
+							double deltaX = hitbox.getCenterX() - o.getHitbox().getCenterX();
+							double deltaY = hitbox.getCenterY() - o.getHitbox().getCenterY();
+							double semiWidth  = (hitbox.width + o.getHitbox().width)/2;
+							double semiHeight = (hitbox.height + o.getHitbox().height)/2;
+							double overlapX = semiWidth - Math.abs(deltaX);
+							double overlapY = semiHeight - Math.abs(deltaY);
+							if (overlapX < overlapY) {
+								bounceX();
+							} else {
+								bounceY();
+							}
+							colliding = true;
+							break;
+						}
+					}
+				}
+				if (c == 0) {
+					colliding = false;
+				}
 			}
+		} else {
+			x = owner.getOwner().getX();
+			y = owner.getOwner().getY();
+			double[] nvect = Calcul.normalizeVector((int)(owner.getOwner().getTarget().x - x), (int) (owner.getOwner().getTarget().y - y));
+			vector.x = nvect[0];
+			vector.y = nvect[1];
 		}
 	}
 	
@@ -86,11 +99,13 @@ public class Grenade extends Bullet {
 		g.fillOval((int)x, (int)y, (int)diam, (int)diam);
 		g.setColor(Color.gray);
 		g.fillRect((int)(x+diam/2), (int)(y), (int) (diam/5), (int) (diam/2));
+		//g.setColor(new Color(125, 125, 125, 125));
+		//g.fillOval((int) (x-blowDiam/2), (int) (y-blowDiam/2), blowDiam, blowDiam);
 	}
 	
 	private void blowup() {
 		ArrayList<Obstacle> obs = owner.getOwner().getOwner().getGame().getPlaying().getObstacles();
-		Ellipse2D aoe = new Ellipse2D.Double((int) (x-100), (int) (y-100), 200, 200);
+		Ellipse2D aoe = new Ellipse2D.Double((int) (x-blowDiam/2), (int) (y-blowDiam/2), blowDiam, blowDiam);
 		for (Player p : players) {
 			if (p.getTank() != null && aoe.intersects(p.getTank().getHitbox()) && !p.getTank().isInvinsible()) {
 				owner.getOwner().getOwner().getClient().send("deletetank;" + p.getName() + ";" + owner.getOwner().getOwner().getName());
@@ -103,7 +118,7 @@ public class Grenade extends Bullet {
 				}
 			}
 		}
-		owner.getOwner().getOwner().blowup((int) x, (int) y, 1);
+		owner.getOwner().getOwner().blowup((int) x, (int) y, 2);
 		remove = true;
 		owner.getOwner().getOwner().getClient().send("deletebullet;" + owner.getOwner().getOwner().getName() + ";" + id);
 	}

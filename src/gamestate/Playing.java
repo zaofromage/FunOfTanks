@@ -11,9 +11,11 @@ import java.util.Map;
 import map.Obstacle;
 import serverClass.ServerBullet;
 import utils.Calcul;
+import utils.Delay;
 import player.Player;
 import player.PlayerMode;
 import player.Stats;
+import player.TypeShot;
 import client.GamePanel;
 import input.PlayerInputs;
 
@@ -75,11 +77,11 @@ public class Playing implements Statemethods {
 			obstacles.removeAll(obsToRemove);
 			obsToRemove.clear();
 		}
-		for (ServerBullet b : enemiesBullets) {
-			b.draw(g);
-		}
 		for (Player p : players) {
 			p.drawPlayer(g);
+		}
+		for (ServerBullet b : enemiesBullets) {
+			b.draw(g);
 		}
 		player.drawSkills(g);
 		// draw leaderBoard
@@ -344,6 +346,9 @@ public class Playing implements Statemethods {
 			if (keyCode == PlayerInputs.aim) {
 				if (player.getTank().getMode() == PlayerMode.BASE && player.getTank().getCannon().canFire()) {
 					player.getTank().switchMode(PlayerMode.AIM);
+					if (player.getTank().getCannon().getShot() == TypeShot.GRENADE) {
+						new Delay(100, () -> player.getTank().fire());
+					}
 				}
 			} else if (keyCode == PlayerInputs.blocMode) {
 				player.getTank().switchMode(PlayerMode.BLOC);

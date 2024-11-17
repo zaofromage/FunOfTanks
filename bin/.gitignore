@@ -1,8 +1,6 @@
 /player/
 /serverClass/
-/serverHost/
-/utils/
 /gamestate/
 /UI/
-/input/
-/client/
+/serverHost/
+/utils/

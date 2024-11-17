@@ -21,6 +21,8 @@ public class Cannon {
 
 	private boolean canFire = true;
 	private long cooldown;
+	
+	private boolean holding = false;
 
 	private Tank owner;
 
@@ -148,5 +150,13 @@ public class Cannon {
 
 	public ArrayList<Bullet> getBullets() {
 		return bullets;
+	}
+	
+	public boolean isHolding() {
+		return holding;
+	}
+
+	public void setHolding(boolean holding) {
+		this.holding = holding;
 	}
 }
