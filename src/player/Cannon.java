@@ -86,26 +86,8 @@ public class Cannon {
 	public void fire(int x, int y, int targetX, int targetY, double orientation) {
 		if (canFire) {
 			canFire = false;
-			Bullet b = null;
-			switch (shot) {
-			case NORMAL:
-				b = new Bullet(x, y, targetX, targetY, orientation, owner.getOwner());
-				break;
-			case BERTHA:
-				b = new Bertha(x, y, targetX, targetY, orientation, owner.getOwner());
-				break;
-			case GRENADE:
-				b = new Grenade(x, y, targetX, targetY, owner.getOwner());
-				break;
-			case TRIPLE:
-				b = new TripleShot(x, y, targetX, targetY, orientation, owner.getOwner());
-				break;
-			default:
-				b = new Bullet(x, y, targetX, targetY, orientation, owner.getOwner());
-				break;
-			}
 			owner.getOwner().getClient().send("newbullet;" + x + ";" + y + ";" + targetX + ";" + targetY + ";" + orientation + ";"
-					+ owner.getOwner().getName() + ";" + b.getId() + ";" + shot);
+					+ owner.getOwner().getName() + ";" + shot);
 			new Delay(cooldown, () -> canFire = true);
 			shot = TypeShot.NORMAL;
 		}

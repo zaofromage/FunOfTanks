@@ -58,9 +58,9 @@ public class Playing implements Statemethods {
 		for (Player p : players) {
 			p.updatePlayer(getObstacles(), players);
 		}
+		//System.out.println(bullets.stream().filter(b -> b.getPlayer().equals(player)).collect(Collectors.toList()));
 		for (Bullet b : bullets.stream().filter(b -> b.getPlayer().equals(player)).collect(Collectors.toList())) {
 			b.update(obstacles);
-			
 		}
 		if (isFinish != 0) {
 			GameState.state = GameState.FINISH;

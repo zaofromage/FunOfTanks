@@ -12,8 +12,7 @@ public class TripleShot extends Bullet {
 		bas = new Bullet(x, y, (int) (x+(dist*Math.cos(Math.toRadians(orientation)-Math.toRadians(15)))), (int) (y+(dist*Math.sin(Math.toRadians(orientation)-Math.toRadians(15)))), orientation-15, owner);
 		player.getClient().send("newbullet;" + x + ";" + y + ";" + targetX + ";" + targetY + ";" + (orientation+15) + ";"
 				+ player.getName() + ";" + haut.getId() + ";" + player.getTank().getCannon().getShot());
-		player.getClient().send("newbullet;" + x + ";" + y + ";" + (orientation-15) + ";"
+		player.getClient().send("newbullet;" + x + ";" + y + ";" + targetX + ";" + targetY + ";" + (orientation-15) + ";"
 				+ player.getName() + ";" + bas.getId() + ";" + player.getTank().getCannon().getShot());
 	}
-
 }

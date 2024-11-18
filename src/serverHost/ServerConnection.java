@@ -130,9 +130,8 @@ public class ServerConnection implements Runnable {
 								}
 							}
 						} else if (header.equals("newbullet")) {
-							System.out.println(serverResponse);
 							Bullet b = null;
-							switch (TypeShot.parseTypeShot(body[7])) {
+							switch (TypeShot.parseTypeShot(body[6])) {
 							case NORMAL:
 								b = new Bullet(Integer.parseInt(body[0]), Integer.parseInt(body[1]), Integer.parseInt(body[2]), Integer.parseInt(body[3]),
 										Double.parseDouble(body[4]), Finder.findPlayer(body[5], play.getPlayers()));

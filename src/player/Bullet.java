@@ -54,6 +54,7 @@ public class Bullet {
 		hitbox = new Rectangle(x+displayOffset, y-displayOffset, width, height);
 		double[] nvect = Calcul.normalizeVector(targetX - x, targetY - y);
 		vector = new Vector(nvect[0], nvect[1]);
+		System.out.println((targetX - x) + " " + (targetY - y));
 		this.orientation = orientation;
 		players = owner.getGame().getPlaying().getPlayers();
 		player = owner;

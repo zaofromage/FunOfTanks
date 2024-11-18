@@ -171,8 +171,8 @@ public class Tank {
 	}
 
 	public void fire() {
-		System.out.println(aim.x + " " + aim.y + " " + orientation);
 		if (!invinsible || owner.getName().equals("ChickenJoe")) {
+			System.out.println((aim.x - x) + " " + (aim.y - y));
 			cannon.fire(x, y, (int) aim.x, (int) aim.y, orientation);	
 		}
 	}
