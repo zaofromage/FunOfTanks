@@ -36,16 +36,15 @@ public class Bullet {
 
 	protected Color color = Color.gray;
 
-	protected Cannon owner;
+	protected Player player;
 	
 	protected Tank holding;
 	
 	protected boolean remove = false;
 	
 	protected ArrayList<Player> players;
-	protected Player player;
 
-	public Bullet(int x, int y, int targetX, int targetY, double orientation, Cannon owner) {
+	public Bullet(int x, int y, int targetX, int targetY, double orientation, Player owner) {
 		this.x = x;
 		this.y = y;
 		this.id = counter;
@@ -56,9 +55,8 @@ public class Bullet {
 		double[] nvect = Calcul.normalizeVector(targetX - x, targetY - y);
 		vector = new Vector(nvect[0], nvect[1]);
 		this.orientation = orientation;
-		this.owner = owner;
-		players = owner.getOwner().getOwner().getGame().getPlaying().getPlayers();
-		player = owner.getOwner().getOwner().getGame().getPlayer();
+		players = owner.getGame().getPlaying().getPlayers();
+		player = owner;
 		new Delay(500, () -> friendlyFire = true);
 	}
 
@@ -82,29 +80,35 @@ public class Bullet {
 		x += vector.x * speed;
 		y += vector.y * speed;
 		updateHitbox();
-		if (owner.getOwner().getOwner() != null) {
+		if (player != null) {
 			String holdingName = holding != null ? holding.getOwner().getName():"null";
-			owner.getOwner().getOwner().getClient().sendUDP(
-					"updatebullet;" + id + ";" + (int) x + ";" + (int) y + ";" + owner.getOwner().getOwner().getName() + ";" + holdingName);
+			player.getClient().sendUDP(
+					"updatebullet;" + id + ";" + (int) x + ";" + (int) y + ";" + player.getName() + ";" + holdingName);
 		}
 		Player p = detectPlayer(players, player);
-		if (p != null && !p.getTank().isInvinsible() && p.getTeam() != owner.getOwner().getOwner().getTeam()) {
+		if (p != null && !p.getTank().isInvinsible() && p.getTeam() != player.getTeam()) {
 			remove = true;
-			owner.getOwner().getOwner().getClient().send("deletebullet;" + owner.getOwner().getOwner().getName() + ";" + id);
-			owner.getOwner().getOwner().getClient().send("deletetank;" + p.getName() + ";" + owner.getOwner().getOwner().getName());
-			owner.getOwner().getOwner().debris(x, y, orientation - 50,
+			player.getClient().send("deletebullet;" + player.getName() + ";" + id);
+			player.getClient().send("deletetank;" + p.getName() + ";" + player.getName());
+			player.debris(x, y, orientation - 50,
 					orientation + 50);
-			owner.getOwner().getOwner().blowup((int) x, (int) y, 0.20);
+			player.blowup((int) x, (int) y, 0.20);
 		} else if (hasReachLimit(obs)) {
 			remove = true;
-			owner.getOwner().getOwner().getClient().send("deletebullet;" + owner.getOwner().getOwner().getName() + ";" + id);
-			owner.getOwner().getOwner().blowup((int) x, (int) y, 0.20);
+			player.getClient().send("deletebullet;" + player.getName() + ";" + id);
+			player.blowup((int) x, (int) y, 0.20);
 		} else if (destroyObstacle(obs)) {
 			remove = true;
-			owner.getOwner().getOwner().getClient().send("deletebullet;" + owner.getOwner().getOwner().getName() + ";" + id);
-			owner.getOwner().getOwner().debris(x, y, orientation - 50,
+			player.getClient().send("deletebullet;" + player.getName() + ";" + id);
+			player.debris(x, y, orientation - 50,
 					orientation + 50);
 		}
+	}
+	
+	public void update(int x, int y) {
+		this.x = x;
+		this.y = y;
+		updateHitbox();
 	}
 
 	
@@ -142,10 +146,14 @@ public class Bullet {
 			return false;
 		if (!o.isDestructible())
 			return true;
-		if (owner.getOwner().getOwner().getClient() != null) {
-			owner.getOwner().getOwner().getClient().send("deleteobstacle;" + (int) o.getHitbox().getX() + ";" + (int) o.getHitbox().getY());
+		if (player.getClient() != null) {
+			player.getClient().send("deleteobstacle;" + (int) o.getHitbox().getX() + ";" + (int) o.getHitbox().getY());
 		}
 		return true;
+	}
+	
+	public void die(Player p) {
+		p.blowup((int)x, (int)y, .2);
 	}
 	
 	public void bounceX() {
@@ -177,6 +185,10 @@ public class Bullet {
 	public int getId() {
 		return id;
 	}
+	
+	public boolean toRemove() {
+		return remove;
+	}
 
 	public Rectangle getHitbox() {
 		return hitbox;
@@ -185,13 +197,13 @@ public class Bullet {
 	public double getOrientation() {
 		return orientation;
 	}
-
-	public Cannon getOwner() {
-		return owner;
+	
+	public Player getPlayer() {
+		return player;
 	}
 
 	@Override
 	public String toString() {
-		return "x : " + x + " y : " + y + " targetX : " + targetX + " targetY : " + targetY;
+		return "id : " + id + " player : " + player;
 	}
 }

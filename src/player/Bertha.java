@@ -11,9 +11,9 @@ public class Bertha extends Bullet {
 	
 	private Ellipse2D aoe = new Ellipse2D.Double(0, 0, 200, 200);
 
-	public Bertha(int x, int y, int targetX, int targetY, double orientation, Cannon owner) {
+	public Bertha(int x, int y, int targetX, int targetY, double orientation, Player owner) {
 		super(x, y, targetX, targetY, orientation, owner);
-		owner.setFire(true);
+		owner.getTank().getCannon().setFire(true);
 		color = Color.blue;
 	}
 	
@@ -24,7 +24,7 @@ public class Bertha extends Bullet {
 			aoe.setFrame((int) (x - aoe.getWidth() / 2),
 					(int) (y - aoe.getHeight() / 2), (int) aoe.getWidth(),
 					(int) aoe.getHeight());
-			owner.getOwner().getOwner().blowup((int) x, (int) y, 1);
+			player.blowup((int) x, (int) y, 1);
 			destroyAoe(obs);
 		}
 	}
@@ -32,13 +32,13 @@ public class Bertha extends Bullet {
 	private void destroyAoe(ArrayList<Obstacle> obs) {
 		for (Player p : players) {
 			if (p.getTank() != null && aoe.intersects(p.getTank().getHitbox()) && !p.getTank().isInvinsible()) {
-				owner.getOwner().getOwner().getClient().send("deletetank;" + p.getName() + ";" + owner.getOwner().getOwner().getName());
+				player.getClient().send("deletetank;" + p.getName() + ";" + player.getName());
 			}
 		}
 		for (Obstacle o : obs) {
 			if (aoe.intersects(o.getHitbox()) && o.isDestructible()) {
-				if (owner.getOwner().getOwner().getClient() != null) {
-					owner.getOwner().getOwner().getClient().send("deleteobstacle;" + (int) o.getHitbox().getX() + ";" + (int) o.getHitbox().getY());
+				if (player.getClient() != null) {
+					player.getClient().send("deleteobstacle;" + (int) o.getHitbox().getX() + ";" + (int) o.getHitbox().getY());
 				}
 			}
 		}

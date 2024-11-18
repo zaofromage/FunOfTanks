@@ -33,7 +33,6 @@ public class Settings extends PopUpMenu {
 				e.printStackTrace();
 			}
 			buttons.add(new Button(x+width/2-200, i, 400, 40, Color.blue, item.getName() + " : " + val, () -> {
-				System.out.println("prout");
 				if (waitForInput == null) {
 					new Delay(300, () -> {
 						waitForInput = item.getName();						

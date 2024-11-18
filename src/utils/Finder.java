@@ -5,7 +5,7 @@ import java.util.stream.IntStream;
 
 import map.Obstacle;
 import serverClass.*;
-
+import player.Bullet;
 import player.Player;
 
 public final class Finder {
@@ -20,6 +20,10 @@ public final class Finder {
 
 	public static ServerTank findServerTank(String name, ArrayList<ServerTank> tanks) {
 		return tanks.stream().filter(t -> t.owner.equals(name)).findAny().orElse(null);
+	}
+	
+	public static Bullet findBullet(Player player, int id, ArrayList<Bullet> bullets) {
+		return bullets.stream().filter(b -> b.getPlayer().equals(player) && b.getId() == id).findAny().orElse(null);
 	}
 
 	public static ServerBullet findServerBullet(String name, int id, ArrayList<ServerBullet> bullets) {

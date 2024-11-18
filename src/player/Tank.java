@@ -171,6 +171,7 @@ public class Tank {
 	}
 
 	public void fire() {
+		System.out.println(aim.x + " " + aim.y + " " + orientation);
 		if (!invinsible || owner.getName().equals("ChickenJoe")) {
 			cannon.fire(x, y, (int) aim.x, (int) aim.y, orientation);	
 		}
@@ -277,7 +278,7 @@ public class Tank {
 			}
 		}
 		updateHitbox();
-		cannon.updateCannon(obs, players, player);
+		cannon.update();
 	}
 
 	public void draw(Graphics g) {
@@ -288,7 +289,7 @@ public class Tank {
 			g.drawRect(x - displayOffset, y - displayOffset, size, size);
 		}
 		g.drawString(owner.getName(), x - displayOffset, y - displayOffset - 10);
-		cannon.drawCannon(g, x, y, orientation);
+		cannon.draw(g, x, y, orientation);
 		if (possibleObstacle != null) {
 			possibleObstacle.drawObstacle(g);
 		}

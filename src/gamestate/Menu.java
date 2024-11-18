@@ -54,11 +54,11 @@ public class Menu implements Statemethods {
 			activeCancelButton = true;
 			hostMenu = new HostMenu(game.getPanel().getDimension().width / 2 - 500, 50, game);
 		}));
-		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 400, 300, 75, Color.blue, "JOIN A GAME", () -> {
+		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 350, 300, 75, Color.blue, "JOIN A GAME", () -> {
 			activeCancelButton = true;
 			joinMenu = new JoinMenu(game.getPanel().getDimension().width / 2 - 500, 50, game);
 		}));
-		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 550, 300, 75, Color.darkGray, "Settings", () -> {
+		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 600, 300, 75, Color.darkGray, "Settings", () -> {
 			activeCancelButton = true;
 			settings = new Settings(game.getPanel().getDimension().width / 2 - 500/2, 50, game);
 		}));

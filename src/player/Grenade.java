@@ -24,7 +24,7 @@ public class Grenade extends Bullet {
 	
 	private boolean colliding = false;
 	
-	public Grenade(int x, int y, int targetX, int targetY, Cannon owner) {
+	public Grenade(int x, int y, int targetX, int targetY, Player owner) {
 		super(x, y, targetX, targetY, 0, owner);
 		speed = 1.5;
 		color = Color.green;
@@ -36,10 +36,10 @@ public class Grenade extends Bullet {
 		redIndex += redIndex+(double)255/((timeToBlowUp/1000)*Game.FPS) < 255 ? (double)255/((timeToBlowUp/1000)*Game.FPS):0;
 		greenIndex -= greenIndex-(double)255/((timeToBlowUp/1000)*Game.FPS) > 0 ? (double)255/((timeToBlowUp/1000)*Game.FPS)/2:0;
 		color = new Color((int)redIndex, (int)greenIndex, 0);
-		if (owner.getOwner().getOwner() != null) {
+		if (player.getClient() != null) {
 			String holdingName = holding != null ? holding.getOwner().getName():"null";
-			owner.getOwner().getOwner().getClient().sendUDP(
-					"updatebullet;" + id + ";" + (int) x + ";" + (int) y + ";" + owner.getOwner().getOwner().getName() + ";" + holdingName);
+			player.getClient().sendUDP(
+					"updatebullet;" + id + ";" + (int) x + ";" + (int) y + ";" + player.getName() + ";" + holdingName);
 		}
 		updateHitbox();
 		if (holding == null) {
@@ -86,9 +86,9 @@ public class Grenade extends Bullet {
 				}
 			}
 		} else {
-			x = owner.getOwner().getX();
-			y = owner.getOwner().getY();
-			double[] nvect = Calcul.normalizeVector((int)(owner.getOwner().getTarget().x - x), (int) (owner.getOwner().getTarget().y - y));
+			x = player.getTank().getX();
+			y = player.getTank().getY();
+			double[] nvect = Calcul.normalizeVector((int)(player.getTank().getTarget().x - x), (int) (player.getTank().getTarget().y - y));
 			vector.x = nvect[0];
 			vector.y = nvect[1];
 		}
@@ -105,23 +105,23 @@ public class Grenade extends Bullet {
 	}
 	
 	private void blowup() {
-		ArrayList<Obstacle> obs = owner.getOwner().getOwner().getGame().getPlaying().getObstacles();
+		ArrayList<Obstacle> obs = player.getGame().getPlaying().getObstacles();
 		Ellipse2D aoe = new Ellipse2D.Double((int) (x-blowDiam/2), (int) (y-blowDiam/2), blowDiam, blowDiam);
 		for (Player p : players) {
 			if (p.getTank() != null && aoe.intersects(p.getTank().getHitbox()) && !p.getTank().isInvinsible()) {
-				owner.getOwner().getOwner().getClient().send("deletetank;" + p.getName() + ";" + owner.getOwner().getOwner().getName());
+				player.getClient().send("deletetank;" + p.getName() + ";" + player.getName());
 			}
 		}
 		for (Obstacle o : obs) {
 			if (aoe.intersects(o.getHitbox()) && o.isDestructible()) {
-				if (owner.getOwner().getOwner().getClient() != null) {
-					owner.getOwner().getOwner().getClient().send("deleteobstacle;" + (int) o.getHitbox().getX() + ";" + (int) o.getHitbox().getY());
+				if (player.getClient() != null) {
+					player.getClient().send("deleteobstacle;" + (int) o.getHitbox().getX() + ";" + (int) o.getHitbox().getY());
 				}
 			}
 		}
-		owner.getOwner().getOwner().blowup((int) x, (int) y, 2);
+		player.blowup((int) x, (int) y, 2);
 		remove = true;
-		owner.getOwner().getOwner().getClient().send("deletebullet;" + owner.getOwner().getOwner().getName() + ";" + id);
+		player.getClient().send("deletebullet;" + player.getName() + ";" + id);
 	}
 	
 	@Override

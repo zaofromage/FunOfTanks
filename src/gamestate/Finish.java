@@ -97,5 +97,9 @@ public class Finish implements Statemethods {
 	public ArrayList<Player> getPlayers() {
 		return players;
 	}
+	
+	public void setFinishMenu(PopUpMenu menu) {
+		this.menu = menu;
+	}
 
 }

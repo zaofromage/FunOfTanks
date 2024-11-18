@@ -54,8 +54,8 @@ public class UDPServer implements Runnable {
 					ServerBullet bullet = Finder.findServerBullet(body[3],Integer.parseInt(body[0]), server.getPlaying().getBullets());
 					if (bullet != null) {
 						bullet.update(Integer.parseInt(body[1]), Integer.parseInt(body[2]), Boolean.parseBoolean(body[4]));
-						sendToAll(request);
 					}
+					sendToAll(request);
 				} else if (header.equals("point")) {
 					sendToAll(request);
 				} else if (header.equals("trainee")) {

@@ -7,11 +7,13 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import map.Obstacle;
 import serverClass.ServerBullet;
 import utils.Calcul;
 import utils.Delay;
+import player.Bullet;
 import player.Player;
 import player.PlayerMode;
 import player.Stats;
@@ -29,7 +31,7 @@ public class Playing implements Statemethods {
 	private ArrayList<Obstacle> obsToAdd = new ArrayList<Obstacle>();
 	private ArrayList<Obstacle> obsToRemove = new ArrayList<Obstacle>();
 
-	private ArrayList<ServerBullet> enemiesBullets;
+	private ArrayList<Bullet> bullets;
 
 	private HashMap<Player, Stats> leaderBoard = new HashMap<>();
 
@@ -42,7 +44,7 @@ public class Playing implements Statemethods {
 		this.player = player;
 		this.players = players;
 		obstacles = new ArrayList<>();
-		enemiesBullets = new ArrayList<ServerBullet>();
+		bullets = new ArrayList<Bullet>();
 		setUpWalls();
 		for (Player p : players) {
 			p.createTank(Calcul.r.nextInt(100, (int) panel.getDimension().getWidth() - 150),
@@ -55,6 +57,10 @@ public class Playing implements Statemethods {
 	public void update() {
 		for (Player p : players) {
 			p.updatePlayer(getObstacles(), players);
+		}
+		for (Bullet b : bullets.stream().filter(b -> b.getPlayer().equals(player)).collect(Collectors.toList())) {
+			b.update(obstacles);
+			
 		}
 		if (isFinish != 0) {
 			GameState.state = GameState.FINISH;
@@ -80,7 +86,7 @@ public class Playing implements Statemethods {
 		for (Player p : players) {
 			p.drawPlayer(g);
 		}
-		for (ServerBullet b : enemiesBullets) {
+		for (Bullet b : bullets) {
 			b.draw(g);
 		}
 		player.drawSkills(g);
@@ -197,10 +203,10 @@ public class Playing implements Statemethods {
 		}
 	}
 	
-	public void deleteBullet(ServerBullet b) {
+	public void deleteBullet(Bullet b) {
 		if (b != null) {
 			b.die(player);
-			enemiesBullets.remove(b);			
+			bullets.remove(b);			
 		}
 	}
 
@@ -212,8 +218,8 @@ public class Playing implements Statemethods {
 		return players;
 	}
 
-	public ArrayList<ServerBullet> getEnemiesBullets() {
-		return enemiesBullets;
+	public ArrayList<Bullet> getBullets() {
+		return bullets;
 	}
 
 	public HashMap<Player, Stats> getLeaderBoard() {

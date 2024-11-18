@@ -12,7 +12,7 @@ import utils.Delay;
 
 public class Domination extends TeamMode {
 	
-	public static final int FINISH_POINTS = 1000;
+	public static final int FINISH_POINTS = 10000;
 	
 	private Zone zone;
 

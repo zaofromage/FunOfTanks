@@ -8,15 +8,14 @@ import java.util.ArrayList;
 
 import client.Game;
 import gamestate.Domination;
+import gamestate.Finish;
 import gamestate.GameMode;
 import gamestate.GameState;
 import gamestate.Menu;
 import gamestate.Playing;
 import gamestate.TeamMode;
 import map.Obstacle;
-import player.Player;
-import player.Skill;
-import player.TypeShot;
+import player.*;
 import serverClass.*;
 import utils.Finder;
 
@@ -131,30 +130,31 @@ public class ServerConnection implements Runnable {
 								}
 							}
 						} else if (header.equals("newbullet")) {
-							ServerBullet b = null;
-							switch (TypeShot.parseTypeShot(body[5])) {
+							System.out.println(serverResponse);
+							Bullet b = null;
+							switch (TypeShot.parseTypeShot(body[7])) {
 							case NORMAL:
-								b = new ServerBullet(Integer.parseInt(body[0]), Integer.parseInt(body[1]),
-										Double.parseDouble(body[2]), body[3], Integer.parseInt(body[4]));
+								b = new Bullet(Integer.parseInt(body[0]), Integer.parseInt(body[1]), Integer.parseInt(body[2]), Integer.parseInt(body[3]),
+										Double.parseDouble(body[4]), Finder.findPlayer(body[5], play.getPlayers()));
 								break;
 							case BERTHA:
-								b = new ServerBertha(Integer.parseInt(body[0]), Integer.parseInt(body[1]),
-										Double.parseDouble(body[2]), body[3], Integer.parseInt(body[4]));
+								b = new Bertha(Integer.parseInt(body[0]), Integer.parseInt(body[1]), Integer.parseInt(body[2]), Integer.parseInt(body[3]),
+										Double.parseDouble(body[4]), Finder.findPlayer(body[5], play.getPlayers()));
 								break;
 							case GRENADE:
-								b = new ServerGrenade(Integer.parseInt(body[0]), Integer.parseInt(body[1]),
-										Double.parseDouble(body[2]), body[3], Integer.parseInt(body[4]));
+								b = new Grenade(Integer.parseInt(body[0]), Integer.parseInt(body[1]), Integer.parseInt(body[2]), Integer.parseInt(body[3]),
+										Finder.findPlayer(body[5], play.getPlayers()));
 								break;
 							case TRIPLE:
-								b = new ServerTriple(Integer.parseInt(body[0]), Integer.parseInt(body[1]),
-										Double.parseDouble(body[2]), body[3], Integer.parseInt(body[4]));
+								b = new TripleShot(Integer.parseInt(body[0]), Integer.parseInt(body[1]), Integer.parseInt(body[2]), Integer.parseInt(body[3]),
+										Double.parseDouble(body[4]), Finder.findPlayer(body[5], play.getPlayers()));
 								break;
 							}
-							play.getEnemiesBullets()
+							play.getBullets()
 									.add(b);
 						} else if (header.equals("deletebullet")) {
-							ServerBullet bullet = Finder.findServerBullet(body[0], Integer.parseInt(body[1]),
-									play.getEnemiesBullets());
+							Bullet bullet = Finder.findBullet(Finder.findPlayer(body[0], play.getPlayers()), Integer.parseInt(body[1]),
+									play.getBullets());
 							if (bullet != null) {
 								play.deleteBullet(bullet);
 							}
@@ -170,6 +170,53 @@ public class ServerConnection implements Runnable {
 						}
 						break;
 					case FINISH:
+						Finish finish = game.getFinish();
+						if (header.equals("ready")) {
+							Player p = Finder.findPlayer(body[0], finish.getPlayers());
+							if (p != null) {
+								p.setReady(Boolean.parseBoolean(body[1]));
+							}
+						} else if (header.equals("play")) {
+							switch(GameMode.gameMode) {
+							case FFA:game.setPlaying(new Playing(game.getPanel(), game.getPlayer(), finish.getPlayers()));break;
+							case TEAM:game.setPlaying(new TeamMode(game.getPanel(), game.getPlayer(), finish.getPlayers()));break;
+							case DOMINATION:game.setPlaying(new Domination(game.getPanel(), game.getPlayer(), finish.getPlayers()));break;
+							}
+							Skill.saveSkills(game.getPlayer());
+							game.getPlayer().setReady(false);
+							game.getPlayer().getClient().send("ready;" + game.getPlayer().getName() + ";" + game.getPlayer().isReady());
+							GameState.state = GameState.PLAYING;
+							game.setMenu(null);
+						} else if (header.equals("team")) {
+							Player p = Finder.findPlayer(body[0], finish.getPlayers());
+							p.setTeam(Integer.parseInt(body[1]));
+						} else if (header.equals("mode")) {
+							GameMode.gameMode = GameMode.toMode(body[0]);
+							if (body[0].equals("ffa")) {
+								int i = 1;
+								for (Player p : finish.getPlayers()) {
+									p.setTeam(i);
+									i++;
+								}
+							} else {
+								for (Player p : finish.getPlayers()) {
+									p.setTeam(1);
+								}
+							}
+						} else if (header.equals("cancel")) {
+							Player p = Finder.findPlayer(body[0], finish.getPlayers());
+							if (body[1].equals("HOST")) {
+								finish.setFinishMenu(null);
+								if (game.getPlayer() != null) {
+									game.getPlayer().close();
+									game.setPlayer(null);
+								}
+								finish.getPlayers().clear();								
+							} else {
+								p.close();
+								finish.getPlayers().remove(p);
+							}
+						}
 						break;
 					}
 				}
