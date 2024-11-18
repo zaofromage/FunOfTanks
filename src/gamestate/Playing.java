@@ -347,11 +347,14 @@ public class Playing implements Statemethods {
 				if (player.getTank().getMode() == PlayerMode.BASE && player.getTank().getCannon().canFire()) {
 					player.getTank().switchMode(PlayerMode.AIM);
 					if (player.getTank().getCannon().getShot() == TypeShot.GRENADE) {
-						new Delay(100, () -> player.getTank().fire());
+						player.getTank().fireDir();
+						player.getTank().switchMode(PlayerMode.BASE);
 					}
 				}
 			} else if (keyCode == PlayerInputs.blocMode) {
 				player.getTank().switchMode(PlayerMode.BLOC);
+			} else if (keyCode == PlayerInputs.grabMode) {
+				player.getTank().switchMode(PlayerMode.GRAB);
 			}
 		}
 	}
@@ -382,7 +385,7 @@ public class Playing implements Statemethods {
 			switch (player.getTank().getMode()) {
 			case AIM:
 				if (keyCode == PlayerInputs.aim) {
-					player.getTank().fire();
+					player.getTank().fire();						
 					player.getTank().switchMode(PlayerMode.BASE);
 				}
 				break;
@@ -391,6 +394,10 @@ public class Playing implements Statemethods {
 					player.getTank().switchMode(PlayerMode.BASE);
 				}
 				break;
+			case GRAB:
+				if (keyCode == PlayerInputs.grabMode) {
+					player.getTank().switchMode(PlayerMode.BASE);
+				}
 			default:
 				break;
 			}

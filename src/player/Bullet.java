@@ -38,6 +38,8 @@ public class Bullet {
 
 	protected Cannon owner;
 	
+	protected Tank holding;
+	
 	protected boolean remove = false;
 	
 	protected ArrayList<Player> players;
@@ -81,8 +83,9 @@ public class Bullet {
 		y += vector.y * speed;
 		updateHitbox();
 		if (owner.getOwner().getOwner() != null) {
+			String holdingName = holding != null ? holding.getOwner().getName():"null";
 			owner.getOwner().getOwner().getClient().sendUDP(
-					"updatebullet;" + id + ";" + (int) x + ";" + (int) y + ";" + owner.getOwner().getOwner().getName() + ";" + owner.isHolding());
+					"updatebullet;" + id + ";" + (int) x + ";" + (int) y + ";" + owner.getOwner().getOwner().getName() + ";" + holdingName);
 		}
 		Player p = detectPlayer(players, player);
 		if (p != null && !p.getTank().isInvinsible() && p.getTeam() != owner.getOwner().getOwner().getTeam()) {

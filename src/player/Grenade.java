@@ -37,11 +37,12 @@ public class Grenade extends Bullet {
 		greenIndex -= greenIndex-(double)255/((timeToBlowUp/1000)*Game.FPS) > 0 ? (double)255/((timeToBlowUp/1000)*Game.FPS)/2:0;
 		color = new Color((int)redIndex, (int)greenIndex, 0);
 		if (owner.getOwner().getOwner() != null) {
+			String holdingName = holding != null ? holding.getOwner().getName():"null";
 			owner.getOwner().getOwner().getClient().sendUDP(
-					"updatebullet;" + id + ";" + (int) x + ";" + (int) y + ";" + owner.getOwner().getOwner().getName() + ";" + owner.isHolding());
+					"updatebullet;" + id + ";" + (int) x + ";" + (int) y + ";" + owner.getOwner().getOwner().getName() + ";" + holdingName);
 		}
 		updateHitbox();
-		if (!owner.isHolding()) {
+		if (holding == null) {
 			x += vector.x * speed;
 			y += vector.y * speed;
 			if (ascend) {

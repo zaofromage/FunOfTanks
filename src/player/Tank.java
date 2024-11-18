@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +18,7 @@ import gamestate.GameMode;
 import utils.Calcul;
 import utils.Delay;
 import map.Obstacle;
+import serverClass.ServerBullet;
 
 public class Tank {
 
@@ -60,6 +62,10 @@ public class Tank {
 	
 	private boolean isInZone = false;
 	
+	//grab features
+	private Ellipse2D grabHitbox;
+	private final double grabRange = 100;
+	
 	// skills
 	private boolean canDashThrough = false;
 
@@ -95,6 +101,7 @@ public class Tank {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		grabHitbox = new Ellipse2D.Double(x, y, grabRange, grabRange);
 		
 	}
 
@@ -156,6 +163,7 @@ public class Tank {
 		hitbox.setBounds(x - displayOffset, y - displayOffset, size, size);
 		center.x = (int)hitbox.getCenterX();
 		center.y = (int)hitbox.getCenterY();
+		grabHitbox.setFrame(hitbox.getX() - displayOffset + Math.cos(orientation*(Math.PI/180.0)) * (grabRange/1.5), hitbox.getY() - displayOffset + Math.sin(orientation*(Math.PI/180.0)) * (grabRange/1.5), grabRange, grabRange);
 	}
 
 	private boolean detectObstacle(Obstacle obstacle, int x, int y) {
@@ -165,6 +173,12 @@ public class Tank {
 	public void fire() {
 		if (!invinsible || owner.getName().equals("ChickenJoe")) {
 			cannon.fire(x, y, (int) aim.x, (int) aim.y, orientation);	
+		}
+	}
+	
+	public void fireDir() {
+		if (!invinsible || owner.getName().equals("ChickenJoe")) {
+			cannon.fire(x, y, (int) target.x, (int) target.y, orientation);	
 		}
 	}
 
@@ -240,8 +254,10 @@ public class Tank {
 						y += 1;
 				}
 			}
+			if (mode == PlayerMode.GRAB) {
+				
+			}
 			//aim calculation
-			cannon.setHolding(mode == PlayerMode.AIM);
 			if (mode == PlayerMode.AIM) {
 				if (aimDistance < maxRange) {
 					aimDistance += aimSpeed;				
@@ -281,6 +297,8 @@ public class Tank {
 		}
 		g.setColor(Color.white);
 		g.drawString(""+owner.getTeam(), x, y);
+		//g.setColor(new Color(125, 125, 125, 125));
+		//g.fillOval((int) grabHitbox.getX(), (int) grabHitbox.getY(), (int) grabRange, (int) grabRange);
 	}
 
 	// getters setters
