@@ -65,11 +65,11 @@ public class Cannon {
 			g2d.setColor(color);
 			Rectangle haut = new Rectangle(x + displayOffset, y - displayOffset, (int)(width/1.5), height);
 			AffineTransform h = new AffineTransform();
-			h.rotate(Math.toRadians(orientation+15), x, y);
+			h.rotate(Math.toRadians(orientation+TripleShot.DISPERSION), x, y);
 			Shape hr = h.createTransformedShape(haut);
 			Rectangle bas = new Rectangle(x + displayOffset, y - displayOffset, (int)(width/1.5), height);
 			AffineTransform b = new AffineTransform();
-			b.rotate(Math.toRadians(orientation-15), x, y);
+			b.rotate(Math.toRadians(orientation-TripleShot.DISPERSION), x, y);
 			Shape br = b.createTransformedShape(bas);
 			g2d.fill(hr);
 			g2d.fill(br);
@@ -87,6 +87,9 @@ public class Cannon {
 	}
 
 	public void updateCannon(ArrayList<Obstacle> obs, ArrayList<Player> players, Player player) {
+		if (shot == TypeShot.TRIPLE) {
+			owner.setMaxRange(300);
+		}
 		ArrayList<Bullet> haveToRemove = new ArrayList<Bullet>();
 		for (Bullet b : bullets) {
 			b.update(obs);
@@ -123,6 +126,7 @@ public class Cannon {
 					+ owner.getOwner().getName() + ";" + b.getId() + ";" + shot);
 			new Delay(cooldown, () -> canFire = true);
 			shot = TypeShot.NORMAL;
+			owner.setMaxRange(600);
 		}
 	}
 

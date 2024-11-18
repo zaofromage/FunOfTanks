@@ -259,9 +259,7 @@ public class Tank {
 			}
 			//aim calculation
 			if (mode == PlayerMode.AIM) {
-				if (aimDistance < maxRange) {
-					aimDistance += aimSpeed;				
-				}
+				aimDistance = aimDistance < maxRange ? aimDistance+aimSpeed:maxRange;
 				aim.x = hitbox.getX() + Math.cos(orientation*(Math.PI/180.0)) * aimDistance;
 				aim.y = hitbox.getY() + Math.sin(orientation*(Math.PI/180.0)) * aimDistance;
 			} else {
@@ -405,6 +403,10 @@ public class Tank {
 	
 	public boolean isInvinsible() {
 		return invinsible;
+	}
+	
+	public void setMaxRange(int max) {
+		maxRange = max;
 	}
 
 	public Obstacle getPossibleObstacle() {
