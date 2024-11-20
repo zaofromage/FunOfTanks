@@ -23,11 +23,11 @@ public class Calcul {
 		}
 	}
     
-    public static double[] normalizeVector(int x, int y) {
+    public static double[] normalizeVector(double x, double y) {
 		double norme = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 		double[] res = new double[2];
-		res[0] = ((double) x / norme);
-		res[1] = ((double) y / norme);
+		res[0] = (x / norme);
+		res[1] = (y / norme);
 		return res;
 	}
 }

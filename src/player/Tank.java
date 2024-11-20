@@ -18,7 +18,6 @@ import gamestate.GameMode;
 import utils.Calcul;
 import utils.Delay;
 import map.Obstacle;
-import serverClass.ServerBullet;
 
 public class Tank {
 
@@ -65,6 +64,7 @@ public class Tank {
 	//grab features
 	private Ellipse2D grabHitbox;
 	private final double grabRange = 100;
+	private Bullet grabed = null;
 	
 	// skills
 	private boolean canDashThrough = false;
@@ -257,7 +257,10 @@ public class Tank {
 			if (mode == PlayerMode.GRAB) {
 				for (Bullet b : owner.getGame().getPlaying().getBullets()) {
 					if (grabHitbox.intersects(b.getHitbox())) {
-						System.out.println(b);
+						if (grabed != null && b.getHolding() == null) {
+							b.setHolding(this);
+							grabed = b;
+						}
 					}
 				}
 			}
@@ -266,12 +269,12 @@ public class Tank {
 				if (aimDistance < maxRange) {
 					aimDistance += aimSpeed;				
 				}
-				aim.x = hitbox.getX() + Math.cos(orientation*(Math.PI/180.0)) * aimDistance;
-				aim.y = hitbox.getY() + Math.sin(orientation*(Math.PI/180.0)) * aimDistance;
+				aim.x = hitbox.getX() + crosshair.getWidth()/2 + Math.cos(orientation*(Math.PI/180.0)) * aimDistance;
+				aim.y = hitbox.getY() + crosshair.getHeight()/2 + Math.sin(orientation*(Math.PI/180.0)) * aimDistance;
 			} else {
 				aimDistance = 0.;
-				aim.x = hitbox.getX();
-				aim.y = hitbox.getY();
+				aim.x = hitbox.getX() + crosshair.getWidth()/2;
+				aim.y = hitbox.getY() + crosshair.getHeight()/2;
 			}
 			if (owner.getClient() != null) {
 				owner.getClient().sendUDP("updatetank;" + owner.getName() + ";" + x + ";" + y + ";" + orientation + ";" + cannon.getShot());
@@ -297,7 +300,7 @@ public class Tank {
 			possibleObstacle.drawObstacle(g);
 		}
 		if (mode == PlayerMode.AIM) {
-			g.drawImage(crosshair, (int) aim.x, (int) aim.y, null);
+			g.drawImage(crosshair, (int) aim.x - crosshair.getWidth()/2, (int) aim.y - crosshair.getHeight()/2, null);
 		}
 		if (mode == PlayerMode.GRAB) {
 			g.setColor(new Color(125, 125, 125, 125));
@@ -386,6 +389,14 @@ public class Tank {
 
 	public void setTargetY(int targetY) {
 		this.target.y = targetY;
+	}
+	
+	public Bullet getGrabed() {
+		return grabed;
+	}
+	
+	public void setGrabed(Bullet b) {
+		grabed = b;
 	}
 	
 	public void setCanDash(boolean dash) {

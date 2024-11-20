@@ -5,7 +5,6 @@ import utils.Vector;
 import java.util.ArrayList;
 
 import map.Obstacle;
-import utils.Calcul;
 import utils.Delay;
 
 import java.awt.Shape;
@@ -50,14 +49,9 @@ public class Bullet {
 		this.id = counter;
 		counter++;
 		this.target = target;
-		System.out.println(target);
 		hitbox = new Rectangle((int)x+displayOffset, (int)y-displayOffset, width, height);
-		double[] nvect = Calcul.normalizeVector((int)(target.x - x), (int)(target.y - y));
-		vector = new Vector(nvect[0], nvect[1]);
-		System.out.println("calcul : " + vector);
-		/*vector = new Vector((target.x - x), (target.x - y));
+		vector = new Vector((target.x - x), (target.y - y));
 		vector.normalize();
-		System.out.println("vector : " + vector);*/
 		this.orientation = orientation;
 		players = owner.getGame().getPlaying().getPlayers();
 		player = owner;

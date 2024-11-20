@@ -15,7 +15,7 @@ public class Vector {
 	}
 	
 	public double norm() {
-		return Math.sqrt(x*x + y*y);
+		return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 	}
 	
 	public void normalize() {
@@ -24,6 +24,12 @@ public class Vector {
 	       x /= n;
 	       y /= n;
 	    }
+	}
+	
+	public Vector set(double x, double y) {
+		this.x = x;
+		this.y = y;
+		return this;
 	}
 
 	@Override

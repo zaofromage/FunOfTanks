@@ -8,7 +8,6 @@ import gamestate.Playing;
 import player.Bullet;
 import player.Player;
 import player.TypeShot;
-import serverClass.ServerBullet;
 import utils.Finder;
 
 import java.net.DatagramPacket;

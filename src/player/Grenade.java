@@ -85,9 +85,8 @@ public class Grenade extends Bullet {
 		} else {
 			x = holding.getX();
 			y = holding.getY();
-			double[] nvect = Calcul.normalizeVector((int)(holding.getTarget().x - x), (int) (holding.getTarget().y - y));
-			vector.x = nvect[0];
-			vector.y = nvect[1];
+			vector.set(holding.getTarget().x - x, holding.getTarget().y - y).normalize();
+			speed = 1.5;
 		}
 		if (player.getClient() != null) {
 			String holdingName = holding != null ? holding.getOwner().getName():"null";
@@ -162,5 +161,9 @@ public class Grenade extends Bullet {
 	@Override
 	public void die(Player p) {
 		p.blowup((int)x, (int)y, 2);
+	}
+	
+	public void setVector(Vector v) {
+		vector = v;
 	}
 }

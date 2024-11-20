@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import map.Obstacle;
 import utils.Calcul;
-import utils.Delay;
 import player.Bullet;
 import player.Player;
 import player.PlayerMode;
@@ -57,7 +56,6 @@ public class Playing implements Statemethods {
 		for (Player p : players) {
 			p.updatePlayer(getObstacles(), players);
 		}
-		//System.out.println(bullets.stream().filter(b -> b.getPlayer().equals(player)).collect(Collectors.toList()));
 		for (Bullet b : bullets.stream().filter(b -> b.getPlayer().equals(player)).collect(Collectors.toList())) {
 			b.update(obstacles);
 		}
@@ -417,6 +415,10 @@ public class Playing implements Statemethods {
 				break;
 			case GRAB:
 				if (keyCode == PlayerInputs.grabMode) {
+					if (player.getTank().getGrabed() != null) {
+						player.getTank().getGrabed().setHolding(null);
+						player.getTank().setGrabed(null);
+					}
 					player.getTank().switchMode(PlayerMode.BASE);
 				}
 			default:
