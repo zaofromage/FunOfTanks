@@ -63,10 +63,19 @@ public class UDPServerConnection implements Runnable {
 								}
 							}
 						} else if (header.equals("updatebullet")) {
-							Bullet b = Finder.findBullet(Finder.findPlayer(body[3], play.getPlayers()), Integer.parseInt(body[0]),
+							Player owner = Finder.findPlayer(body[3], play.getPlayers());
+							Bullet b = Finder.findBullet(owner, Integer.parseInt(body[0]),
 									play.getBullets());
 							if (b != null) {
-								b.update(Integer.parseInt(body[1]), Integer.parseInt(body[2]));
+								if (!owner.equals(play.getPlayer())) {
+									b.update(Double.parseDouble(body[1]), Double.parseDouble(body[2]));									
+								}
+								if (!body[4].equals("null")) {
+									Player hold = Finder.findPlayer(body[4], play.getPlayers());
+									if (hold.getTank() != null) {
+										b.setHolding(hold.getTank());										
+									}
+								}
 							}
 						} else if (header.equals("point")) {
 							if (play instanceof Domination) {

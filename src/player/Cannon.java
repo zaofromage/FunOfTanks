@@ -9,6 +9,7 @@ import java.awt.Shape;
 
 import utils.Calcul;
 import utils.Delay;
+import utils.Vector;
 
 public class Cannon {
 
@@ -83,10 +84,10 @@ public class Cannon {
 		
 	}
 
-	public void fire(int x, int y, int targetX, int targetY, double orientation) {
+	public void fire(int x, int y, Vector target, double orientation) {
 		if (canFire) {
 			canFire = false;
-			owner.getOwner().getClient().send("newbullet;" + x + ";" + y + ";" + targetX + ";" + targetY + ";" + orientation + ";"
+			owner.getOwner().getClient().send("newbullet;" + x + ";" + y + ";" + target.x + ";" + target.y + ";" + orientation + ";"
 					+ owner.getOwner().getName() + ";" + shot);
 			new Delay(cooldown, () -> canFire = true);
 			shot = TypeShot.NORMAL;

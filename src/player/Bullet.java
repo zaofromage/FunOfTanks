@@ -22,7 +22,7 @@ public class Bullet {
 	protected int id;
 	protected Rectangle hitbox;
 	protected Vector vector;
-	private int targetX, targetY;
+	private Vector target;
 	private double orientation;
 	private int width = 20;
 	private int height = 10;
@@ -44,17 +44,20 @@ public class Bullet {
 	
 	protected ArrayList<Player> players;
 
-	public Bullet(int x, int y, int targetX, int targetY, double orientation, Player owner) {
+	public Bullet(double x, double y, Vector target, double orientation, Player owner) {
 		this.x = x;
 		this.y = y;
 		this.id = counter;
 		counter++;
-		this.targetX = targetX;
-		this.targetY = targetY;
-		hitbox = new Rectangle(x+displayOffset, y-displayOffset, width, height);
-		double[] nvect = Calcul.normalizeVector(targetX - x, targetY - y);
+		this.target = target;
+		System.out.println(target);
+		hitbox = new Rectangle((int)x+displayOffset, (int)y-displayOffset, width, height);
+		double[] nvect = Calcul.normalizeVector((int)(target.x - x), (int)(target.y - y));
 		vector = new Vector(nvect[0], nvect[1]);
-		System.out.println((targetX - x) + " " + (targetY - y));
+		System.out.println("calcul : " + vector);
+		/*vector = new Vector((target.x - x), (target.x - y));
+		vector.normalize();
+		System.out.println("vector : " + vector);*/
 		this.orientation = orientation;
 		players = owner.getGame().getPlaying().getPlayers();
 		player = owner;
@@ -74,7 +77,7 @@ public class Bullet {
 	}
 
 	public void updateHitbox() {
-		hitbox.setBounds((int) x+displayOffset, (int) y-displayOffset, width, height);
+		hitbox.setBounds((int) (x+displayOffset), (int) (y-displayOffset), width, height);
 	}
 
 	public void update(ArrayList<Obstacle> obs) {
@@ -83,8 +86,9 @@ public class Bullet {
 		updateHitbox();
 		if (player != null) {
 			String holdingName = holding != null ? holding.getOwner().getName():"null";
+			//c'est la faut probablement pas cast en int
 			player.getClient().sendUDP(
-					"updatebullet;" + id + ";" + (int) x + ";" + (int) y + ";" + player.getName() + ";" + holdingName);
+					"updatebullet;" + id + ";" + x + ";" + y + ";" + player.getName() + ";" + holdingName);
 		}
 		Player p = detectPlayer(players, player);
 		if (p != null && !p.getTank().isInvinsible() && p.getTeam() != player.getTeam()) {
@@ -106,7 +110,7 @@ public class Bullet {
 		}
 	}
 	
-	public void update(int x, int y) {
+	public void update(double x, double y) {
 		this.x = x;
 		this.y = y;
 		updateHitbox();
@@ -115,8 +119,8 @@ public class Bullet {
 	
 
 	public boolean hasReachLimit(ArrayList<Obstacle> obs) {
-		return (targetX - blowOffset < (int) x && (int) x < targetX + blowOffset && targetY - blowOffset < (int) y
-				&& (int) y < targetY + blowOffset);
+		return (target.x - blowOffset < (int) x && (int) x < target.x + blowOffset && target.y - blowOffset < (int) y
+				&& (int) y < target.y + blowOffset);
 	}
 
 	public Obstacle detectObstacle(ArrayList<Obstacle> obs) {
@@ -130,7 +134,7 @@ public class Bullet {
 	public Player detectPlayer(ArrayList<Player> players, Player player) {
 		ArrayList<Player> enemies = new ArrayList<Player>(players);
 		if (!friendlyFire) {
-			enemies.remove(player);			
+			enemies.remove(player);		
 		}
 		for (Player p : enemies) {
 			if (p.getTank() != null) {
@@ -175,12 +179,8 @@ public class Bullet {
 		return y;
 	}
 	
-	public int getTargetX() {
-		return targetX;
-	}
-	
-	public int getTargetY() {
-		return targetY;
+	public Vector getTarget() {
+		return target;
 	}
 
 	public int getId() {
@@ -201,6 +201,14 @@ public class Bullet {
 	
 	public Player getPlayer() {
 		return player;
+	}
+	
+	public Tank getHolding() {
+		return holding;
+	}
+	
+	public void setHolding(Tank holding) {
+		this.holding = holding;
 	}
 
 	@Override

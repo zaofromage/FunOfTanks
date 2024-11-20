@@ -13,7 +13,7 @@ public class PlayerInputs {
 	
 	public static int aim = MouseEvent.BUTTON1;
 	public static int blocMode = MouseEvent.BUTTON3;
-	public static int grabMode = MouseEvent.BUTTON2;
+	public static int grabMode = KeyEvent.VK_SHIFT;
 	public static int build = MouseEvent.BUTTON1;
 	public static int up = KeyEvent.VK_Z;
 	public static int down = KeyEvent.VK_S;
@@ -33,7 +33,7 @@ public class PlayerInputs {
 	public static void reset() {
 		aim = MouseEvent.BUTTON1;
 		blocMode = MouseEvent.BUTTON3;
-		grabMode = MouseEvent.BUTTON2;
+		grabMode = KeyEvent.VK_SHIFT;
 		build = MouseEvent.BUTTON1;	
 		up = KeyEvent.VK_Z;
 		down = KeyEvent.VK_S;

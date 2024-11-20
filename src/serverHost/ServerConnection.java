@@ -18,6 +18,7 @@ import map.Obstacle;
 import player.*;
 import serverClass.*;
 import utils.Finder;
+import utils.Vector;
 
 public class ServerConnection implements Runnable {
 
@@ -133,24 +134,23 @@ public class ServerConnection implements Runnable {
 							Bullet b = null;
 							switch (TypeShot.parseTypeShot(body[6])) {
 							case NORMAL:
-								b = new Bullet(Integer.parseInt(body[0]), Integer.parseInt(body[1]), Integer.parseInt(body[2]), Integer.parseInt(body[3]),
+								b = new Bullet(Double.parseDouble(body[0]), Double.parseDouble(body[1]), new Vector(Double.parseDouble(body[2]), Double.parseDouble(body[3])),
 										Double.parseDouble(body[4]), Finder.findPlayer(body[5], play.getPlayers()));
 								break;
 							case BERTHA:
-								b = new Bertha(Integer.parseInt(body[0]), Integer.parseInt(body[1]), Integer.parseInt(body[2]), Integer.parseInt(body[3]),
+								b = new Bertha(Double.parseDouble(body[0]), Double.parseDouble(body[1]), new Vector(Double.parseDouble(body[2]), Double.parseDouble(body[3])),
 										Double.parseDouble(body[4]), Finder.findPlayer(body[5], play.getPlayers()));
 								break;
 							case GRENADE:
-								b = new Grenade(Integer.parseInt(body[0]), Integer.parseInt(body[1]), Integer.parseInt(body[2]), Integer.parseInt(body[3]),
+								b = new Grenade(Double.parseDouble(body[0]), Double.parseDouble(body[1]), new Vector(Double.parseDouble(body[2]), Double.parseDouble(body[3])),
 										Finder.findPlayer(body[5], play.getPlayers()));
 								break;
 							case TRIPLE:
-								b = new TripleShot(Integer.parseInt(body[0]), Integer.parseInt(body[1]), Integer.parseInt(body[2]), Integer.parseInt(body[3]),
+								b = new TripleShot(Double.parseDouble(body[0]), Double.parseDouble(body[1]), new Vector(Double.parseDouble(body[2]), Double.parseDouble(body[3])),
 										Double.parseDouble(body[4]), Finder.findPlayer(body[5], play.getPlayers()));
 								break;
 							}
-							play.getBullets()
-									.add(b);
+							play.getBulletsToAdd().add(b);
 						} else if (header.equals("deletebullet")) {
 							Bullet bullet = Finder.findBullet(Finder.findPlayer(body[0], play.getPlayers()), Integer.parseInt(body[1]),
 									play.getBullets());

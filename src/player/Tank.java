@@ -172,14 +172,13 @@ public class Tank {
 
 	public void fire() {
 		if (!invinsible || owner.getName().equals("ChickenJoe")) {
-			System.out.println((aim.x - x) + " " + (aim.y - y));
-			cannon.fire(x, y, (int) aim.x, (int) aim.y, orientation);	
+			cannon.fire(x, y, aim, orientation);
 		}
 	}
 	
 	public void fireDir() {
 		if (!invinsible || owner.getName().equals("ChickenJoe")) {
-			cannon.fire(x, y, (int) target.x, (int) target.y, orientation);	
+			cannon.fire(x, y, target, orientation);	
 		}
 	}
 
@@ -256,7 +255,11 @@ public class Tank {
 				}
 			}
 			if (mode == PlayerMode.GRAB) {
-				
+				for (Bullet b : owner.getGame().getPlaying().getBullets()) {
+					if (grabHitbox.intersects(b.getHitbox())) {
+						System.out.println(b);
+					}
+				}
 			}
 			//aim calculation
 			if (mode == PlayerMode.AIM) {
@@ -296,10 +299,12 @@ public class Tank {
 		if (mode == PlayerMode.AIM) {
 			g.drawImage(crosshair, (int) aim.x, (int) aim.y, null);
 		}
+		if (mode == PlayerMode.GRAB) {
+			g.setColor(new Color(125, 125, 125, 125));
+			g.fillOval((int) grabHitbox.getX(), (int) grabHitbox.getY(), (int) grabRange, (int) grabRange);		
+		}
 		g.setColor(Color.white);
 		g.drawString(""+owner.getTeam(), x, y);
-		//g.setColor(new Color(125, 125, 125, 125));
-		//g.fillOval((int) grabHitbox.getX(), (int) grabHitbox.getY(), (int) grabRange, (int) grabRange);
 	}
 
 	// getters setters

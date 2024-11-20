@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import map.Obstacle;
-import serverClass.ServerBullet;
 import utils.Calcul;
 import utils.Delay;
 import player.Bullet;
@@ -27,11 +26,13 @@ public class Playing implements Statemethods {
 
 	private Player player;
 	private ArrayList<Player> players;
-	private ArrayList<Obstacle> obstacles;
+	private ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
 	private ArrayList<Obstacle> obsToAdd = new ArrayList<Obstacle>();
 	private ArrayList<Obstacle> obsToRemove = new ArrayList<Obstacle>();
 
-	private ArrayList<Bullet> bullets;
+	private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+	private ArrayList<Bullet> bulletsToAdd = new ArrayList<Bullet>();
+	private ArrayList<Bullet> bulletsToRemove = new ArrayList<Bullet>();
 
 	private HashMap<Player, Stats> leaderBoard = new HashMap<>();
 
@@ -43,8 +44,6 @@ public class Playing implements Statemethods {
 		this.panel = panel;
 		this.player = player;
 		this.players = players;
-		obstacles = new ArrayList<>();
-		bullets = new ArrayList<Bullet>();
 		setUpWalls();
 		for (Player p : players) {
 			p.createTank(Calcul.r.nextInt(100, (int) panel.getDimension().getWidth() - 150),
@@ -88,6 +87,14 @@ public class Playing implements Statemethods {
 		}
 		for (Bullet b : bullets) {
 			b.draw(g);
+		}
+		if (!bulletsToAdd.isEmpty()) {
+			bullets.addAll(bulletsToAdd);
+			bulletsToAdd.clear();
+		}
+		if (!bulletsToRemove.isEmpty()) {
+			bullets.removeAll(bulletsToRemove);
+			bulletsToRemove.clear();
 		}
 		player.drawSkills(g);
 		// draw leaderBoard
@@ -206,7 +213,7 @@ public class Playing implements Statemethods {
 	public void deleteBullet(Bullet b) {
 		if (b != null) {
 			b.die(player);
-			bullets.remove(b);			
+			bulletsToRemove.add(b);		
 		}
 	}
 
@@ -224,6 +231,14 @@ public class Playing implements Statemethods {
 
 	public HashMap<Player, Stats> getLeaderBoard() {
 		return leaderBoard;
+	}
+
+	public ArrayList<Bullet> getBulletsToAdd() {
+		return bulletsToAdd;
+	}
+
+	public ArrayList<Bullet> getBulletsToRemove() {
+		return bulletsToRemove;
 	}
 
 	private void setUpWalls() {

@@ -24,11 +24,13 @@ public class Grenade extends Bullet {
 	
 	private boolean colliding = false;
 	
-	public Grenade(int x, int y, int targetX, int targetY, Player owner) {
-		super(x, y, targetX, targetY, 0, owner);
+	public Grenade(double x, double y, Vector target, Player owner) {
+		super(x, y, target, 0, owner);
 		speed = 1.5;
 		color = Color.green;
-		new Delay(timeToBlowUp, () -> blowup());
+		if (owner.equals(owner.getGame().getPlayer())) {
+			new Delay(timeToBlowUp, () -> blowup());			
+		}
 	}
 	
 	@Override
@@ -36,11 +38,6 @@ public class Grenade extends Bullet {
 		redIndex += redIndex+(double)255/((timeToBlowUp/1000)*Game.FPS) < 255 ? (double)255/((timeToBlowUp/1000)*Game.FPS):0;
 		greenIndex -= greenIndex-(double)255/((timeToBlowUp/1000)*Game.FPS) > 0 ? (double)255/((timeToBlowUp/1000)*Game.FPS)/2:0;
 		color = new Color((int)redIndex, (int)greenIndex, 0);
-		if (player.getClient() != null) {
-			String holdingName = holding != null ? holding.getOwner().getName():"null";
-			player.getClient().sendUDP(
-					"updatebullet;" + id + ";" + (int) x + ";" + (int) y + ";" + player.getName() + ";" + holdingName);
-		}
 		updateHitbox();
 		if (holding == null) {
 			x += vector.x * speed;
@@ -86,11 +83,44 @@ public class Grenade extends Bullet {
 				}
 			}
 		} else {
-			x = player.getTank().getX();
-			y = player.getTank().getY();
-			double[] nvect = Calcul.normalizeVector((int)(player.getTank().getTarget().x - x), (int) (player.getTank().getTarget().y - y));
+			x = holding.getX();
+			y = holding.getY();
+			double[] nvect = Calcul.normalizeVector((int)(holding.getTarget().x - x), (int) (holding.getTarget().y - y));
 			vector.x = nvect[0];
 			vector.y = nvect[1];
+		}
+		if (player.getClient() != null) {
+			String holdingName = holding != null ? holding.getOwner().getName():"null";
+			player.getClient().sendUDP(
+					"updatebullet;" + id + ";" + x + ";" + y + ";" + player.getName() + ";" + holdingName);
+		}
+	}
+	
+	@Override
+	public void update(double x, double y) {
+		this.x = x;
+		this.y = y;
+		redIndex += redIndex+(double)255/((timeToBlowUp/1000)*Game.FPS) < 255 ? (double)255/((timeToBlowUp/1000)*Game.FPS):0;
+		greenIndex -= greenIndex-(double)255/((timeToBlowUp/1000)*Game.FPS) > 0 ? (double)255/((timeToBlowUp/1000)*Game.FPS)/2:0;
+		color = new Color((int)redIndex, (int)greenIndex, 0);
+		updateHitbox();
+		if (holding == null) {
+			if (ascend) {
+				diam+=0.5;
+				if (diam > (75 - (bounce*26))) {
+					ascend = false;
+				}
+			} else {
+				if (diam >= 25) {
+					diam-=0.5;			
+				} else {
+					ascend = true;
+					bounce++;
+				}
+			}
+			if (diam <= 50) {
+				speed -= speed - 0.003 > 0 ? 0.003:0.;
+			}			
 		}
 	}
 	
@@ -100,8 +130,8 @@ public class Grenade extends Bullet {
 		g.fillOval((int)x, (int)y, (int)diam, (int)diam);
 		g.setColor(Color.gray);
 		g.fillRect((int)(x+diam/2), (int)(y), (int) (diam/5), (int) (diam/2));
-		//g.setColor(new Color(125, 125, 125, 125));
-		//g.fillOval((int) (x-blowDiam/2), (int) (y-blowDiam/2), blowDiam, blowDiam);
+		g.setColor(new Color(125, 125, 125, 125));
+		g.fillOval((int) (x-blowDiam/2), (int) (y-blowDiam/2), blowDiam, blowDiam);
 	}
 	
 	private void blowup() {
@@ -129,4 +159,8 @@ public class Grenade extends Bullet {
 		hitbox.setBounds((int) x, (int) y, (int)diam, (int)diam);
 	}
 	
+	@Override
+	public void die(Player p) {
+		p.blowup((int)x, (int)y, 2);
+	}
 }

@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.util.HashMap;
 import java.util.Map;
-
-import serverClass.ServerBullet;
 import serverClass.ServerTank;
 import utils.Finder;
 
@@ -43,18 +41,8 @@ public class UDPServer implements Runnable {
 				String header = ClientHandler.getHeader(request);
 				String[] body = ClientHandler.getBody(request);
 				if (header.equals("updatetank")) {
-					ServerTank tank = Finder.findServerTank(body[0], server.getPlaying().getTanks());
-					if (tank != null) {
-						tank.x = Integer.parseInt(body[1]);
-						tank.y = Integer.parseInt(body[2]);
-						tank.orientation = Double.parseDouble(body[3]);
-						sendToAll(request);						
-					}
+					sendToAll(request);
 				} else if (header.equals("updatebullet")) {
-					ServerBullet bullet = Finder.findServerBullet(body[3],Integer.parseInt(body[0]), server.getPlaying().getBullets());
-					if (bullet != null) {
-						bullet.update(Integer.parseInt(body[1]), Integer.parseInt(body[2]), Boolean.parseBoolean(body[4]));
-					}
 					sendToAll(request);
 				} else if (header.equals("point")) {
 					sendToAll(request);

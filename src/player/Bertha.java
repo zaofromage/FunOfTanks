@@ -6,13 +6,14 @@ import java.util.ArrayList;
 
 import map.Obstacle;
 import utils.Delay;
+import utils.Vector;
 
 public class Bertha extends Bullet {
 	
 	private Ellipse2D aoe = new Ellipse2D.Double(0, 0, 200, 200);
 
-	public Bertha(int x, int y, int targetX, int targetY, double orientation, Player owner) {
-		super(x, y, targetX, targetY, orientation, owner);
+	public Bertha(double x, double y, Vector target, double orientation, Player owner) {
+		super(x, y, target, orientation, owner);
 		owner.getTank().getCannon().setFire(true);
 		color = Color.blue;
 	}
