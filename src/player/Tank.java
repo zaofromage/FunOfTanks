@@ -257,7 +257,8 @@ public class Tank {
 			if (mode == PlayerMode.GRAB) {
 				for (Bullet b : owner.getGame().getPlaying().getBullets()) {
 					if (grabHitbox.intersects(b.getHitbox())) {
-						if (grabed != null && b.getHolding() == null) {
+						System.out.println(grabed + " " + b.getHolding() + " " + b);
+						if (grabed == null && b.getHolding() == null) {
 							b.setHolding(this);
 							grabed = b;
 						}

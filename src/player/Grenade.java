@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import client.Game;
 import map.Obstacle;
-import utils.Calcul;
 import utils.Delay;
 import utils.Vector;
 
