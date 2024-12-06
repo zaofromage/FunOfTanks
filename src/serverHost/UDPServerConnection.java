@@ -67,7 +67,7 @@ public class UDPServerConnection implements Runnable {
 									play.getBullets());
 							if (b != null) {
 								if (!owner.equals(play.getPlayer())) {
-									b.update(Double.parseDouble(body[1]), Double.parseDouble(body[2]));									
+									b.update(Double.parseDouble(body[1]), Double.parseDouble(body[2]));
 								}
 								if (!body[4].equals("null")) {
 									Player hold = Finder.findPlayer(body[4], play.getPlayers());

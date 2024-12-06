@@ -11,11 +11,14 @@ import java.util.stream.Collectors;
 
 import map.Obstacle;
 import utils.Calcul;
+import utils.Vector;
 import player.Bullet;
+import player.Grenade;
 import player.Player;
 import player.PlayerMode;
 import player.Stats;
 import player.TypeShot;
+import serverHost.Role;
 import client.GamePanel;
 import input.PlayerInputs;
 
@@ -417,8 +420,8 @@ public class Playing implements Statemethods {
 				if (keyCode == PlayerInputs.grabMode) {
 					if (player.getTank().getGrabed() != null) {
 						player.getTank().getGrabed().setHolding(null);
-						player.getTank().setGrabed(null);
 					}
+					player.getTank().setGrabed(null);
 					player.getTank().switchMode(PlayerMode.BASE);
 				}
 			default:

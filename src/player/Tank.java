@@ -163,7 +163,7 @@ public class Tank {
 		hitbox.setBounds(x - displayOffset, y - displayOffset, size, size);
 		center.x = (int)hitbox.getCenterX();
 		center.y = (int)hitbox.getCenterY();
-		grabHitbox.setFrame(hitbox.getX() - displayOffset + Math.cos(orientation*(Math.PI/180.0)) * (grabRange/1.5), hitbox.getY() - displayOffset + Math.sin(orientation*(Math.PI/180.0)) * (grabRange/1.5), grabRange, grabRange);
+		grabHitbox.setFrame(hitbox.getX() - displayOffset + Math.cos(orientation*(Math.PI/180.0)) * (grabRange/1.25), hitbox.getY() - displayOffset + Math.sin(orientation*(Math.PI/180.0)) * (grabRange/1.25), grabRange, grabRange);
 	}
 
 	private boolean detectObstacle(Obstacle obstacle, int x, int y) {
@@ -257,7 +257,6 @@ public class Tank {
 			if (mode == PlayerMode.GRAB) {
 				for (Bullet b : owner.getGame().getPlaying().getBullets()) {
 					if (grabHitbox.intersects(b.getHitbox())) {
-						System.out.println(grabed + " " + b.getHolding() + " " + b);
 						if (grabed == null && b.getHolding() == null) {
 							b.setHolding(this);
 							grabed = b;

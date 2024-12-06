@@ -15,7 +15,7 @@ public class Grenade extends Bullet {
 	private double diam = 15;
 	private boolean ascend = true;
 	private int bounce = 0;
-	public static final int timeToBlowUp = 4000;
+	public static final int timeToBlowUp = 40000;
 	private double redIndex = 0;
 	private double greenIndex = 255;
 	
@@ -27,7 +27,7 @@ public class Grenade extends Bullet {
 		super(x, y, target, 0, owner);
 		speed = 1.5;
 		color = Color.green;
-		if (owner.equals(owner.getGame().getPlayer())) {
+		if (owner != null && owner.equals(owner.getGame().getPlayer())) {
 			new Delay(timeToBlowUp, () -> blowup());			
 		}
 	}
@@ -86,6 +86,7 @@ public class Grenade extends Bullet {
 			y = holding.getY();
 			vector.set(holding.getTarget().x - x, holding.getTarget().y - y).normalize();
 			speed = 1.5;
+			diam = 15;
 		}
 		if (player.getClient() != null) {
 			String holdingName = holding != null ? holding.getOwner().getName():"null";
@@ -119,6 +120,8 @@ public class Grenade extends Bullet {
 			if (diam <= 50) {
 				speed -= speed - 0.003 > 0 ? 0.003:0.;
 			}			
+		} else {
+			diam = 15;
 		}
 	}
 	
