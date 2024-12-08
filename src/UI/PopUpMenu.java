@@ -71,7 +71,7 @@ public abstract class PopUpMenu {
 		}
 		for (Button b : buttons) {
 			b.draw(g);
-		}
+		}			
 	}
 	
 	public void formatPlayers(ArrayList<Player> players, Graphics g) {

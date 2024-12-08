@@ -64,6 +64,7 @@ public class HostMenu extends PopUpMenu {
 		buttons.get(previousLength+1).setEnabled(false);
 		buttons.add(new Button(x+width/2-150, y+350, 300, 75, Color.green, "PLAY",
 				() -> {
+					Game.fade();
 					if (game.getPlayer() != null) {
 						game.getPlayer().getClient().send("play;");
 						game.getPlayer().setReady(false);

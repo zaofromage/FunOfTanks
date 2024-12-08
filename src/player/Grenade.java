@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
+import java.util.List;
 
 import client.Game;
 import map.Obstacle;
@@ -33,7 +34,7 @@ public class Grenade extends Bullet {
 	}
 	
 	@Override
-	public void update(ArrayList<Obstacle> obs) {
+	public void update(List<Obstacle> obs) {
 		redIndex += redIndex+(double)255/((timeToBlowUp/1000)*Game.FPS) < 255 ? (double)255/((timeToBlowUp/1000)*Game.FPS):0;
 		greenIndex -= greenIndex-(double)255/((timeToBlowUp/1000)*Game.FPS) > 0 ? (double)255/((timeToBlowUp/1000)*Game.FPS)/2:0;
 		color = new Color((int)redIndex, (int)greenIndex, 0);
@@ -87,10 +88,15 @@ public class Grenade extends Bullet {
 			vector.set(holding.getTarget().x - x, holding.getTarget().y - y).normalize();
 			speed = 1.5;
 			diam = 15;
+			ascend = true;
+			bounce = 0;
+			if (holding.getGrabed() == null) {
+				holding = null;
+			}
 		}
 		if (player.getClient() != null) {
 			String holdingName = holding != null ? holding.getOwner().getName():"null";
-			player.getClient().sendUDP(
+			host.sendUDP(
 					"updatebullet;" + id + ";" + x + ";" + y + ";" + player.getName() + ";" + holdingName);
 		}
 	}
@@ -122,6 +128,8 @@ public class Grenade extends Bullet {
 			}			
 		} else {
 			diam = 15;
+			ascend = true;
+			bounce = 0;
 		}
 	}
 	
@@ -136,7 +144,7 @@ public class Grenade extends Bullet {
 	}
 	
 	private void blowup() {
-		ArrayList<Obstacle> obs = player.getGame().getPlaying().getObstacles();
+		List<Obstacle> obs = player.getGame().getPlaying().getObstacles();
 		Ellipse2D aoe = new Ellipse2D.Double((int) (x-blowDiam/2), (int) (y-blowDiam/2), blowDiam, blowDiam);
 		for (Player p : players) {
 			if (p.getTank() != null && aoe.intersects(p.getTank().getHitbox()) && !p.getTank().isInvinsible()) {

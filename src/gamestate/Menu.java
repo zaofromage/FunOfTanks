@@ -36,6 +36,7 @@ public class Menu implements Statemethods {
 		this.buttons = new ArrayList<>();
 		this.players = new ArrayList<Player>();
 		cancelButton = new Button(50, 50, 50, 50, Color.red, "X", () -> {
+			Game.fade();
 			hostMenu = null;
 			joinMenu = null;
 			settings = null;
@@ -51,14 +52,17 @@ public class Menu implements Statemethods {
 		});
 		activeCancelButton = false;
 		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 200, 300, 75, Color.red, "HOST A GAME", () -> {
+			Game.fade();
 			activeCancelButton = true;
 			hostMenu = new HostMenu(game.getPanel().getDimension().width / 2 - 500, 50, game);
 		}));
 		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 350, 300, 75, Color.blue, "JOIN A GAME", () -> {
+			Game.fade();
 			activeCancelButton = true;
 			joinMenu = new JoinMenu(game.getPanel().getDimension().width / 2 - 500, 50, game);
 		}));
 		buttons.add(new Button(game.getPanel().getDimension().width / 2 - 150, 600, 300, 75, Color.darkGray, "Settings", () -> {
+			Game.fade();
 			activeCancelButton = true;
 			settings = new Settings(game.getPanel().getDimension().width / 2 - 500/2, 50, game);
 		}));

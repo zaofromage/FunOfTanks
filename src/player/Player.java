@@ -1,6 +1,7 @@
 package player;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import client.Game;
@@ -157,7 +158,7 @@ public class Player {
 		}
 	}
 
-	public void updatePlayer(ArrayList<Obstacle> obs, ArrayList<Player> players) {
+	public void update(List<Obstacle> obs, List<Player> players) {
 		if (tank != null) {
 			tank.update(obs, players, this);
 		}
@@ -175,7 +176,7 @@ public class Player {
 		trainee.update();
 	}
 	
-	public void drawPlayer(Graphics g) {
+	public void draw(Graphics g) {
 		trainee.draw(g);
 		if (tank != null) {
 			tank.draw(g);

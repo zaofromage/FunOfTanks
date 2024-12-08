@@ -6,7 +6,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 import map.Obstacle;
@@ -19,6 +21,7 @@ import player.PlayerMode;
 import player.Stats;
 import player.TypeShot;
 import serverHost.Role;
+import client.Game;
 import client.GamePanel;
 import input.PlayerInputs;
 
@@ -28,13 +31,9 @@ public class Playing implements Statemethods {
 
 	private Player player;
 	private ArrayList<Player> players;
-	private ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
-	private ArrayList<Obstacle> obsToAdd = new ArrayList<Obstacle>();
-	private ArrayList<Obstacle> obsToRemove = new ArrayList<Obstacle>();
+	private CopyOnWriteArrayList<Obstacle> obstacles = new CopyOnWriteArrayList<Obstacle>();
 
-	private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
-	private ArrayList<Bullet> bulletsToAdd = new ArrayList<Bullet>();
-	private ArrayList<Bullet> bulletsToRemove = new ArrayList<Bullet>();
+	private CopyOnWriteArrayList<Bullet> bullets = new CopyOnWriteArrayList<Bullet>();
 
 	private HashMap<Player, Stats> leaderBoard = new HashMap<>();
 
@@ -57,10 +56,13 @@ public class Playing implements Statemethods {
 	@Override
 	public void update() {
 		for (Player p : players) {
-			p.updatePlayer(getObstacles(), players);
+			p.update(getObstacles(), players);
 		}
-		for (Bullet b : bullets.stream().filter(b -> b.getPlayer().equals(player)).collect(Collectors.toList())) {
-			b.update(obstacles);
+		System.out.println(bullets);
+		if (player.getRole() == Role.HOST) {
+			for (Bullet b : bullets) {
+				b.update(obstacles);
+			}	
 		}
 		if (isFinish != 0) {
 			GameState.state = GameState.FINISH;
@@ -75,33 +77,17 @@ public class Playing implements Statemethods {
 		for (Obstacle o : getObstacles()) {
 			o.drawObstacle(g);
 		}
-		if (!obsToAdd.isEmpty()) {
-			obstacles.addAll(obsToAdd);
-			obsToAdd.clear();
-		}
-		if (!obsToRemove.isEmpty()) {
-			obstacles.removeAll(obsToRemove);
-			obsToRemove.clear();
-		}
 		for (Player p : players) {
-			p.drawPlayer(g);
+			p.draw(g);
 		}
 		for (Bullet b : bullets) {
 			b.draw(g);
-		}
-		if (!bulletsToAdd.isEmpty()) {
-			bullets.addAll(bulletsToAdd);
-			bulletsToAdd.clear();
-		}
-		if (!bulletsToRemove.isEmpty()) {
-			bullets.removeAll(bulletsToRemove);
-			bulletsToRemove.clear();
 		}
 		player.drawSkills(g);
 		// draw leaderBoard
 		if (drawLeaderBoard) {
 			drawLeaderBoard(g);
-		}
+		}	
 	}
 	
 	public void drawLeaderBoard(Graphics g) {
@@ -214,7 +200,7 @@ public class Playing implements Statemethods {
 	public void deleteBullet(Bullet b) {
 		if (b != null) {
 			b.die(player);
-			bulletsToRemove.add(b);		
+			bullets.remove(b);		
 		}
 	}
 
@@ -226,20 +212,12 @@ public class Playing implements Statemethods {
 		return players;
 	}
 
-	public ArrayList<Bullet> getBullets() {
+	public List<Bullet> getBullets() {
 		return bullets;
 	}
 
 	public HashMap<Player, Stats> getLeaderBoard() {
 		return leaderBoard;
-	}
-
-	public ArrayList<Bullet> getBulletsToAdd() {
-		return bulletsToAdd;
-	}
-
-	public ArrayList<Bullet> getBulletsToRemove() {
-		return bulletsToRemove;
 	}
 
 	private void setUpWalls() {
@@ -316,16 +294,8 @@ public class Playing implements Statemethods {
 		handleInputsReleased(e.getKeyCode());
 	}
 
-	public ArrayList<Obstacle> getObstacles() {
+	public List<Obstacle> getObstacles() {
 		return obstacles;
-	}
-
-	public ArrayList<Obstacle> getObsToRemove() {
-		return obsToRemove;
-	}
-
-	public ArrayList<Obstacle> getObsToAdd() {
-		return obsToAdd;
 	}
 	
 	public void handleInputsPressed(int keyCode) {

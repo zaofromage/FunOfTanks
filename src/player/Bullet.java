@@ -3,8 +3,10 @@ package player;
 import java.awt.Rectangle;
 import utils.Vector;
 import java.util.ArrayList;
+import java.util.List;
 
 import map.Obstacle;
+import serverHost.Client;
 import utils.Delay;
 
 import java.awt.Shape;
@@ -29,7 +31,7 @@ public class Bullet {
 
 	private int blowOffset = 7;
 
-	protected double speed = 4;
+	protected double speed = 1;
 	
 	private boolean friendlyFire = false;
 
@@ -42,6 +44,8 @@ public class Bullet {
 	protected boolean remove = false;
 	
 	protected ArrayList<Player> players;
+	
+	protected Client host;
 
 	public Bullet(double x, double y, Vector target, double orientation, Player owner) {
 		this.x = x;
@@ -55,6 +59,7 @@ public class Bullet {
 		this.orientation = orientation;
 		players = owner.getGame().getPlaying().getPlayers();
 		player = owner;
+		host = player.getGame().getPlayer().getClient();
 		new Delay(500, () -> friendlyFire = true);
 	}
 
@@ -74,50 +79,57 @@ public class Bullet {
 		hitbox.setBounds((int) (x+displayOffset), (int) (y-displayOffset), width, height);
 	}
 
-	public void update(ArrayList<Obstacle> obs) {
-		x += vector.x * speed;
-		y += vector.y * speed;
+	public void update(List<Obstacle> obs) {
+		//x += vector.x * speed;
+		//y += vector.y * speed;
 		updateHitbox();
-		if (player != null) {
+		if (host != null) {
 			String holdingName = holding != null ? holding.getOwner().getName():"null";
 			//c'est la faut probablement pas cast en int
-			player.getClient().sendUDP(
-					"updatebullet;" + id + ";" + x + ";" + y + ";" + player.getName() + ";" + holdingName);
+			host.sendUDP(
+					"updatebullet;" + id + ";" + (x+vector.x * speed) + ";" + (y+vector.y * speed) + ";" + player.getName() + ";" + holdingName);
 		}
 		Player p = detectPlayer(players, player);
 		if (p != null && !p.getTank().isInvinsible() && p.getTeam() != player.getTeam()) {
 			remove = true;
-			player.getClient().send("deletebullet;" + player.getName() + ";" + id);
-			player.getClient().send("deletetank;" + p.getName() + ";" + player.getName());
+			host.send("deletebullet;" + player.getName() + ";" + id);
+			host.send("deletetank;" + p.getName() + ";" + player.getName());
 			player.debris(x, y, orientation - 50,
 					orientation + 50);
 			player.blowup((int) x, (int) y, 0.20);
 		} else if (hasReachLimit(obs)) {
 			remove = true;
-			player.getClient().send("deletebullet;" + player.getName() + ";" + id);
+			host.send("deletebullet;" + player.getName() + ";" + id);
 			player.blowup((int) x, (int) y, 0.20);
 		} else if (destroyObstacle(obs)) {
 			remove = true;
-			player.getClient().send("deletebullet;" + player.getName() + ";" + id);
+			host.send("deletebullet;" + player.getName() + ";" + id);
 			player.debris(x, y, orientation - 50,
 					orientation + 50);
+		}
+		if (holding != null && holding.getGrabed() == null) {
+			holding = null;
 		}
 	}
 	
 	public void update(double x, double y) {
+		System.out.println("guest");
 		this.x = x;
 		this.y = y;
 		updateHitbox();
+		if (holding != null && holding.getGrabed() == null) {
+			holding = null;
+		}
 	}
 
 	
 
-	public boolean hasReachLimit(ArrayList<Obstacle> obs) {
+	public boolean hasReachLimit(List<Obstacle> obs) {
 		return (target.x - blowOffset < (int) x && (int) x < target.x + blowOffset && target.y - blowOffset < (int) y
 				&& (int) y < target.y + blowOffset);
 	}
 
-	public Obstacle detectObstacle(ArrayList<Obstacle> obs) {
+	public Obstacle detectObstacle(List<Obstacle> obs) {
 		for (Obstacle o : obs) {
 			if (o.getHitbox().intersects(hitbox))
 				return o;
@@ -139,7 +151,7 @@ public class Bullet {
 		return null;
 	}
 
-	public boolean destroyObstacle(ArrayList<Obstacle> obs) {
+	public boolean destroyObstacle(List<Obstacle> obs) {
 		Obstacle o = detectObstacle(obs);
 		if (o == null)
 			return false;
@@ -207,6 +219,6 @@ public class Bullet {
 
 	@Override
 	public String toString() {
-		return "id : " + id + " player : " + player;
+		return "id : " + id + " player : " + player + " holding : " + holding;
 	}
 }

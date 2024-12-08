@@ -16,7 +16,6 @@ import gamestate.Playing;
 import gamestate.TeamMode;
 import map.Obstacle;
 import player.*;
-import serverClass.*;
 import utils.Finder;
 import utils.Vector;
 
@@ -70,6 +69,7 @@ public class ServerConnection implements Runnable {
 								p.setReady(Boolean.parseBoolean(body[1]));
 							}
 						} else if (header.equals("play")) {
+							Game.fade();
 							switch(GameMode.gameMode) {
 							case FFA:game.setPlaying(new Playing(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));break;
 							case TEAM:game.setPlaying(new TeamMode(game.getPanel(), game.getPlayer(), game.getMenu().getPlayers()));break;
@@ -150,7 +150,7 @@ public class ServerConnection implements Runnable {
 										Double.parseDouble(body[4]), Finder.findPlayer(body[5], play.getPlayers()));
 								break;
 							}
-							play.getBulletsToAdd().add(b);
+							play.getBullets().add(b);
 						} else if (header.equals("deletebullet")) {
 							Bullet bullet = Finder.findBullet(Finder.findPlayer(body[0], play.getPlayers()), Integer.parseInt(body[1]),
 									play.getBullets());
@@ -158,13 +158,13 @@ public class ServerConnection implements Runnable {
 								play.deleteBullet(bullet);
 							}
 						} else if (header.equals("newobstacle")) {
-							play.getObsToAdd().add(new Obstacle(Integer.parseInt(body[0]), Integer.parseInt(body[1]),
+							play.getObstacles().add(new Obstacle(Integer.parseInt(body[0]), Integer.parseInt(body[1]),
 									Boolean.parseBoolean(body[2])));
 						} else if (header.equals("deleteobstacle")) {
 							Obstacle o = Finder.findObstacle(Integer.parseInt(body[0]), Integer.parseInt(body[1]),
 									play.getObstacles());
 							if (o != null) {
-								play.getObsToRemove().add(o);
+								play.getObstacles().remove(o);
 							}
 						}
 						break;

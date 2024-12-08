@@ -9,6 +9,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
 import utils.Vector;
 
 import javax.imageio.ImageIO;
@@ -18,6 +20,7 @@ import gamestate.GameMode;
 import utils.Calcul;
 import utils.Delay;
 import map.Obstacle;
+import serverHost.Role;
 
 public class Tank {
 
@@ -105,7 +108,7 @@ public class Tank {
 		
 	}
 
-	public void move(int deltaX, int deltaY, ArrayList<Obstacle> obs) {
+	public void move(int deltaX, int deltaY, List<Obstacle> obs) {
 		if (inDash) {
 			if (!canDashThrough) {
 				for (Obstacle o : obs) {
@@ -133,7 +136,7 @@ public class Tank {
 		}
 	}
 
-	public void dash(ArrayList<Obstacle> obs) {
+	public void dash(List<Obstacle> obs) {
 		if (canDash) {
 			inDash = true;
 			canDash = false;
@@ -182,8 +185,8 @@ public class Tank {
 		}
 	}
 
-	public void dropObstacle(int x, int y, boolean destructible, ArrayList<Player> players,
-			ArrayList<Obstacle> obstacles) {
+	public void dropObstacle(int x, int y, boolean destructible, List<Player> players,
+			List<Obstacle> obstacles) {
 		if (mode == PlayerMode.BLOC) {
 			Obstacle o = new Obstacle(x, y, destructible);
 			for (Player p : players) {
@@ -211,7 +214,7 @@ public class Tank {
 		}
 	}
 
-	public void update(ArrayList<Obstacle> obs, ArrayList<Player> players, Player player) {
+	public void update(List<Obstacle> obs, List<Player> players, Player player) {
 		if (owner.isMain()) {
 			if (up) {
 				move(0, -1, obs);
@@ -255,6 +258,8 @@ public class Tank {
 				}
 			}
 			if (mode == PlayerMode.GRAB) {
+				//if (grabed != null)
+					//System.out.println(grabed + " " + grabed.getHolding());
 				for (Bullet b : owner.getGame().getPlaying().getBullets()) {
 					if (grabHitbox.intersects(b.getHitbox())) {
 						if (grabed == null && b.getHolding() == null) {

@@ -6,6 +6,7 @@ import utils.Delay;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 
 import gamestate.*;
 
@@ -27,8 +28,14 @@ public class Game implements Runnable {
 	private static String message;
 	private Font errorMessageFont;
 	
+	private Color fade = new Color(0, 0, 0, 255);
+	private double fadeAlpha = 255.;
+	public static boolean fadeIn = false;
+	public static boolean fadeOut = true;
+	private final double fadeOffset = 7.5;
+	
+	
 	public Game() {
-		
 		panel = new GamePanel(this);
 		menu = new Menu(this);
 		window = new GameWindow(panel);
@@ -57,29 +64,54 @@ public class Game implements Runnable {
 	}
 	
 	public void render(Graphics g) {
-		switch (GameState.state) {
-		case MENU:
-			menu.draw(g);
-			break;
-		case PLAYING:
-			playing.draw(g);
-			break;
-		case FINISH:
-			finish.draw(g);
-			break;
+		if (!fadeIn) {
+			switch (GameState.state) {
+			case MENU:
+				menu.draw(g);
+				break;
+			case PLAYING:
+				playing.draw(g);
+				break;
+			case FINISH:
+				finish.draw(g);
+				break;
+			}
+			if (errorMessage != null) {
+				g.setColor(Color.red);
+				g.setFont(errorMessageFont);
+				g.drawString(errorMessage, panel.getDimension().width/2 - g.getFontMetrics().stringWidth(errorMessage)/2, panel.getDimension().height/4 * 3);
+			}
+			if (message != null) {
+				g.setColor(Color.black);
+				g.setFont(errorMessageFont);
+				g.drawString(message, panel.getDimension().width/2 - g.getFontMetrics().stringWidth(message)/2, panel.getDimension().height/4 * 3);
+			}			
 		}
-		if (errorMessage != null) {
-			g.setColor(Color.red);
-			g.setFont(errorMessageFont);
-			g.drawString(errorMessage, panel.getDimension().width/2 - g.getFontMetrics().stringWidth(errorMessage)/2, panel.getDimension().height/4 * 3);
+		if (fadeIn) {
+			fadeAlpha += fadeOffset;
+			if (fadeAlpha >= 255 || fadeOut) {
+				fadeAlpha = 255;
+				fadeIn = false;
+				fadeOut = true;
+			}
 		}
-		if (message != null) {
-			g.setColor(Color.black);
-			g.setFont(errorMessageFont);
-			g.drawString(message, panel.getDimension().width/2 - g.getFontMetrics().stringWidth(message)/2, panel.getDimension().height/4 * 3);
+		if (fadeOut) {
+			fadeAlpha -= fadeOffset;
+			if (fadeAlpha <= 0 || fadeIn) {
+				fadeAlpha = 0.;
+				fadeOut = false;
+			}
 		}
+		fade = new Color(0, 0, 0, (int) fadeAlpha);
+		g.setColor(fade);
+		g.fillRect(0,  0, panel.getDimension().width, panel.getDimension().height);
 	}
-
+	
+	public static void fade() {
+		fadeIn = true;
+		fadeOut = false;
+	}
+	
 	@Override
 	public void run() {
 		

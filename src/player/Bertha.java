@@ -3,6 +3,7 @@ package player;
 import java.awt.Color;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
+import java.util.List;
 
 import map.Obstacle;
 import utils.Delay;
@@ -19,7 +20,7 @@ public class Bertha extends Bullet {
 	}
 	
 	@Override
-	public void update(ArrayList<Obstacle> obs) {
+	public void update(List<Obstacle> obs) {
 		super.update(obs);
 		if (remove) {
 			aoe.setFrame((int) (x - aoe.getWidth() / 2),
@@ -30,7 +31,7 @@ public class Bertha extends Bullet {
 		}
 	}
 	
-	private void destroyAoe(ArrayList<Obstacle> obs) {
+	private void destroyAoe(List<Obstacle> obs) {
 		for (Player p : players) {
 			if (p.getTank() != null && aoe.intersects(p.getTank().getHitbox()) && !p.getTank().isInvinsible()) {
 				player.getClient().send("deletetank;" + p.getName() + ";" + player.getName());
