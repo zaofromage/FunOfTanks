@@ -69,7 +69,7 @@ public class Tank {
 	private final double grabRange = 100;
 	private Bullet grabed = null;
 	
-	// skills
+	// skills faire des decorateurs pour les skills
 	private boolean canDashThrough = false;
 
 	public Tank(int x, int y, Player owner) {

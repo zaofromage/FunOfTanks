@@ -12,6 +12,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 import map.Obstacle;
+import model.gamestate.GameState;
 import utils.Calcul;
 import utils.Vector;
 import player.Bullet;
@@ -58,7 +59,6 @@ public class Playing implements Statemethods {
 		for (Player p : players) {
 			p.update(getObstacles(), players);
 		}
-		System.out.println(bullets);
 		if (player.getRole() == Role.HOST) {
 			for (Bullet b : bullets) {
 				b.update(obstacles);

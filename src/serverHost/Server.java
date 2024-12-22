@@ -51,7 +51,7 @@ public class Server implements Runnable {
 		running = false;
 	    try {
 	        if (server != null && !server.isClosed()) {
-	            server.close(); // Cela lève une SocketException dans le thread `run()`
+	            server.close();
 	        }
 	        for (ClientHandler ch : clients) {
 	            ch.close();

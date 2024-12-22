@@ -5,10 +5,10 @@ import client.Game;
 import gamestate.Domination;
 import gamestate.Finish;
 import gamestate.GameMode;
-import gamestate.GameState;
 import gamestate.Menu;
 import gamestate.Playing;
 import gamestate.TeamMode;
+import model.gamestate.GameState;
 import player.Skill;
 import serverHost.Role;
 

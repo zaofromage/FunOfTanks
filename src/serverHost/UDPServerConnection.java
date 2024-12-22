@@ -3,8 +3,8 @@ package serverHost;
 import java.io.IOException;
 
 import gamestate.Domination;
-import gamestate.GameState;
 import gamestate.Playing;
+import model.gamestate.GameState;
 import player.Bullet;
 import player.Player;
 import player.TypeShot;

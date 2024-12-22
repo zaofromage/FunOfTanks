@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 
 import gamestate.*;
+import model.gamestate.GameState;
 
 public class Game implements Runnable {
 	
