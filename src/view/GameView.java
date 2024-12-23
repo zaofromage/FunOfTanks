@@ -11,7 +11,6 @@ public class GameView implements IView, Runnable {
 	public static final int FPS = 120;
 	private Thread viewLoop;
 	
-	private Game model;
 	
 	private GameWindow window;
 	private GamePanel panel;
@@ -19,12 +18,10 @@ public class GameView implements IView, Runnable {
 	// game state
 	private PlayingView playing;
 	
-	public GameView(Game model) {
-		this.model = model;
+	public GameView() {
 		panel = new GamePanel(this);
 		window = new GameWindow(panel);
 		viewLoop = new Thread(this);
-		playing = new PlayingView(model.getPlaying());
 		viewLoop.start();
 	}
 
@@ -34,7 +31,7 @@ public class GameView implements IView, Runnable {
 		case MENU:
 			break;
 		case PLAYING:
-			playing.draw(g);
+			//playing.draw(g);
 			break;
 		case FINISH:
 			break;

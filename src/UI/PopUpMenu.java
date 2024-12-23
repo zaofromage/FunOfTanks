@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import client.Game;
 import client.GamePanel;
-import gamestate.GameMode;
+import model.gamestate.GameMode;
 import player.Player;
 import player.Skill;
 import utils.Finder;

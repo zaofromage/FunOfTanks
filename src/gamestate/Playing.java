@@ -13,12 +13,12 @@ import java.util.stream.Collectors;
 
 import map.Obstacle;
 import model.gamestate.GameState;
+import model.player.PlayerMode;
 import utils.Calcul;
 import utils.Vector;
 import player.Bullet;
 import player.Grenade;
 import player.Player;
-import player.PlayerMode;
 import player.Stats;
 import player.TypeShot;
 import serverHost.Role;

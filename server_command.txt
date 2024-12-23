@@ -1,0 +1,14 @@
+menu {
+	addPlayer(id)
+	removePlayer(id)
+	setReady(id, boolean)
+	setMode(GameMode)
+	play()
+}	
+
+playing {
+	moveTank(Dir, id)
+	updateOrientation(target)
+	fire(target)
+	switchMode(Mode) // aim, base, build, grab etc..
+}

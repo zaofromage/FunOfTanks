@@ -15,14 +15,14 @@ import java.util.Enumeration;
 
 import client.Game;
 import gamestate.Domination;
-import gamestate.GameMode;
 import gamestate.Playing;
 import gamestate.TeamMode;
+import model.gamestate.GameMode;
 import model.gamestate.GameState;
+import network.Server;
 import player.Player;
 import player.Skill;
 import serverHost.Role;
-import serverHost.Server;
 import utils.Calcul;
 
 public class HostMenu extends PopUpMenu {

@@ -6,20 +6,16 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import controller.player.PlayerController;
-import input.PlayerInputs;
 import model.Game;
-import model.player.Dir;
 import view.GameView;
 
 public class GameController implements KeyListener, MouseListener {
 	
-	private Game model;
 	private GameView view;
 	
 	private PlayerController player;
 	
-	public GameController(Game game, GameView view) {
-		this.model = game;
+	public GameController(GameView view) {
 		this.view = view;
 		view.getPanel().addKeyListener(this);
 		view.getPanel().addMouseListener(this);
@@ -57,10 +53,7 @@ public class GameController implements KeyListener, MouseListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		int code = e.getKeyCode();
-		if (code == PlayerInputs.left) {
-			model.getPlayer().getTank().move(Dir.LEFT);
-		}
+		
 	}
 
 	@Override

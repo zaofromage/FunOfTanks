@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import client.Game;
-import gamestate.GameMode;
+import model.gamestate.GameMode;
 import player.Player;
 import player.Skill;
 import serverHost.Role;

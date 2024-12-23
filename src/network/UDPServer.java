@@ -1,14 +1,18 @@
-package serverHost;
+package network;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.io.IOException;
-import java.net.DatagramPacket;
 import java.util.HashMap;
 import java.util.Map;
-import serverClass.ServerTank;
-import utils.Finder;
+import java.util.UUID;
+
+import model.Game;
+import model.gamestate.GameState;
+import model.gamestate.Playing;
+import model.player.Dir;
 
 public class UDPServer implements Runnable {
 	
@@ -16,12 +20,12 @@ public class UDPServer implements Runnable {
 	
 	private HashMap<InetAddress, Integer> clients = new HashMap<>();
 	private DatagramSocket serverSocket;
-	private Server server;
 	private byte[] data = new byte[1024];
 	private boolean running = true;
+	private Game game;
 	
-	public UDPServer(Server s) {
-		server = s;
+	public UDPServer(Game game) {
+		this.game = game;
 		try {
 			serverSocket = new DatagramSocket(PORT);
 		} catch (SocketException e) {
@@ -40,16 +44,22 @@ public class UDPServer implements Runnable {
 				String request = new String(packet.getData(), 0, packet.getLength());
 				String header = ClientHandler.getHeader(request);
 				String[] body = ClientHandler.getBody(request);
-				if (header.equals("updatetank")) {
-					sendToAll(request);
-				} else if (header.equals("updatebullet")) {
-					sendToAll(request);
-				} else if (header.equals("point")) {
-					sendToAll(request);
-				} else if (header.equals("trainee")) {
-					sendToAll(request);
-				} else {
-					sendToAll("wrong request");
+				switch (GameState.state) {
+				case MENU:
+					break;
+				case PLAYING:
+					Playing playing = game.getPlaying();
+					switch (header) {
+					case "moveTank":
+						playing.moveTank(UUID.fromString(body[0]), Dir.fromString(body[1]));
+						break;
+					case "updateOrientation":
+						playing.updateOrientation(UUID.fromString(body[0]), Integer.parseInt(body[1]), Integer.parseInt(body[2]));
+						break;
+					}
+					break;
+				case FINISH:
+					break;
 				}
 			} catch (IOException e) {
 				if (running) {

@@ -1,8 +1,16 @@
 package model;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import model.gamestate.GameState;
+import model.gamestate.Menu;
 import model.gamestate.Playing;
 import model.player.Player;
+import network.Server;
+import network.UDPServer;
 
 public class Game implements IModel, Runnable {
 	
@@ -10,15 +18,21 @@ public class Game implements IModel, Runnable {
 	
 	private Thread logicLoop;
 	
-	private Player player;
-	
+	private Map<UUID, Player> players = new HashMap<UUID, Player>();
+		
 	// game states
+	private Menu menu;
 	private Playing playing;
 	
-	public Game(Player player) {
-		this.player = player;
-		playing = new Playing(this);
+	public Game() {
+		try {
+			new Server(this);
+			new UDPServer(this);
+		} catch (IOException e) {
+			System.err.println("server failed to start");
+		}
 		logicLoop = new Thread(this);
+		menu = new Menu(this);
 		logicLoop.start();
 	}
 	
@@ -26,6 +40,7 @@ public class Game implements IModel, Runnable {
 	public void update() {
 		switch (GameState.state) {
 		case MENU:
+			menu.update();
 			break;
 		case PLAYING:
 			playing.update();
@@ -66,11 +81,30 @@ public class Game implements IModel, Runnable {
 		}
 	}
 	
-
-	public Player getPlayer() {
-		return player;
+	public void switchState(GameState s) {
+		menu = null;
+		playing = null;
+		switch (s) {
+		case MENU:
+			menu = new Menu(this);
+			break;
+		case PLAYING:
+			playing = new Playing(this);
+			break;
+		case FINISH:
+			break;
+		}
+		GameState.state = s;
 	}
-
+	
+	public Map<UUID, Player> getPlayers() {
+		return players;
+	}
+	
+	public Menu getMenu() {
+		return menu;
+	}
+	
 	public Playing getPlaying() {
 		return playing;
 	}

@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 
 import map.Obstacle;
+import network.Server;
+import network.UDPServer;
 
 public class Player {
 

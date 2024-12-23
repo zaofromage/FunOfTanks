@@ -1,10 +1,14 @@
-package serverHost;
+package network;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.io.IOException;
-import java.net.*;
+
+import model.Game;
 
 public class Server implements Runnable {
 	public static final int PORT = 4551;
@@ -16,16 +20,13 @@ public class Server implements Runnable {
 	
 	private boolean running = true;
 	
-	
-	//Game
-	private ServerPlaying playing;
+	private Game game;
 
-	public Server() throws IOException {
+	public Server(Game game) throws IOException {
 		clients = new ArrayList<>();
+		this.game = game;
 		server = new ServerSocket(PORT, 0, InetAddress.getByName("0.0.0.0"));
 		pool = Executors.newFixedThreadPool(8);
-		playing = new ServerPlaying();
-		
 		pool.execute(this);
 	}
 
@@ -34,7 +35,7 @@ public class Server implements Runnable {
 		while (running) {
 			try {
 				Socket client = server.accept();
-				ClientHandler ch = new ClientHandler(client, clients, this);
+				ClientHandler ch = new ClientHandler(client, clients, game);
 				clients.add(ch);
 				pool.execute(ch);
 			} catch (IOException e) {
@@ -62,7 +63,4 @@ public class Server implements Runnable {
 	    }
 	}
 
-	public ServerPlaying getPlaying() {
-		return playing;
-	}
 }

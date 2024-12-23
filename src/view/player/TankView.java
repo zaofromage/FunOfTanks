@@ -2,21 +2,17 @@ package view.player;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
-import javax.imageio.ImageIO;
-
-import map.Obstacle;
 import model.player.Tank;
-import player.PlayerMode;
-import utils.Vector;
 import view.IView;
 
-public class TankView implements IView {
+public class TankView implements IView, PropertyChangeListener {
 	
 	private Tank model;
+	
+	private int x, y;
 	
 	private Color color = Color.red;
 	private int size;
@@ -30,7 +26,10 @@ public class TankView implements IView {
 		
 	public TankView(Tank tank) {
 		this.model = tank;
+		x = model.getX();
+		y = model.getY();
 		size = model.getSize();
+		model.addPropertyChangeListener(this);
 //		try {
 //			crosshair = ImageIO.read(new File("res/images/crosshair.png"));
 //		} catch (IOException e) {
@@ -40,8 +39,6 @@ public class TankView implements IView {
 	
 	@Override
 	public void draw(Graphics g) {
-		int x = model.getX();
-		int y = model.getY();
 		g.setColor(color);
 		g.fillRect(x, y, size, size);
 		g.setColor(Color.black);
@@ -62,5 +59,18 @@ public class TankView implements IView {
 //		}
 		//g.setColor(Color.white);
 		//g.drawString(""+model.getTeam(), x, y);
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent e) {
+		String s = e.getPropertyName();
+		switch (s) {
+		case "x":
+			x = (int)(double)e.getNewValue();
+			break;
+		case "y":
+			y = (int)(double)e.getNewValue();
+			break;
+		}
 	}
 }

@@ -14,9 +14,6 @@ public class PlayingView implements IView {
 	
 	public PlayingView(Playing playing) {
 		this.model = playing;
-		if (model.getPlayer() != null) {
-			player = new PlayerView(model.getPlayer());
-		}
 	}
 
 	@Override

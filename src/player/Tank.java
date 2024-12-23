@@ -16,10 +16,11 @@ import utils.Vector;
 import javax.imageio.ImageIO;
 
 import client.GamePanel;
-import gamestate.GameMode;
 import utils.Calcul;
 import utils.Delay;
 import map.Obstacle;
+import model.gamestate.GameMode;
+import model.player.PlayerMode;
 import serverHost.Role;
 
 public class Tank {

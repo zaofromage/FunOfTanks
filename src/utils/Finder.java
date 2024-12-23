@@ -2,17 +2,19 @@ package utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
+import java.util.UUID;
 
 import map.Obstacle;
-import serverClass.*;
 import player.Bullet;
-import player.Player;
+import model.player.Player;
+import serverClass.ServerBullet;
+import serverClass.ServerPlayer;
+import serverClass.ServerTank;
 
 public final class Finder {
 
-	public static Player findPlayer(String name, ArrayList<Player> players) {
-		return players.stream().filter(p -> p.getName().equals(name)).findFirst().orElse(null);
+	public static Player findPlayer(UUID id, ArrayList<Player> players) {
+		return players.stream().filter(p -> p.getID().equals(id)).findFirst().orElse(null);
 	}
 	
 	public static ServerPlayer findServerPlayer(String name, ArrayList<ServerPlayer> players) {

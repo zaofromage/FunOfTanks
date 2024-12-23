@@ -70,7 +70,7 @@ public class Bullet {
 		transform.rotate(Math.toRadians(orientation), x, y);
 
 		Shape rotated = transform.createTransformedShape(hitbox);
-
+		
 		g2.draw(rotated);
 		g2.fill(rotated);
 	}
