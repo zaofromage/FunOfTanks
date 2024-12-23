@@ -70,6 +70,7 @@ public class ClientHandler implements Runnable {
 						Playing playing = game.getPlaying();
 						switch (header) {
 						case "fire":
+							System.out.println("handler");
 							playing.fire(UUID.fromString(body[0]), new Vector(Double.parseDouble(body[1]), Double.parseDouble(body[2])));
 							break;
 						case "switchMode":

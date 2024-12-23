@@ -25,14 +25,17 @@ public class Bullet implements IModel {
 	
 	private Map<UUID, Player> players;
 	
+	private UUID owner;
+	
 	private int blowOffset = 7;
 	
 	protected double speed = 4;
 	
 	private boolean remove = false;
 	
-	public Bullet(UUID id, double x, double y, Vector target, Map<UUID, Player> players) {
+	public Bullet(UUID id, UUID owner, double x, double y, Vector target, Map<UUID, Player> players) {
 		this.id = id;
+		this.owner = owner;
 		this.x = x;
 		this.y = y;
 		this.target = target;
@@ -71,7 +74,7 @@ public class Bullet implements IModel {
 	public Player detectPlayer() {
 		for (Player p : players.values()) {
 			Tank tank = p.getTank();
-			if (tank != null) {
+			if (tank != null && !p.getID().equals(owner)) {
 				if (hitbox.intersects(tank.getHitbox())) {
 					return p;
 				}

@@ -67,7 +67,7 @@ public class Playing implements IModel {
 		UUID r = UUID.randomUUID();
 		Tank tank = players.get(id).getTank();
 		if (tank != null) {
-			bullets.add(new Bullet(r, tank.getX(), tank.getY(), target, players));
+			bullets.add(new Bullet(r, id, tank.getX(), tank.getY(), target, players));
 			owners.put(r, id);
 		}
 	}

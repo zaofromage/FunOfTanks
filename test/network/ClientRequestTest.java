@@ -194,15 +194,15 @@ public class ClientRequestTest {
 			sleep();
 			cl.send(new String[] {"play"});
 			sleep();
-			cl.send(new String[] {"fire", r.toString(), "600", "500"});
+			cl.send(new String[] {"fire", r.toString(), "1000", "500"});
 			sleep();
-			assertTrue(game.getPlaying().getOwners().containsKey(r));
+			assertTrue(game.getPlaying().getOwners().containsValue(r));
 			try {
 				Thread.sleep(3000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			assertFalse(game.getPlaying().getOwners().containsKey(r));
+			assertFalse(game.getPlaying().getOwners().containsValue(r));
 		}
 	}
 	
@@ -235,7 +235,7 @@ public class ClientRequestTest {
 	
 	private void sleep() {
 		try {
-			Thread.sleep(10);
+			Thread.sleep(50);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
