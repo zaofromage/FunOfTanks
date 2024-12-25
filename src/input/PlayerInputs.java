@@ -43,7 +43,7 @@ public class PlayerInputs {
 		skill2 = KeyEvent.VK_R;
 		skill3 = KeyEvent.VK_A;
 		dash = KeyEvent.VK_SPACE;
-		escape = KeyEvent.VK_ESCAPE;	
+		escape = KeyEvent.VK_ESCAPE;
 		leaderBoard = KeyEvent.VK_TAB;
 	}
 	

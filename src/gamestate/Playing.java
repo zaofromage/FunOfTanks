@@ -377,7 +377,7 @@ public class Playing implements Statemethods {
 				player.getTank().setRight(false);
 			}
 		} else if (keyCode == PlayerInputs.escape) {
-			GameState.state = GameState.MENU;
+			//GameState.state = GameState.MENU;
 		} else if (keyCode == PlayerInputs.leaderBoard) {
 			drawLeaderBoard = false;
 		}
