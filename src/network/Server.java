@@ -25,7 +25,7 @@ import utils.Vector;
 
 public class Server {
 
-	private static final int port = 4551;
+	public static final int PORT = 4551;
 	private ChannelGroup allChannels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE); // Groupe pour tous les
 																								// canaux
 
@@ -57,8 +57,8 @@ public class Server {
 						}
 					}).option(ChannelOption.SO_BACKLOG, 128) // File d'attente
 					.childOption(ChannelOption.SO_KEEPALIVE, true).childOption(ChannelOption.TCP_NODELAY, true);
-			System.out.println("Serveur Netty démarré sur le port : " + port);
-			bootstrap.bind(port).sync().channel().closeFuture().sync();
+			System.out.println("Serveur Netty démarré sur le port : " + PORT);
+			bootstrap.bind(PORT).sync().channel().closeFuture().sync();
 		} finally {
 			bossGroup.shutdownGracefully();
 			workerGroup.shutdownGracefully();
@@ -90,7 +90,6 @@ public class Server {
 		protected void channelRead0(ChannelHandlerContext ctx, String msg) {
 			String header = getHeader(msg);
 			String[] body = getBody(msg);
-
 			System.out.println("Client says : " + msg);
 			ctx.writeAndFlush(msg);
 		}
