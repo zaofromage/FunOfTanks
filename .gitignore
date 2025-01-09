@@ -24,3 +24,7 @@ hs_err_pid*
 replay_pid*
 
 res/inputs
+res/skills
+
+bin/*
+/target/

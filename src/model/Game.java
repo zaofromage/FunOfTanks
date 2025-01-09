@@ -1,6 +1,5 @@
 package model;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -9,28 +8,25 @@ import model.gamestate.GameState;
 import model.gamestate.Menu;
 import model.gamestate.Playing;
 import model.player.Player;
-import network.Server;
-import network.UDPServer;
 
 public class Game implements IModel, Runnable {
 	
 	public static final int UPS = 200;
 	
+	private UUID id;
+	
 	private Thread logicLoop;
 	
 	private Map<UUID, Player> players = new HashMap<UUID, Player>();
+	
+	private GameState state = GameState.MENU;
 		
 	// game states
 	private Menu menu;
 	private Playing playing;
 	
 	public Game() {
-		try {
-			new Server(this);
-			new UDPServer(this);
-		} catch (IOException e) {
-			System.err.println("server failed to start");
-		}
+		id = UUID.randomUUID();
 		logicLoop = new Thread(this);
 		menu = new Menu(this);
 		logicLoop.start();
@@ -95,6 +91,10 @@ public class Game implements IModel, Runnable {
 			break;
 		}
 		GameState.state = s;
+	}
+	
+	public UUID getId() {
+		return id;
 	}
 	
 	public Map<UUID, Player> getPlayers() {

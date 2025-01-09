@@ -6,10 +6,6 @@ import java.awt.Toolkit;
 
 import javax.swing.JPanel;
 
-import client.Game;
-import input.KeyboardInput;
-import input.MouseInput;
-
 public class GamePanel extends JPanel {
 
 	public static final Dimension dimension = new Dimension(1250, 800);

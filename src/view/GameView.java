@@ -2,8 +2,8 @@ package view;
 
 import java.awt.Graphics;
 
-import model.Game;
 import model.gamestate.GameState;
+import view.gamestate.MenuView;
 import view.gamestate.PlayingView;
 
 public class GameView implements IView, Runnable {
@@ -11,16 +11,17 @@ public class GameView implements IView, Runnable {
 	public static final int FPS = 120;
 	private Thread viewLoop;
 	
-	
 	private GameWindow window;
 	private GamePanel panel;
 	
 	// game state
+	private MenuView menu;
 	private PlayingView playing;
 	
 	public GameView() {
 		panel = new GamePanel(this);
 		window = new GameWindow(panel);
+		menu = new MenuView();
 		viewLoop = new Thread(this);
 		viewLoop.start();
 	}
@@ -29,9 +30,10 @@ public class GameView implements IView, Runnable {
 	public void draw(Graphics g) {
 		switch (GameState.state) {
 		case MENU:
+			menu.draw(g);
 			break;
 		case PLAYING:
-			//playing.draw(g);
+			playing.draw(g);
 			break;
 		case FINISH:
 			break;

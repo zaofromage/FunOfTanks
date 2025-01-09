@@ -29,7 +29,6 @@ public class TankView implements IView, PropertyChangeListener {
 		x = model.getX();
 		y = model.getY();
 		size = model.getSize();
-		model.addPropertyChangeListener(this);
 //		try {
 //			crosshair = ImageIO.read(new File("res/images/crosshair.png"));
 //		} catch (IOException e) {
@@ -45,7 +44,7 @@ public class TankView implements IView, PropertyChangeListener {
 		//if (model.isInZone()) {
 		//	g.drawRect(x - displayOffset, y - displayOffset, size, size);
 		//}
-		g.drawString(model.getPlayer().getName(), x, y - 10);
+		//g.drawString(model.getPlayer().getName(), x, y - 10);
 		//cannon.draw(g);
 //		if (possibleObstacle != null) {
 //			possibleObstacle.drawObstacle(g);

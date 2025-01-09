@@ -1,91 +1,68 @@
 package network;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.DatagramPacket;
+import io.netty.channel.socket.nio.NioDatagramChannel;
 
-import model.Game;
-import model.gamestate.GameState;
-import model.gamestate.Playing;
-import model.player.Dir;
+public class UDPServer {
 
-public class UDPServer implements Runnable {
-	
-	public static final int PORT = 4552;
-	
-	private HashMap<InetAddress, Integer> clients = new HashMap<>();
-	private DatagramSocket serverSocket;
-	private byte[] data = new byte[1024];
-	private boolean running = true;
-	private Game game;
-	
-	public UDPServer(Game game) {
-		this.game = game;
-		try {
-			serverSocket = new DatagramSocket(PORT);
-		} catch (SocketException e) {
-			e.printStackTrace();
-		}
-		new Thread(this).start();
-	}
-
-	@Override
-	public void run() {
-		while (running) {
+    public static final int PORT = 4552;
+    
+    public UDPServer() {
+    	new Thread(() -> {
 			try {
-				DatagramPacket packet = new DatagramPacket(data, data.length);
-				serverSocket.receive(packet);
-				clients.put(packet.getAddress(), packet.getPort());
-				String request = new String(packet.getData(), 0, packet.getLength());
-				String header = ClientHandler.getHeader(request);
-				String[] body = ClientHandler.getBody(request);
-				switch (GameState.state) {
-				case MENU:
-					break;
-				case PLAYING:
-					Playing playing = game.getPlaying();
-					switch (header) {
-					case "moveTank":
-						playing.moveTank(UUID.fromString(body[0]), Dir.fromString(body[1]));
-						break;
-					case "updateOrientation":
-						playing.updateOrientation(UUID.fromString(body[0]), Integer.parseInt(body[1]), Integer.parseInt(body[2]));
-						break;
-					}
-					break;
-				case FINISH:
-					break;
-				}
-			} catch (IOException e) {
-				if (running) {
-					System.out.println("pas normal udp");
-				} else {
-					System.out.println("udp bien fermé");
-				}
-			}
-			
-		}
-	}
-
-	private void sendToAll(String msg) {
-		byte[] response = msg.getBytes();
-		for (Map.Entry<InetAddress, Integer> a : clients.entrySet()) {
-			DatagramPacket toSend = new DatagramPacket(response, response.length, a.getKey(), a.getValue());
-			try {
-				serverSocket.send(toSend);
-			} catch (IOException e) {
+				start();
+			} catch (InterruptedException e) {
 				e.printStackTrace();
-			}			
-		}
-	}
-	
-	public void close() {
-		running = false;
-		serverSocket.close();
-	}
+			}
+		}).start();
+    }
+
+    public void start() throws InterruptedException {
+        EventLoopGroup group = new NioEventLoopGroup(); // Gère les événements
+
+        try {
+            Bootstrap bootstrap = new Bootstrap();
+            bootstrap.group(group)
+                     .channel(NioDatagramChannel.class)  // Utilisation de DatagramChannel pour UDP
+                     .handler(new UdpClientHandler());
+
+            System.out.println("Serveur UDP Netty démarré sur le port : " + PORT);
+            bootstrap.bind(PORT).sync().channel().closeFuture().await();
+        } finally {
+            group.shutdownGracefully();
+        }
+    }
+
+    public class UdpClientHandler extends SimpleChannelInboundHandler<DatagramPacket> {
+
+        @Override
+        public void channelRead0(ChannelHandlerContext ctx, DatagramPacket packet) throws Exception {
+        	
+        	ByteBuf buf = packet.content();
+        	byte[] bytes = new byte[buf.readableBytes()];
+        	buf.readBytes(bytes);
+        	String msg = new String(bytes);
+        	
+        	System.out.println("Client UDP says : " + msg);
+        	
+        	ByteBuf resBuf = ctx.alloc().buffer();
+        	resBuf.writeBytes(msg.getBytes());
+        	
+        	DatagramPacket response = new DatagramPacket(resBuf, packet.sender());
+            ctx.writeAndFlush(response);
+        }
+        
+        @Override
+        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+            cause.printStackTrace();
+            ctx.close();
+        }
+        
+    }
 }

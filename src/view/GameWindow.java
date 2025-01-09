@@ -5,9 +5,6 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
-import input.PlayerInputs;
-import player.Skill;
-
 public class GameWindow extends JFrame {
 	
 	public GameWindow(GamePanel panel) {
