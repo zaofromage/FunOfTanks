@@ -34,12 +34,16 @@ public class Game implements IModel, Runnable {
 	
 	@Override
 	public void update() {
-		switch (GameState.state) {
+		switch (state) {
 		case MENU:
-			menu.update();
+			if (menu != null) {
+				menu.update();				
+			}
 			break;
 		case PLAYING:
-			playing.update();
+			if (playing != null) {
+				playing.update();				
+			}
 			break;
 		case FINISH:
 			break;
@@ -90,7 +94,7 @@ public class Game implements IModel, Runnable {
 		case FINISH:
 			break;
 		}
-		GameState.state = s;
+		state = s;
 	}
 	
 	public UUID getId() {
@@ -99,6 +103,10 @@ public class Game implements IModel, Runnable {
 	
 	public Map<UUID, Player> getPlayers() {
 		return players;
+	}
+	
+	public GameState getState() {
+		return state;
 	}
 	
 	public Menu getMenu() {

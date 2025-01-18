@@ -27,7 +27,8 @@ public class Client {
 	}
 	
 	public void send(String[] msg) {
-		out.println(join(msg));
+		out.print(join(msg));
+		out.flush();
 	}
 	
 	public void sendUDP(String[] msg) {

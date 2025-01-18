@@ -9,11 +9,10 @@ public class Main {
 	
 	public static void main(String[] args) {
 		if (args[0].equals("serve")) {
-			new Server();
-			new UDPServer();			
+			Server s = new Server();
 		} else if (args[0].equals("client")) {
 			try {
-				Client client = new Client("192.168.1.106", Server.PORT);
+				Client client = new Client("192.168.1.146", Server.PORT);
 				Scanner sc = new Scanner(System.in);
 				boolean running = true;
 				while (running) {

@@ -32,7 +32,6 @@ public class UDPServerConnection implements Runnable {
 				if (res != null) {
 					String header = Server.getHeader(res);
 					String[] body = Server.getBody(res);
-					System.out.println("Server UDP says : " + res);
 				}
 			} catch (IOException e) {
 				if (running) {

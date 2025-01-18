@@ -17,19 +17,27 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import model.Game;
 import model.gamestate.GameMode;
 import model.gamestate.Menu;
 import model.gamestate.Playing;
+import model.player.Dir;
 import model.player.PlayerMode;
 import utils.Vector;
 
 public class Server {
 
 	public static final int PORT = 4551;
-	private ChannelGroup allChannels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE); // Groupe pour tous les
-																								// canaux
+	private ChannelGroup allChannels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+	private EventLoopGroup bossGroup;
+	private EventLoopGroup workerGroup;
+	
+	private UDPServer us;
+	
+	private Game game;
 
 	public Server() {
+		game = new Game();
 		new Thread(() -> {
 			try {
 				start();
@@ -40,20 +48,18 @@ public class Server {
 	}
 
 	public void start() throws InterruptedException {
-		EventLoopGroup bossGroup = new NioEventLoopGroup(); // Gère les connexions
-		EventLoopGroup workerGroup = new NioEventLoopGroup(); // Gère les événements
-
+		bossGroup = new NioEventLoopGroup();
+		workerGroup = new NioEventLoopGroup();
+		us = new UDPServer(game);
 		try {
 			ServerBootstrap bootstrap = new ServerBootstrap();
 			bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
 					.childHandler(new ChannelInitializer<SocketChannel>() {
 						@Override
 						protected void initChannel(SocketChannel ch) {
-							ch.pipeline().addLast(new StringDecoder()); // Permet de décoder les messages reçus en
-																		// String
-							ch.pipeline().addLast(new StringEncoder()); // Permet d'encoder les messages avant de les
-																		// envoyer
-							ch.pipeline().addLast(new ClientHandler()); // Ajout du gestionnaire
+							ch.pipeline().addLast(new StringDecoder());
+							ch.pipeline().addLast(new StringEncoder());
+							ch.pipeline().addLast(new ClientHandler());
 						}
 					}).option(ChannelOption.SO_BACKLOG, 128) // File d'attente
 					.childOption(ChannelOption.SO_KEEPALIVE, true).childOption(ChannelOption.TCP_NODELAY, true);
@@ -83,6 +89,25 @@ public class Server {
 			channel.writeAndFlush(message); // Envoi du message à tous les clients
 		}
 	}
+	
+	public void shutdown() {
+	    System.out.println("Arrêt du serveur Netty...");
+
+	    try {
+	        allChannels.close().sync();
+	        System.out.println("Tous les clients déconnectés.");
+
+	        bossGroup.shutdownGracefully().sync();
+	        workerGroup.shutdownGracefully().sync();
+	        System.out.println("Groupes d'événements arrêtés.");
+	    } catch (InterruptedException e) {
+	        e.printStackTrace();
+	        Thread.currentThread().interrupt();
+	    }
+
+	    System.out.println("Serveur arrêté proprement.");
+	}
+
 
 	public class ClientHandler extends SimpleChannelInboundHandler<String> {
 
@@ -90,8 +115,16 @@ public class Server {
 		protected void channelRead0(ChannelHandlerContext ctx, String msg) {
 			String header = getHeader(msg);
 			String[] body = getBody(msg);
-			System.out.println("Client says : " + msg);
-			ctx.writeAndFlush(msg);
+			switch (game.getState()) {
+			case MENU:
+				handleMenuCommands(header, body, game.getMenu());
+				break;
+			case PLAYING:
+				handlePlayingCommands(header, body, game.getPlaying());
+				break;
+			case FINISH:
+				break;
+			}
 		}
 
 		private void handleMenuCommands(String header, String[] body, Menu menu) {
@@ -142,5 +175,9 @@ public class Server {
 			ctx.close();
 		}
 
+	}
+	
+	public Game getGame() {
+		return game;
 	}
 }

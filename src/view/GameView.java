@@ -28,16 +28,7 @@ public class GameView implements IView, Runnable {
 
 	@Override
 	public void draw(Graphics g) {
-		switch (GameState.state) {
-		case MENU:
-			menu.draw(g);
-			break;
-		case PLAYING:
-			playing.draw(g);
-			break;
-		case FINISH:
-			break;
-		}
+		
 	}
 	
 	@Override

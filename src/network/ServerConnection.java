@@ -27,7 +27,6 @@ public class ServerConnection implements Runnable {
 				if (serverResponse != null) {
 					String header = Server.getHeader(serverResponse);
 					String[] body = Server.getBody(serverResponse);
-					System.out.println("Server says : " + serverResponse);
 				}
 			}
 		} catch (IOException e) {
