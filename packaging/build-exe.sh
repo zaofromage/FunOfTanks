@@ -5,7 +5,7 @@ jpackage \
   --input ../ \
   --name FunOfTanks \
   --main-jar FunOfTanks.jar \
-  --main-class game.Main \
+  --main-class client.Main \
   --icon ../images/funoftanks.ico \
   --java-options "-Xmx512m" \
   --win-dir-chooser \
