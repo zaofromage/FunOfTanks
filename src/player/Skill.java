@@ -151,8 +151,7 @@ public class Skill {
 	
 	public static Skill grenade(Player player) {
 		try {
-			File f = new File("res/images/grenade.png");
-			return new Skill("grenade", 7000, ImageIO.read(f), () -> {
+			return new Skill("grenade", 7000, ImageIO.read(Skill.class.getResource("/images/grenade.png")), () -> {
 				if (player.getTank() != null) {
 					player.getTank().getCannon().setShot(TypeShot.GRENADE);
 				}
