@@ -1,5 +1,7 @@
-javac -d bin src/client/*.java src/effect/*.java src/gamestate/*.java src/input/*.java src/map/*.java src/player/*.java src/serverClass/*.java src/serverHost/*.java src/UI/*.java src/utils/*.java
+#!/bin/bash
 
-jar cfm FunOfTanks.jar manifest.txt -C bin . -C res/images .
+javac -d bin src/**/*.java
+
+jar cfm FunOfTanks.jar manifest.txt -C bin . -C res .
 
 java -jar FunOfTanks.jar
